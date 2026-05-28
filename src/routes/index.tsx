@@ -34,6 +34,8 @@ function Home() {
           className="absolute inset-0 w-full h-full object-cover scale-105"
           width={1920}
           height={1280}
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-overlay" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent" />

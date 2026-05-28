@@ -8,7 +8,7 @@ export const Route = createFileRoute("/premium")({
       { title: "Premium — Motard de Cœur" },
       { name: "description", content: "Membership premium : messages illimités, boost, badge vérifié, événements VIP." },
       { property: "og:title", content: "Premium — Motard de Cœur" },
-      { property: "og:description", content: "Vivez l'expérience biker ultime." },
+      { property: "og:description", content: "Comparez les formules Free, Premium et VIP Club : messages illimités, boost de profil, badge vérifié et accès aux événements VIP de la communauté biker." },
       { property: "og:url", content: "/premium" },
     ],
     links: [{ rel: "canonical", href: "/premium" }],
@@ -93,7 +93,7 @@ function Premium() {
                 </span>
               )}
 
-              <h3 className="font-display text-3xl mb-2">{p.name}</h3>
+              <h2 className="font-display text-3xl mb-2">{p.name}</h2>
               <p className="text-muted-foreground text-sm mb-6">{p.desc}</p>
 
               <div className="flex items-baseline gap-1 mb-8">
