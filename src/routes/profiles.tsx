@@ -48,10 +48,11 @@ function Profiles() {
 
           {/* Filters */}
           <div className="mt-10 flex flex-wrap gap-3 items-center">
-            <div className="flex items-center gap-2 flex-1 min-w-[280px] max-w-md glass px-4 py-3 rounded-full">
+            <label htmlFor="profile-search" className="flex items-center gap-2 flex-1 min-w-[280px] max-w-md glass px-4 py-3 rounded-full">
               <Search className="h-4 w-4 text-muted-foreground" />
-              <input placeholder="Recherche par nom, moto, ville..." className="bg-transparent flex-1 outline-none text-sm" />
-            </div>
+              <span className="sr-only">Rechercher un motard</span>
+              <input id="profile-search" type="search" aria-label="Rechercher par nom, moto ou ville" placeholder="Recherche par nom, moto, ville..." className="bg-transparent flex-1 outline-none text-sm" />
+            </label>
             {["Tous", "Harley", "Sport", "Touring", "Custom", "Vintage"].map((f, i) => (
               <button key={i} className="px-4 py-2 glass rounded-full text-sm hover:bg-primary/20 hover:border-primary/40 transition">
                 {f}
@@ -80,7 +81,7 @@ function Profiles() {
                 {/* Bottom content */}
                 <div className="absolute inset-x-0 bottom-0 p-6">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-2xl font-display">{p.name}, <span className="text-foreground/70">{p.age}</span></h3>
+                    <h2 className="text-2xl font-display">{p.name}, <span className="text-foreground/70">{p.age}</span></h2>
                     {p.verified && <BadgeCheck className="h-5 w-5 text-primary fill-primary/20" />}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-foreground/80 mb-3">

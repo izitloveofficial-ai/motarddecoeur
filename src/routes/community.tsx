@@ -14,7 +14,7 @@ export const Route = createFileRoute("/community")({
       { title: "Communauté — Motard de Cœur" },
       { name: "description", content: "Groupes, forums, ride planning et expériences partagées entre motards passionnés." },
       { property: "og:title", content: "Communauté — Motard de Cœur" },
-      { property: "og:description", content: "Une vraie tribu de bikers." },
+      { property: "og:description", content: "Rejoignez les groupes Harley, sport, touring et custom, suivez le feed de la tribu et planifiez vos rides avec une vraie communauté de motards passionnés." },
       { property: "og:url", content: "/community" },
     ],
     links: [{ rel: "canonical", href: "/community" }],
