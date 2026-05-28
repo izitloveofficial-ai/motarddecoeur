@@ -9,7 +9,7 @@ export const Route = createFileRoute("/contact")({
       { title: "Contact — Motard de Cœur" },
       { name: "description", content: "Une question ? Contactez l'équipe Motard de Cœur. Support 7j/7." },
       { property: "og:title", content: "Contact — Motard de Cœur" },
-      { property: "og:description", content: "Nous sommes là pour vous." },
+      { property: "og:description", content: "Contactez l'équipe de Motard de Cœur pour toute question, partenariat, événement ou support technique dédié aux passionnés de moto. Réponse sous 24h." },
       { property: "og:url", content: "/contact" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
@@ -42,23 +42,23 @@ function Contact() {
 
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Prénom</label>
-                <input required className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow" />
+                <label htmlFor="contact-firstname" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Prénom</label>
+                <input id="contact-firstname" name="firstname" autoComplete="given-name" required className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow" />
               </div>
               <div>
-                <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Nom</label>
-                <input required className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow" />
+                <label htmlFor="contact-lastname" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Nom</label>
+                <input id="contact-lastname" name="lastname" autoComplete="family-name" required className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Email</label>
-              <input required type="email" className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow" />
+              <label htmlFor="contact-email" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Email</label>
+              <input id="contact-email" name="email" autoComplete="email" required type="email" className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow" />
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Sujet</label>
-              <select required className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow">
+              <label htmlFor="contact-subject" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Sujet</label>
+              <select id="contact-subject" name="subject" required className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow">
                 <option>Support technique</option>
                 <option>Partenariat</option>
                 <option>Événement</option>
@@ -68,8 +68,8 @@ function Contact() {
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Message</label>
-              <textarea required rows={5} className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow resize-none" />
+              <label htmlFor="contact-message" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Message</label>
+              <textarea id="contact-message" name="message" required rows={5} className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow resize-none" />
             </div>
 
             <button
