@@ -84,6 +84,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;800;900&family=Inter:wght@300;400;500;600;700&display=swap" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://coeur-road-connect.lovable.app/#organization",
+              name: "Motard de Cœur",
+              url: "https://coeur-road-connect.lovable.app",
+              sameAs: [
+                "https://instagram.com/motarddecoeur",
+                "https://facebook.com/motarddecoeur",
+                "https://youtube.com/motarddecoeur",
+              ],
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://coeur-road-connect.lovable.app/#website",
+              url: "https://coeur-road-connect.lovable.app",
+              name: "Motard de Cœur",
+              description: "Communauté premium de rencontres et événements pour motards.",
+              publisher: { "@id": "https://coeur-road-connect.lovable.app/#organization" },
+            },
+          ],
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
