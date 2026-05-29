@@ -6,6 +6,15 @@ import event from "@/assets/event-night.jpg";
 import community from "@/assets/community-ride.jpg";
 import bike from "@/assets/bike-dark.jpg";
 
+const EVENTS = [
+  { date: "12 JUIN 2026", iso: "2026-06-12T18:00:00+02:00", title: "Sunset Ride — Côte d'Azur", loc: "Nice → Monaco", city: "Nice", type: "Road trip", spots: 48, img: hero, featured: true },
+  { date: "28 JUIN 2026", iso: "2026-06-28T10:00:00+02:00", title: "Festival Iron & Soul", loc: "Lyon · 3 jours", city: "Lyon", type: "Festival", spots: 240, img: event },
+  { date: "15 JUIL 2026", iso: "2026-07-15T09:00:00+02:00", title: "Charity Ride for Heroes", loc: "Paris", city: "Paris", type: "Charity", spots: 120, img: community },
+  { date: "03 AOÛT 2026", iso: "2026-08-03T11:00:00+02:00", title: "Custom Bike Show", loc: "Bordeaux", city: "Bordeaux", type: "Meetup", spots: 80, img: bike },
+  { date: "20 AOÛT 2026", iso: "2026-08-20T08:00:00+02:00", title: "Alpine Twisties Tour", loc: "Annecy → Chamonix", city: "Annecy", type: "Road trip", spots: 36, img: hero },
+  { date: "10 SEPT 2026", iso: "2026-09-10T20:00:00+02:00", title: "Night Rumble Marseille", loc: "Vieux-Port", city: "Marseille", type: "Meetup", spots: 60, img: event },
+];
+
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
@@ -16,18 +25,30 @@ export const Route = createFileRoute("/events")({
       { property: "og:url", content: "/events" },
     ],
     links: [{ rel: "canonical", href: "/events" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": EVENTS.map((e) => ({
+            "@type": "Event",
+            name: e.title,
+            startDate: e.iso,
+            eventStatus: "https://schema.org/EventScheduled",
+            eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+            location: {
+              "@type": "Place",
+              name: e.loc,
+              address: { "@type": "PostalAddress", addressLocality: e.city, addressCountry: "FR" },
+            },
+            organizer: { "@type": "Organization", name: "Motard de Cœur", url: "https://coeur-road-connect.lovable.app" },
+          })),
+        }),
+      },
+    ],
   }),
   component: Events,
 });
-
-const EVENTS = [
-  { date: "12 JUIN 2026", title: "Sunset Ride — Côte d'Azur", loc: "Nice → Monaco", type: "Road trip", spots: 48, img: hero, featured: true },
-  { date: "28 JUIN 2026", title: "Festival Iron & Soul", loc: "Lyon · 3 jours", type: "Festival", spots: 240, img: event },
-  { date: "15 JUIL 2026", title: "Charity Ride for Heroes", loc: "Paris", type: "Charity", spots: 120, img: community },
-  { date: "03 AOÛT 2026", title: "Custom Bike Show", loc: "Bordeaux", type: "Meetup", spots: 80, img: bike },
-  { date: "20 AOÛT 2026", title: "Alpine Twisties Tour", loc: "Annecy → Chamonix", type: "Road trip", spots: 36, img: hero },
-  { date: "10 SEPT 2026", title: "Night Rumble Marseille", loc: "Vieux-Port", type: "Meetup", spots: 60, img: event },
-];
 
 function Events() {
   return (

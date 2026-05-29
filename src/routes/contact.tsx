@@ -13,6 +13,32 @@ export const Route = createFileRoute("/contact")({
       { property: "og:url", content: "/contact" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          name: "Motard de Cœur",
+          url: "https://coeur-road-connect.lovable.app",
+          email: "hello@motarddecoeur.fr",
+          telephone: "+33 4 22 13 56 78",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "12 quai Rambaud",
+            postalCode: "69002",
+            addressLocality: "Lyon",
+            addressCountry: "FR",
+          },
+          openingHours: "Mo-Su 00:00-23:59",
+          sameAs: [
+            "https://instagram.com/motarddecoeur",
+            "https://facebook.com/motarddecoeur",
+            "https://youtube.com/motarddecoeur",
+          ],
+        }),
+      },
+    ],
   }),
   component: Contact,
 });
