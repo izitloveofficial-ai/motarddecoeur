@@ -35,25 +35,38 @@ function About() {
       <section className="py-32 px-6">
         <div className="mx-auto max-w-4xl space-y-12 text-lg leading-relaxed text-foreground/85">
           <p className="text-2xl text-foreground font-display italic">
-            "Une moto, deux roues, un cœur qui bat à 6000 tours minute."
+            "Parfois, il suffit d'une rencontre pour changer de route."
           </p>
           <p>
-            Motard de Cœur est né en 2024, dans un garage du sud de la France,
-            entre l'odeur de l'essence et le rugissement d'un V-twin. Trois amis
-            motards, lassés des applications de rencontres génériques où personne
-            ne comprenait leur passion, ont décidé de créer un endroit à eux.
+            Motard de Cœur n'est pas né dans un garage, ni autour d'un plan
+            marketing. Tout a commencé par une rencontre inattendue, sur un
+            site de rencontre tout ce qu'il y a de plus classique. Elle était
+            passionnée de moto. Moi, pas du tout.
           </p>
           <p>
-            Un sanctuaire numérique pour celles et ceux dont le cœur s'emballe
-            au son d'un moteur, qui rêvent de routes infinies et de couchers de
-            soleil partagés sur l'autoroute. Pas une simple app de rencontres —
-            une véritable confrérie.
+            Au fil des conversations, des sourires et des récits de routes
+            qu'elle avait avalées, quelque chose a changé. Sa passion est
+            devenue contagieuse. Ce que je voyais comme une simple machine
+            bruyante est devenu une promesse : celle d'une liberté que je
+            n'avais jamais osé m'offrir.
           </p>
           <p>
-            Aujourd'hui, nous réunissons plus de <strong className="text-primary">48 000 motards vérifiés</strong>
-            à travers l'Europe. Riders Harley, pilotes sportifs, voyageurs au long
-            cours ou amoureux du custom : tous partagent une même vérité —
-            <em> la route rapproche les cœurs</em>.
+            Un matin, j'ai franchi le pas. Inscription au permis moto. Premiers
+            tours de roues maladroits, premier casque, premier frisson. Puis,
+            très vite, la première vraie balade à deux — elle devant, moi
+            derrière, avant de rouler côte à côte, sur la même route.
+          </p>
+          <p>
+            De cette belle histoire est née une évidence : les plus belles
+            rencontres ne se font pas sur des applis génériques. Elles se font
+            entre passionnés, ou grâce à des passionnés capables de transmettre
+            leur feu. <strong className="text-primary">Motard de Cœur</strong>{" "}
+            est né pour ça — offrir à d'autres la rencontre qui les fera, eux
+            aussi, enfourcher leur première moto, ou trouver la personne avec
+            qui partager la prochaine route.
+          </p>
+          <p className="text-xl text-foreground font-display italic">
+            Parce qu'au fond, <em>la route rapproche les cœurs</em>.
           </p>
         </div>
       </section>
