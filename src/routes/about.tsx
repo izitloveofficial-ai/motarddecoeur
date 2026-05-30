@@ -51,10 +51,14 @@ function About() {
             n'avais jamais osé m'offrir.
           </p>
           <p>
-            Un matin, j'ai franchi le pas. Inscription au permis moto. Premiers
-            tours de roues maladroits, premier casque, premier frisson. Puis,
-            très vite, la première vraie balade à deux — elle devant, moi
-            derrière, avant de rouler côte à côte, sur la même route.
+            Un matin, j'ai franchi le pas. Inscription au permis moto. Et puis
+            ce geste que je n'oublierai jamais : <strong className="text-primary">elle m'a offert mon premier casque</strong>.
+            Pas un cadeau ordinaire — une déclaration silencieuse, une façon de
+            me dire <em>"viens, la route nous attend"</em>. Premiers tours de
+            roues maladroits, premier frisson, premier vrai sentiment de
+            liberté. Puis, très vite, la première vraie balade à deux — elle
+            devant, moi derrière, avant de rouler côte à côte, sur la même
+            route.
           </p>
           <p>
             De cette belle histoire est née une évidence : les plus belles
