@@ -16,18 +16,18 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="fixed top-0 z-50 w-full glass border-b border-border/40">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex items-center gap-2 group">
+    <header className="fixed top-0 z-50 w-full bg-white border-b border-border/40 shadow-sm">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+        <Link to="/" className="flex items-center gap-3 group">
           <img
             src={logo}
             alt="Motard de Cœur"
-            width={96}
-            height={64}
-            className="h-12 w-auto object-contain drop-shadow-[0_0_12px_oklch(0.55_0.24_25/0.5)] transition-transform group-hover:scale-105"
+            width={180}
+            height={120}
+            className="h-20 w-auto object-contain transition-transform group-hover:scale-105"
           />
           <div className="flex flex-col leading-tight">
-            <span className="font-display text-lg tracking-wider text-gradient-metal">
+            <span className="font-display text-xl tracking-wider text-foreground">
               Motard de Cœur
             </span>
             <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
@@ -41,8 +41,8 @@ export function Navbar() {
             <Link
               key={l.to}
               to={l.to}
-              className="text-sm uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors relative"
-              activeProps={{ className: "text-foreground" }}
+              className="text-sm uppercase tracking-wider text-neutral-600 hover:text-neutral-900 transition-colors relative"
+              activeProps={{ className: "text-neutral-900" }}
               activeOptions={{ exact: l.to === "/" }}
             >
               {({ isActive }) => (
@@ -58,7 +58,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
-          <button className="px-4 py-2 text-sm text-foreground/80 hover:text-foreground transition">
+          <button className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition">
             Connexion
           </button>
           <button className="px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full hover:shadow-glow transition-all">
@@ -67,7 +67,7 @@ export function Navbar() {
         </div>
 
         <button
-          className="lg:hidden text-foreground"
+          className="lg:hidden text-neutral-900"
           onClick={() => setOpen(!open)}
           aria-label="Menu"
         >
@@ -76,13 +76,13 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div className="lg:hidden glass border-t border-border/40 px-6 py-4 flex flex-col gap-3 animate-fade-in">
+        <div className="lg:hidden bg-white border-t border-border/40 px-6 py-4 flex flex-col gap-3 animate-fade-in">
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
               onClick={() => setOpen(false)}
-              className="py-2 text-sm uppercase tracking-wider text-muted-foreground hover:text-foreground"
+              className="py-2 text-sm uppercase tracking-wider text-neutral-700 hover:text-neutral-900"
             >
               {l.label}
             </Link>
