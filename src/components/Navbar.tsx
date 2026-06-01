@@ -41,8 +41,8 @@ export function Navbar() {
             <Link
               key={l.to}
               to={l.to}
-              className="text-sm uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors relative"
-              activeProps={{ className: "text-foreground" }}
+              className="text-sm uppercase tracking-wider text-neutral-600 hover:text-neutral-900 transition-colors relative"
+              activeProps={{ className: "text-neutral-900" }}
               activeOptions={{ exact: l.to === "/" }}
             >
               {({ isActive }) => (
@@ -58,7 +58,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
-          <button className="px-4 py-2 text-sm text-foreground/80 hover:text-foreground transition">
+          <button className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition">
             Connexion
           </button>
           <button className="px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full hover:shadow-glow transition-all">
@@ -67,7 +67,7 @@ export function Navbar() {
         </div>
 
         <button
-          className="lg:hidden text-foreground"
+          className="lg:hidden text-neutral-900"
           onClick={() => setOpen(!open)}
           aria-label="Menu"
         >
@@ -76,13 +76,13 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div className="lg:hidden glass border-t border-border/40 px-6 py-4 flex flex-col gap-3 animate-fade-in">
+        <div className="lg:hidden bg-white border-t border-border/40 px-6 py-4 flex flex-col gap-3 animate-fade-in">
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
               onClick={() => setOpen(false)}
-              className="py-2 text-sm uppercase tracking-wider text-muted-foreground hover:text-foreground"
+              className="py-2 text-sm uppercase tracking-wider text-neutral-700 hover:text-neutral-900"
             >
               {l.label}
             </Link>
