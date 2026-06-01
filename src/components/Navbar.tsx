@@ -16,18 +16,18 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="fixed top-0 z-50 w-full glass border-b border-border/40">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex items-center gap-2 group">
+    <header className="fixed top-0 z-50 w-full bg-white border-b border-border/40 shadow-sm">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+        <Link to="/" className="flex items-center gap-3 group">
           <img
             src={logo}
             alt="Motard de Cœur"
-            width={96}
-            height={64}
-            className="h-12 w-auto object-contain drop-shadow-[0_0_12px_oklch(0.55_0.24_25/0.5)] transition-transform group-hover:scale-105"
+            width={180}
+            height={120}
+            className="h-20 w-auto object-contain transition-transform group-hover:scale-105"
           />
           <div className="flex flex-col leading-tight">
-            <span className="font-display text-lg tracking-wider text-gradient-metal">
+            <span className="font-display text-xl tracking-wider text-foreground">
               Motard de Cœur
             </span>
             <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
