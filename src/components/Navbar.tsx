@@ -27,10 +27,10 @@ export function Navbar() {
             className="h-20 w-auto object-contain transition-transform group-hover:scale-105"
           />
           <div className="flex flex-col leading-tight">
-            <span className="font-display text-xl tracking-wider text-foreground">
-              Motard de Cœur
+            <span className="font-display text-2xl tracking-wider text-neutral-900">
+              Motard de <span className="text-primary">Cœur</span>
             </span>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-500">
               Ride · Connect · Feel
             </span>
           </div>
