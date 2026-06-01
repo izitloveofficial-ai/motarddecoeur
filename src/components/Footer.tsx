@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Heart, Instagram, Facebook, Youtube, Send } from "lucide-react";
+import { Instagram, Facebook, Youtube, Send } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export function Footer() {
   return (
@@ -7,9 +8,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
-            <div className="grid place-items-center w-10 h-10 rounded-full bg-gradient-red shadow-glow">
-              <Heart className="h-4 w-4 text-primary-foreground fill-current" />
-            </div>
+            <img src={logo} alt="Motard de Cœur" width={48} height={48} loading="lazy" className="h-12 w-12 object-contain" />
             <span className="font-display text-2xl text-gradient-metal">Motard de Cœur</span>
           </div>
           <p className="text-muted-foreground max-w-md mb-6 italic">
