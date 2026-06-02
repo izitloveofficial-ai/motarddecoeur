@@ -16,8 +16,10 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="fixed top-0 z-50 w-full bg-white border-b border-border/40 shadow-sm">
+    <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
+      <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+
         <Link to="/" className="flex items-center gap-3 group">
           <img
             src={logo}
