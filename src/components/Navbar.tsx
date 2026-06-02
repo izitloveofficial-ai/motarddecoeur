@@ -24,10 +24,11 @@ export function Navbar() {
           <img
             src={logo}
             alt="Motard de Cœur"
-            width={180}
-            height={120}
-            className="h-20 w-auto object-contain transition-transform group-hover:scale-105"
+            width={64}
+            height={64}
+            className="h-14 w-14 object-contain transition-transform group-hover:scale-105 drop-shadow"
           />
+
           <div className="flex flex-col leading-tight">
             <span className="font-display text-2xl tracking-wider text-neutral-900">
               Motard de <span className="text-primary">Cœur</span>
