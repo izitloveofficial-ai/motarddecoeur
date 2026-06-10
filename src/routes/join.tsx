@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { Layout } from "@/components/Layout";
@@ -202,7 +202,10 @@ function Join() {
             <div>
               <label className="flex items-start gap-3 rounded-xl border border-border bg-input/30 p-4 text-sm text-muted-foreground">
                 <input type="checkbox" name="consent_rgpd" className="mt-1 accent-primary" />
-                <span>J'accepte que Motard de Cœur conserve ces informations pour me recontacter au sujet du lancement.</span>
+                <span>
+                  J'accepte que Motard de Cœur conserve ces informations pour me recontacter au sujet du lancement, conformément à la{" "}
+                  <Link to="/confidentialite" className="text-primary hover:underline">politique de confidentialité</Link>.
+                </span>
               </label>
               {errors.consent_rgpd && <p className="mt-2 text-sm text-primary">{errors.consent_rgpd}</p>}
             </div>
