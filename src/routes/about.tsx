@@ -4,6 +4,8 @@ import { Heart, Compass, Shield, Flame } from "lucide-react";
 import bikeImg from "@/assets/bike-dark.jpg";
 import community from "@/assets/community-ride.jpg";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
@@ -11,9 +13,9 @@ export const Route = createFileRoute("/about")({
       { name: "description", content: "L'histoire de Motard de Cœur : créer des liens authentiques entre passionnés de moto." },
       { property: "og:title", content: "À propos — Motard de Cœur" },
       { property: "og:description", content: "Notre mission : connecter les cœurs sur la route." },
-      { property: "og:url", content: "/about" },
+      { property: "og:url", content: `${SITE_URL}/about` },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/about` }],
   }),
   component: About,
 });
