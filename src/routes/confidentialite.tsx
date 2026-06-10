@@ -1,4 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { Layout } from "@/components/Layout";
 import { ShieldCheck } from "lucide-react";
 
@@ -92,7 +93,7 @@ function LegalPage({
   eyebrow: string;
   title: string;
   intro: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <section className="py-20 px-6">
@@ -112,7 +113,7 @@ function LegalPage({
   );
 }
 
-function LegalSection({ title, children }: { title: string; children: React.ReactNode }) {
+function LegalSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="space-y-3 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-1">
       <h2 className="font-display text-2xl text-foreground">{title}</h2>
