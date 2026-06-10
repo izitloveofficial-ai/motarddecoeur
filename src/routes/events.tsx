@@ -6,6 +6,8 @@ import event from "@/assets/event-night.jpg";
 import community from "@/assets/community-ride.jpg";
 import bike from "@/assets/bike-dark.jpg";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 const EVENTS = [
   { date: "À VENIR", title: "Sunset Ride — Côte d'Azur", loc: "Nice → Monaco", type: "Road trip", spots: "places à définir", img: hero, featured: true },
   { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon · projet", type: "Festival", spots: "format à préciser", img: event },
@@ -22,9 +24,9 @@ export const Route = createFileRoute("/events")({
       { name: "description", content: "Pistes d'événements Motard de Cœur : balades, festivals, rassemblements et rides solidaires à confirmer." },
       { property: "og:title", content: "Événements — Motard de Cœur" },
       { property: "og:description", content: "Découvrez les idées d'événements envisagées pour la future communauté Motard de Cœur." },
-      { property: "og:url", content: "/events" },
+      { property: "og:url", content: `${SITE_URL}/events` },
     ],
-    links: [{ rel: "canonical", href: "/events" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/events` }],
   }),
   component: Events,
 });
@@ -43,7 +45,6 @@ function Events() {
         </div>
       </section>
 
-      {/* Featured */}
       <section className="py-16 px-6">
         <div className="mx-auto max-w-7xl">
           <div className="relative min-h-[34rem] rounded-3xl overflow-hidden shadow-elegant md:aspect-[21/9] md:min-h-0">
@@ -65,7 +66,6 @@ function Events() {
         </div>
       </section>
 
-      {/* Grid */}
       <section className="py-16 px-6">
         <div className="mx-auto max-w-7xl grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {EVENTS.slice(1).map((e, i) => (
