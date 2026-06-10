@@ -57,7 +57,7 @@ function Home() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                to="/profiles"
+                to="/join"
                 className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-red text-primary-foreground rounded-full uppercase tracking-wider text-sm font-medium shadow-glow hover:scale-105 transition-all"
               >
                 Rejoindre la communauté
