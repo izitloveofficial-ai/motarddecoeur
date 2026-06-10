@@ -112,15 +112,19 @@ function Premium() {
                 ))}
               </ul>
 
-              <button className={`w-full py-4 rounded-full uppercase tracking-wider text-sm font-medium transition ${p.popular ? "bg-gradient-red text-primary-foreground shadow-glow hover:scale-[1.02]" : "bg-foreground/10 hover:bg-foreground/20"}`}>
-                {p.price === "0" ? "Commencer gratuitement" : "Choisir " + p.name}
+              <button
+                type="button"
+                disabled
+                className={`w-full cursor-not-allowed py-4 rounded-full uppercase tracking-wider text-sm font-medium opacity-75 transition ${p.popular ? "bg-gradient-red text-primary-foreground shadow-glow" : "bg-foreground/10"}`}
+              >
+                Bientôt disponible
               </button>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-16 text-sm text-muted-foreground flex items-center justify-center gap-2">
-          <Zap className="h-4 w-4 text-primary" /> Paiement sécurisé · Annulation à tout moment · Garantie 14 jours
+          <Zap className="h-4 w-4 text-primary" /> Paiement et abonnements bientôt connectés.
         </div>
       </section>
     </Layout>
