@@ -18,15 +18,15 @@ export function Navbar() {
   return (
     <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
-        <Link to="/" className="flex items-center gap-3 group">
+        <Link to="/" className="flex items-center gap-4 group">
           <img
             src={logo}
             alt="Motard de Cœur"
-            width={64}
-            height={64}
-            className="h-14 w-14 object-contain transition-transform group-hover:scale-105 drop-shadow"
+            width={140}
+            height={140}
+            className="h-24 w-24 md:h-28 md:w-28 object-contain transition-transform group-hover:scale-105 drop-shadow-lg"
           />
 
           <div className="flex flex-col leading-tight">
