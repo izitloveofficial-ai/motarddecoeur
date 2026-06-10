@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { Layout } from "@/components/Layout";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
@@ -248,7 +248,7 @@ function FieldError({
   label: string;
   htmlFor: string;
   error?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div>
