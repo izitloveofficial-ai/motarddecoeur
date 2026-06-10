@@ -11,6 +11,8 @@ import {
 
 import appCss from "../styles.css?url";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -93,22 +95,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@graph": [
             {
               "@type": "Organization",
-              "@id": "https://motarddecoeur.lovable.app/#organization",
+              "@id": `${SITE_URL}/#organization`,
               name: "Motard de Cœur",
-              url: "https://motarddecoeur.lovable.app",
-              sameAs: [
-                "https://instagram.com/motarddecoeur",
-                "https://facebook.com/motarddecoeur",
-                "https://youtube.com/motarddecoeur",
-              ],
+              url: SITE_URL,
             },
             {
               "@type": "WebSite",
-              "@id": "https://motarddecoeur.lovable.app/#website",
-              url: "https://motarddecoeur.lovable.app",
+              "@id": `${SITE_URL}/#website`,
+              url: SITE_URL,
               name: "Motard de Cœur",
               description: "Communauté premium de rencontres et événements pour motards.",
-              publisher: { "@id": "https://motarddecoeur.lovable.app/#organization" },
+              publisher: { "@id": `${SITE_URL}/#organization` },
             },
           ],
         }),
