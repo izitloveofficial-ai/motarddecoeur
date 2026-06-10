@@ -8,6 +8,8 @@ import w2 from "@/assets/profile-woman2.jpg";
 import m2 from "@/assets/profile-man2.jpg";
 import bike from "@/assets/bike-dark.jpg";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 export const Route = createFileRoute("/community")({
   head: () => ({
     meta: [
@@ -15,9 +17,9 @@ export const Route = createFileRoute("/community")({
       { name: "description", content: "Vision de la future communauté Motard de Cœur : groupes, discussions, balades et expériences partagées." },
       { property: "og:title", content: "Communauté — Motard de Cœur" },
       { property: "og:description", content: "Découvrez la vision communautaire de Motard de Cœur avant le lancement complet du service." },
-      { property: "og:url", content: "/community" },
+      { property: "og:url", content: `${SITE_URL}/community` },
     ],
-    links: [{ rel: "canonical", href: "/community" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/community` }],
   }),
   component: Community,
 });
