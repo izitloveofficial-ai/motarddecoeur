@@ -63,7 +63,7 @@ export function Navbar() {
           <Link to="/contact" className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition">
             Connexion bientôt disponible
           </Link>
-          <Link to="/profiles" className="px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full hover:shadow-glow transition-all">
+          <Link to="/join" className="px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full hover:shadow-glow transition-all">
             Rejoindre
           </Link>
         </div>
@@ -98,7 +98,7 @@ export function Navbar() {
             Connexion bientôt disponible
           </Link>
           <Link
-            to="/profiles"
+            to="/join"
             onClick={() => setOpen(false)}
             className="mt-2 text-center px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full"
           >
