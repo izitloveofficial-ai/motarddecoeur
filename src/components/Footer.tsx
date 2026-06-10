@@ -2,6 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, Youtube, Send } from "lucide-react";
 import logo from "@/assets/logo.png";
 
+const socialLinks = [
+  { href: "https://instagram.com/motarddecoeur", label: "Instagram", Icon: Instagram },
+  { href: "https://facebook.com/motarddecoeur", label: "Facebook", Icon: Facebook },
+  { href: "https://youtube.com/motarddecoeur", label: "YouTube", Icon: Youtube },
+];
+
 export function Footer() {
   return (
     <footer className="relative mt-32 border-t border-border/40 bg-card/40">
@@ -14,16 +20,21 @@ export function Footer() {
           <p className="text-muted-foreground max-w-md mb-6 italic">
             "La route rapproche les cœurs."
           </p>
-          <form className="flex gap-2 max-w-sm">
+          <div className="flex gap-2 max-w-sm">
             <input
               type="email"
-              placeholder="Votre email"
-              className="flex-1 px-4 py-3 bg-input/60 border border-border rounded-full text-sm focus:outline-none focus:ring-red-glow"
+              placeholder="Newsletter bientôt disponible"
+              disabled
+              className="flex-1 px-4 py-3 bg-input/40 border border-border rounded-full text-sm text-muted-foreground disabled:cursor-not-allowed focus:outline-none"
             />
-            <button className="px-4 py-3 bg-gradient-red rounded-full text-primary-foreground hover:shadow-glow transition">
+            <a
+              href="mailto:hello@motarddecoeur.fr"
+              className="px-4 py-3 bg-gradient-red rounded-full text-primary-foreground hover:shadow-glow transition"
+              aria-label="Contacter Motard de Cœur par email"
+            >
               <Send className="h-4 w-4" />
-            </button>
-          </form>
+            </a>
+          </div>
         </div>
 
         <div>
@@ -39,12 +50,12 @@ export function Footer() {
         <div>
           <h4 className="text-sm uppercase tracking-widest text-foreground mb-4">Suivez-nous</h4>
           <div className="flex gap-3">
-            {[Instagram, Facebook, Youtube].map((Icon, i) => (
+            {socialLinks.map(({ href, label, Icon }) => (
               <a
-                key={i}
-                href="#"
+                key={label}
+                href={href}
                 className="grid place-items-center w-10 h-10 rounded-full glass hover:bg-primary/20 hover:border-primary/50 transition"
-                aria-label="social"
+                aria-label={label}
               >
                 <Icon className="h-4 w-4" />
               </a>
