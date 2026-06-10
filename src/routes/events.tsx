@@ -41,7 +41,7 @@ export const Route = createFileRoute("/events")({
               name: e.loc,
               address: { "@type": "PostalAddress", addressLocality: e.city, addressCountry: "FR" },
             },
-            organizer: { "@type": "Organization", name: "Motard de Cœur", url: "https://coeur-road-connect.lovable.app" },
+            organizer: { "@type": "Organization", name: "Motard de Cœur", url: "https://motarddecoeur.lovable.app" },
           })),
         }),
       },
