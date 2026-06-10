@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://coeur-road-connect.lovable.app/sitemap.xml
+Sitemap: https://motarddecoeur.lovable.app/sitemap.xml
