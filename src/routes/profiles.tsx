@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Heart, MessageCircle, MapPin, Search, SlidersHorizontal, BadgeCheck } from "lucide-react";
 import { useState } from "react";
@@ -122,9 +122,9 @@ function Profiles() {
         </div>
 
         <div className="text-center mt-16">
-          <button type="button" disabled className="cursor-not-allowed px-8 py-4 glass rounded-full uppercase tracking-wider text-sm text-muted-foreground opacity-75 transition">
-            Plus de profils bientôt disponibles
-          </button>
+          <Link to="/join" className="inline-flex px-8 py-4 glass rounded-full uppercase tracking-wider text-sm hover:bg-primary/20 transition">
+            Pré-inscription au lancement
+          </Link>
         </div>
       </section>
     </Layout>

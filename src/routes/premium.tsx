@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Check, X, Crown, Zap, Star } from "lucide-react";
 
@@ -112,13 +112,12 @@ function Premium() {
                 ))}
               </ul>
 
-              <button
-                type="button"
-                disabled
-                className={`w-full cursor-not-allowed py-4 rounded-full uppercase tracking-wider text-sm font-medium opacity-75 transition ${p.popular ? "bg-gradient-red text-primary-foreground shadow-glow" : "bg-foreground/10"}`}
+              <Link
+                to="/join"
+                className={`block w-full py-4 rounded-full text-center uppercase tracking-wider text-sm font-medium transition ${p.popular ? "bg-gradient-red text-primary-foreground shadow-glow hover:scale-[1.02]" : "bg-foreground/10 hover:bg-foreground/20"}`}
               >
-                Bientôt disponible
-              </button>
+                Pré-inscription
+              </Link>
             </div>
           ))}
         </div>
