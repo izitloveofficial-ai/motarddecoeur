@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { Mail, MapPin, Phone, Instagram, Facebook, Youtube, Send } from "lucide-react";
+import { Mail, Instagram, Facebook, Youtube, Send, ShieldCheck } from "lucide-react";
 
 const CONTACT_EMAIL = "";
 const hasContactEmail = CONTACT_EMAIL.length > 0;
@@ -15,9 +15,9 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Motard de Cœur" },
-      { name: "description", content: "Une question ? Contactez l'équipe Motard de Cœur. Support 7j/7." },
+      { name: "description", content: "Point de contact provisoire de Motard de Cœur avant l'ouverture complète du service." },
       { property: "og:title", content: "Contact — Motard de Cœur" },
-      { property: "og:description", content: "Contactez l'équipe de Motard de Cœur pour toute question, partenariat, événement ou support technique dédié aux passionnés de moto. Réponse sous 24h." },
+      { property: "og:description", content: "Suivez l'ouverture de Motard de Cœur et les informations de contact officielles avant le lancement." },
       { property: "og:url", content: "/contact" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
@@ -26,20 +26,15 @@ export const Route = createFileRoute("/contact")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          name: "Motard de Cœur",
-          url: "https://motarddecoeur.lovable.app",
-          ...(hasContactEmail ? { email: CONTACT_EMAIL } : {}),
-          telephone: "+33 4 22 13 56 78",
-          address: {
-            "@type": "PostalAddress",
-            streetAddress: "12 quai Rambaud",
-            postalCode: "69002",
-            addressLocality: "Lyon",
-            addressCountry: "FR",
+          "@type": "ContactPage",
+          name: "Contact — Motard de Cœur",
+          url: "https://motarddecoeur.lovable.app/contact",
+          description: "Page de contact provisoire de Motard de Cœur avant l'ouverture complète du service.",
+          publisher: {
+            "@type": "Organization",
+            name: "Motard de Cœur",
+            url: "https://motarddecoeur.lovable.app",
           },
-          openingHours: "Mo-Su 00:00-23:59",
-          sameAs: socialLinks.map((link) => link.href),
         }),
       },
     ],
@@ -53,9 +48,9 @@ function Contact() {
       <section className="py-20 px-6 border-b border-border/40">
         <div className="mx-auto max-w-7xl">
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Contact</span>
-          <h1 className="font-display text-5xl md:text-7xl mt-4">Parlons <span className="text-gradient-red italic">moto.</span></h1>
+          <h1 className="font-display text-5xl md:text-7xl mt-4">Restons <span className="text-gradient-red italic">en lien.</span></h1>
           <p className="text-muted-foreground max-w-2xl mt-4 text-lg">
-            Une question, un partenariat, un événement à organiser ? Notre équipe vous répond sous 24h.
+            Motard de Cœur est en préparation. Les coordonnées officielles seront publiées ici avant l'ouverture de la collecte réelle.
           </p>
         </div>
       </section>
@@ -68,7 +63,7 @@ function Contact() {
           >
             <h2 className="font-display text-3xl mb-2">Écrivez-nous</h2>
             <p className="text-muted-foreground text-sm mb-6">
-              Le formulaire sera bientôt connecté. L'adresse email sera ajoutée dès confirmation.
+              Le formulaire de contact n'est pas encore connecté. Il sera activé quand le canal officiel de contact sera confirmé.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-5">
@@ -90,7 +85,7 @@ function Contact() {
             <div>
               <label htmlFor="contact-subject" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Sujet</label>
               <select id="contact-subject" name="subject" disabled className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none">
-                <option>Support technique</option>
+                <option>Demande RGPD</option>
                 <option>Partenariat</option>
                 <option>Événement</option>
                 <option>Presse</option>
@@ -117,7 +112,7 @@ function Contact() {
                 </a>
               ) : (
                 <button type="button" disabled className="inline-flex cursor-not-allowed items-center gap-2 px-6 py-3 glass rounded-full text-sm text-muted-foreground opacity-75 transition">
-                  <Send className="h-4 w-4" /> Email bientôt disponible
+                  <Send className="h-4 w-4" /> Email officiel à confirmer
                 </button>
               )}
             </div>
@@ -125,7 +120,7 @@ function Contact() {
 
           <div className="space-y-8">
             <div className="glass rounded-2xl p-8">
-              <h3 className="font-display text-2xl mb-6">Coordonnées</h3>
+              <h3 className="font-display text-2xl mb-6">Contact officiel</h3>
               <ul className="space-y-5">
                 <li className="flex items-start gap-4">
                   <div className="grid place-items-center w-10 h-10 rounded-full bg-gradient-red shrink-0">
@@ -136,26 +131,19 @@ function Contact() {
                     {hasContactEmail ? (
                       <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary transition">{CONTACT_EMAIL}</a>
                     ) : (
-                      <div className="text-muted-foreground">Bientôt disponible</div>
+                      <div className="text-muted-foreground">Adresse officielle à confirmer avant collecte réelle</div>
                     )}
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
                   <div className="grid place-items-center w-10 h-10 rounded-full bg-gradient-red shrink-0">
-                    <Phone className="h-4 w-4 text-primary-foreground" />
+                    <ShieldCheck className="h-4 w-4 text-primary-foreground" />
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Support · 7j/7</div>
-                    <div>+33 4 22 13 56 78</div>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="grid place-items-center w-10 h-10 rounded-full bg-gradient-red shrink-0">
-                    <MapPin className="h-4 w-4 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Garage HQ</div>
-                    <div>12 quai Rambaud, 69002 Lyon</div>
+                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Demandes RGPD</div>
+                    <div className="text-muted-foreground">
+                      Le canal officiel de suppression ou d'accès aux données sera affiché ici avant l'activation de la collecte Supabase.
+                    </div>
                   </div>
                 </li>
               </ul>
@@ -170,12 +158,14 @@ function Contact() {
                   </a>
                 ))}
               </div>
-              <p className="text-sm text-muted-foreground mt-6">@motarddecoeur · Rejoignez 120k+ motards.</p>
+              <p className="text-sm text-muted-foreground mt-6">Les comptes sociaux officiels seront confirmés avant le lancement public.</p>
             </div>
 
             <div className="glass-red rounded-2xl p-8">
-              <h3 className="font-display text-2xl mb-3">Support Premium</h3>
-              <p className="text-sm text-foreground/80">Membres Premium et VIP : ligne dédiée 24/7 disponible dans votre espace personnel.</p>
+              <h3 className="font-display text-2xl mb-3">Avant la collecte</h3>
+              <p className="text-sm text-foreground/80">
+                Tant que le canal de contact officiel n'est pas confirmé, la pré-inscription ne doit pas être ouverte en collecte réelle.
+              </p>
             </div>
           </div>
         </div>

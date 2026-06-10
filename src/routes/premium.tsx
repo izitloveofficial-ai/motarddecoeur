@@ -6,9 +6,9 @@ export const Route = createFileRoute("/premium")({
   head: () => ({
     meta: [
       { title: "Premium — Motard de Cœur" },
-      { name: "description", content: "Membership premium : messages illimités, boost, badge vérifié, événements VIP." },
+      { name: "description", content: "Aperçu des futures pistes premium Motard de Cœur, non disponibles au lancement de la pré-inscription." },
       { property: "og:title", content: "Premium — Motard de Cœur" },
-      { property: "og:description", content: "Comparez les formules Free, Premium et VIP Club : messages illimités, boost de profil, badge vérifié et accès aux événements VIP de la communauté biker." },
+      { property: "og:description", content: "Découvrez la vision des futures offres premium Motard de Cœur avant l'ouverture commerciale." },
       { property: "og:url", content: "/premium" },
     ],
     links: [{ rel: "canonical", href: "/premium" }],
@@ -18,13 +18,13 @@ export const Route = createFileRoute("/premium")({
 
 const PLANS = [
   {
-    name: "Free",
-    price: "0",
-    desc: "Découvrez la communauté",
+    name: "Découverte",
+    price: "À définir",
+    desc: "Première expérience communautaire",
     features: [
-      { ok: true, text: "Profil de base" },
-      { ok: true, text: "10 likes par jour" },
-      { ok: true, text: "Voir les événements publics" },
+      { ok: true, text: "Pré-inscription" },
+      { ok: true, text: "Accès aux nouvelles du lancement" },
+      { ok: true, text: "Découverte des événements publics" },
       { ok: false, text: "Messages illimités" },
       { ok: false, text: "Badge vérifié" },
       { ok: false, text: "Filtres avancés" },
@@ -34,33 +34,33 @@ const PLANS = [
   },
   {
     name: "Premium",
-    price: "14,90",
-    desc: "L'expérience complète",
+    price: "À l'étude",
+    desc: "Fonctionnalités envisagées",
     features: [
-      { ok: true, text: "Profil de base" },
-      { ok: true, text: "Likes illimités" },
-      { ok: true, text: "Voir tous les événements" },
-      { ok: true, text: "Messages illimités" },
-      { ok: true, text: "Badge vérifié" },
-      { ok: true, text: "Filtres avancés (moto, km, style)" },
-      { ok: true, text: "1 boost par semaine" },
-      { ok: false, text: "Événements VIP exclusifs" },
+      { ok: true, text: "Profils plus complets" },
+      { ok: true, text: "Affinités motardes" },
+      { ok: true, text: "Événements à découvrir" },
+      { ok: true, text: "Messagerie envisagée" },
+      { ok: true, text: "Badge vérifié prévu" },
+      { ok: true, text: "Filtres avancés envisagés" },
+      { ok: true, text: "Visibilité renforcée à étudier" },
+      { ok: false, text: "Paiement non connecté" },
     ],
     popular: true,
   },
   {
-    name: "VIP Club",
-    price: "29,90",
-    desc: "Le club privilégié",
+    name: "Club",
+    price: "Plus tard",
+    desc: "Piste pour la communauté avancée",
     features: [
-      { ok: true, text: "Tout Premium inclus" },
-      { ok: true, text: "Badge VIP doré" },
-      { ok: true, text: "Boost illimité" },
-      { ok: true, text: "Accès soirées VIP" },
-      { ok: true, text: "Road trips exclusifs" },
-      { ok: true, text: "Concierge dédié" },
-      { ok: true, text: "Visibilité prioritaire" },
-      { ok: true, text: "Cadeau bienvenue" },
+      { ok: true, text: "Avantages communautaires" },
+      { ok: true, text: "Badge spécial envisagé" },
+      { ok: true, text: "Événements dédiés à étudier" },
+      { ok: true, text: "Road trips proposés plus tard" },
+      { ok: true, text: "Accès prioritaire possible" },
+      { ok: false, text: "Offre non commercialisée" },
+      { ok: false, text: "Paiement non activé" },
+      { ok: false, text: "Abonnement non disponible" },
     ],
   },
 ];
@@ -71,11 +71,11 @@ function Premium() {
       <section className="py-20 px-6 text-center border-b border-border/40">
         <div className="mx-auto max-w-3xl animate-fade-up">
           <span className="inline-flex items-center gap-2 glass-red px-4 py-2 rounded-full text-xs uppercase tracking-widest mb-6">
-            <Crown className="h-3 w-3" /> Membership exclusif
+            <Crown className="h-3 w-3" /> Vision premium
           </span>
-          <h1 className="font-display text-5xl md:text-7xl mb-6">Choisissez votre <span className="text-gradient-red italic">privilège</span></h1>
+          <h1 className="font-display text-5xl md:text-7xl mb-6">Une expérience <span className="text-gradient-red italic">à construire</span></h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Trois formules pensées pour chaque type de motard. Sans engagement, annulable à tout moment.
+            Les offres premium ne sont pas encore ouvertes. Cette page présente les pistes envisagées après la pré-inscription.
           </p>
         </div>
       </section>
@@ -89,7 +89,7 @@ function Premium() {
             >
               {p.popular && (
                 <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-red text-primary-foreground px-4 py-1.5 rounded-full text-xs uppercase tracking-widest shadow-glow flex items-center gap-1">
-                  <Star className="h-3 w-3 fill-current" /> Le plus choisi
+                  <Star className="h-3 w-3 fill-current" /> Piste prioritaire
                 </span>
               )}
 
@@ -97,8 +97,7 @@ function Premium() {
               <p className="text-muted-foreground text-sm mb-6">{p.desc}</p>
 
               <div className="flex items-baseline gap-1 mb-8">
-                <span className="font-display text-6xl">{p.price}</span>
-                <span className="text-muted-foreground">€/mois</span>
+                <span className="font-display text-5xl">{p.price}</span>
               </div>
 
               <ul className="space-y-3 mb-10">
@@ -123,7 +122,7 @@ function Premium() {
         </div>
 
         <div className="text-center mt-16 text-sm text-muted-foreground flex items-center justify-center gap-2">
-          <Zap className="h-4 w-4 text-primary" /> Paiement et abonnements bientôt connectés.
+          <Zap className="h-4 w-4 text-primary" /> Aucun paiement ni abonnement n'est connecté pour l'instant.
         </div>
       </section>
     </Layout>

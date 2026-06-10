@@ -13,9 +13,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Motard de Cœur — La route rapproche les cœurs" },
-      { name: "description", content: "Rencontrez des passionnés de moto, partagez votre route et vivez la liberté ensemble. Communauté biker premium." },
+      { name: "description", content: "Pré-inscrivez-vous au lancement de Motard de Cœur, le projet de communauté pour motards, rencontres, balades et événements." },
       { property: "og:title", content: "Motard de Cœur — Ride. Connect. Feel." },
-      { property: "og:description", content: "Plateforme premium de rencontres pour motards. Harley, sport, touring, custom." },
+      { property: "og:description", content: "Projet de plateforme de rencontres et de communauté pour passionnés de moto." },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
@@ -43,7 +43,7 @@ function Home() {
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-32 w-full">
           <div className="max-w-3xl animate-fade-up">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-red text-xs uppercase tracking-[0.3em] text-foreground mb-8">
-              <Sparkles className="h-3 w-3" /> Communauté premium biker
+              <Sparkles className="h-3 w-3" /> Projet de communauté biker
             </span>
             <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold leading-[0.95] text-foreground mb-6">
               La route<br />
@@ -51,40 +51,40 @@ function Home() {
               <span className="text-gradient-red italic">les cœurs.</span>
             </h1>
             <p className="text-lg md:text-xl text-foreground/80 max-w-xl mb-10 leading-relaxed">
-              Une plateforme exclusive pour les passionnés de moto qui cherchent
-              bien plus qu'une rencontre — un compagnon de route, une histoire,
-              une émotion partagée à pleine vitesse.
+              Motard de Cœur prépare un espace pour les passionnés de moto qui veulent
+              partager plus qu'un trajet : des rencontres, des balades et une communauté
+              construite autour de la route.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/join"
                 className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-red text-primary-foreground rounded-full uppercase tracking-wider text-sm font-medium shadow-glow hover:scale-105 transition-all"
               >
-                Rejoindre la communauté
+                Rejoindre la pré-inscription
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/profiles"
                 className="inline-flex items-center gap-2 px-8 py-4 glass text-foreground rounded-full uppercase tracking-wider text-sm font-medium hover:bg-foreground/10 transition-all"
               >
-                Découvrir les motards
+                Découvrir la vision
               </Link>
             </div>
 
             <div className="flex items-center gap-8 mt-16 text-sm text-muted-foreground">
               <div>
-                <div className="text-3xl font-display text-foreground">48k+</div>
-                <div className="uppercase tracking-wider text-xs">Motards actifs</div>
+                <div className="text-3xl font-display text-foreground">Bientôt</div>
+                <div className="uppercase tracking-wider text-xs">Pré-inscriptions</div>
               </div>
               <div className="w-px h-12 bg-border" />
               <div>
-                <div className="text-3xl font-display text-foreground">120+</div>
-                <div className="uppercase tracking-wider text-xs">Événements/an</div>
+                <div className="text-3xl font-display text-foreground">À venir</div>
+                <div className="uppercase tracking-wider text-xs">Balades & événements</div>
               </div>
               <div className="w-px h-12 bg-border" />
               <div>
-                <div className="text-3xl font-display text-foreground">98%</div>
-                <div className="uppercase tracking-wider text-xs">Satisfaction</div>
+                <div className="text-3xl font-display text-foreground">En préparation</div>
+                <div className="uppercase tracking-wider text-xs">Communauté</div>
               </div>
             </div>
           </div>
@@ -104,18 +104,18 @@ function Home() {
               Plus qu'une app, <span className="text-gradient-red italic">un mode de vie</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Conçu par des motards, pour des motards. Chaque détail respire l'authenticité.
+              Un projet pensé pour des motards qui veulent rouler, échanger et créer des liens plus vrais.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: Heart, title: "Matching authentique", desc: "Algorithme basé sur votre style de conduite, votre moto et vos valeurs." },
-              { icon: Users, title: "Communauté soudée", desc: "48 000+ motards vérifiés. Aucun fake, juste de vrais passionnés." },
-              { icon: Calendar, title: "Événements exclusifs", desc: "Road trips, festivals, rassemblements VIP partout en Europe." },
-              { icon: Shield, title: "Profils vérifiés", desc: "Vérification d'identité et badge motard certifié." },
-              { icon: MessageCircle, title: "Messagerie privée", desc: "Discutez en toute discrétion avec vos matches favoris." },
-              { icon: Zap, title: "Filtres avancés", desc: "Trouvez par type de moto, style de ride, distance, kilométrage." },
+              { icon: Heart, title: "Affinités motardes", desc: "Objectif : rapprocher les personnes par style de route, valeurs et envies de balade." },
+              { icon: Users, title: "Communauté à construire", desc: "La première étape est la pré-inscription, avant l'ouverture progressive des fonctionnalités." },
+              { icon: Calendar, title: "Événements envisagés", desc: "Balades, sorties locales et rendez-vous biker pourront être proposés après le lancement." },
+              { icon: Shield, title: "Sécurité prévue", desc: "La vérification et la modération feront partie des priorités avant les profils publics." },
+              { icon: MessageCircle, title: "Messagerie à venir", desc: "Les échanges privés seront étudiés dans une phase dédiée, après les comptes utilisateurs." },
+              { icon: Zap, title: "Filtres envisagés", desc: "Ville, type de moto, style de ride et préférences pourront guider les futures rencontres." },
             ].map((f, i) => (
               <div
                 key={i}
@@ -147,9 +147,9 @@ function Home() {
             />
             <div className="absolute -bottom-6 -right-6 glass-red p-6 rounded-2xl backdrop-blur-xl max-w-xs">
               <p className="text-sm italic text-foreground/90">
-                "On s'est rencontrés sur Motard de Cœur. Aujourd'hui on parcourt l'Europe ensemble."
+                "Créer un espace où la passion de la route devient le point de départ d'une vraie rencontre."
               </p>
-              <p className="text-xs text-muted-foreground mt-2">— Léa & Marc, Lyon</p>
+              <p className="text-xs text-muted-foreground mt-2">— Vision Motard de Cœur</p>
             </div>
           </div>
           <div>
@@ -159,8 +159,8 @@ function Home() {
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6">
               Chaque rencontre commence par un regard, mais les plus belles
-              histoires démarrent à pleine vitesse. Nous croyons que la passion
-              de la route est le plus beau des terrains d'entente.
+              histoires peuvent aussi démarrer autour d'une passion commune. Motard de Cœur
+              veut faire de la route un terrain d'entente sincère.
             </p>
             <Link to="/about" className="inline-flex items-center gap-2 text-primary hover:gap-3 transition-all">
               Notre histoire <ArrowRight className="h-4 w-4" />
@@ -173,14 +173,14 @@ function Home() {
       <section className="py-32 px-6 bg-card/30">
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-16">
-            <span className="text-primary uppercase tracking-[0.4em] text-xs">Témoignages</span>
-            <h2 className="font-display text-5xl md:text-6xl mt-4">Histoires de route</h2>
+            <span className="text-primary uppercase tracking-[0.4em] text-xs">Inspiration</span>
+            <h2 className="font-display text-5xl md:text-6xl mt-4">Ce que nous voulons créer</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { name: "Sophie & Antoine", role: "Couple — Harley Touring", img: w1, text: "Un coup de foudre lors d'un road trip organisé. 2 ans plus tard, on se marie." },
-              { name: "Marc D.", role: "Sport bike rider", img: m1, text: "J'ai trouvé mon crew. Les week-ends ne sont plus jamais les mêmes." },
-              { name: "Camille R.", role: "Custom builder", img: w2, text: "Enfin une plateforme qui comprend les motardes. Bluffant." },
+              { name: "Rencontres", role: "Affinités & route", img: w1, text: "Permettre à deux passionnés de se trouver autour d'un rythme, d'une région et d'une envie de rouler." },
+              { name: "Balades", role: "Sorties locales", img: m1, text: "Aider les motards à ne plus rouler seuls quand ils ont envie de partager un itinéraire." },
+              { name: "Communauté", role: "Respect & passion", img: w2, text: "Construire un espace accueillant, clair et sécurisé avant d'ouvrir les fonctionnalités sociales." },
             ].map((t, i) => (
               <div key={i} className="glass rounded-2xl p-8 hover-lift">
                 <div className="flex items-center gap-4 mb-6">
@@ -206,7 +206,7 @@ function Home() {
           <div className="flex flex-wrap items-end justify-between mb-12 gap-4">
             <div>
               <span className="text-primary uppercase tracking-[0.4em] text-xs">Agenda</span>
-              <h2 className="font-display text-5xl md:text-6xl mt-4">Prochains événements</h2>
+              <h2 className="font-display text-5xl md:text-6xl mt-4">Idées d'événements</h2>
             </div>
             <Link to="/events" className="inline-flex items-center gap-2 text-foreground hover:text-primary transition">
               Tout voir <ArrowRight className="h-4 w-4" />
@@ -215,11 +215,11 @@ function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { date: "12 JUIN", title: "Sunset Ride — Côte d'Azur", loc: "Nice → Monaco", img: heroImg },
-              { date: "28 JUIN", title: "Festival Iron & Soul", loc: "Lyon · 3 jours", img: eventImg },
-              { date: "15 JUIL", title: "Charity Ride for Heroes", loc: "Paris", img: communityImg },
+              { date: "À VENIR", title: "Sunset Ride — Côte d'Azur", loc: "Nice → Monaco", img: heroImg },
+              { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon · projet", img: eventImg },
+              { date: "À VENIR", title: "Charity Ride for Heroes", loc: "Paris · projet", img: communityImg },
             ].map((e, i) => (
-              <div key={i} className="group relative overflow-hidden rounded-2xl aspect-[4/5] cursor-pointer hover-lift">
+              <div key={i} className="group relative overflow-hidden rounded-2xl aspect-[4/5] hover-lift">
                 <img src={e.img} alt={e.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-overlay" />
                 <div className="absolute inset-0 p-6 flex flex-col justify-between">
@@ -243,17 +243,16 @@ function Home() {
           <div className="relative z-10 p-16 md:p-20">
             <span className="text-primary uppercase tracking-[0.4em] text-xs">Premium</span>
             <h2 className="font-display text-5xl md:text-6xl mt-4 mb-6 max-w-2xl">
-              Devenez membre <span className="text-gradient-red italic">privilégié</span>
+              Une expérience <span className="text-gradient-red italic">à construire</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mb-8">
-              Messages illimités, boost de profil, badge vérifié, accès aux événements VIP.
-              L'expérience biker ultime.
+              Les fonctionnalités premium, les événements VIP et les options avancées seront étudiés après la validation du socle de pré-inscription.
             </p>
             <Link
               to="/premium"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-red text-primary-foreground rounded-full uppercase tracking-wider text-sm font-medium shadow-glow hover:scale-105 transition-all"
             >
-              Découvrir Premium <ArrowRight className="h-4 w-4" />
+              Découvrir la vision Premium <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>

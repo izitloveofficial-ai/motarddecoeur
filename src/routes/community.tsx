@@ -12,9 +12,9 @@ export const Route = createFileRoute("/community")({
   head: () => ({
     meta: [
       { title: "Communauté — Motard de Cœur" },
-      { name: "description", content: "Groupes, forums, ride planning et expériences partagées entre motards passionnés." },
+      { name: "description", content: "Vision de la future communauté Motard de Cœur : groupes, discussions, balades et expériences partagées." },
       { property: "og:title", content: "Communauté — Motard de Cœur" },
-      { property: "og:description", content: "Rejoignez les groupes Harley, sport, touring et custom, suivez le feed de la tribu et planifiez vos rides avec une vraie communauté de motards passionnés." },
+      { property: "og:description", content: "Découvrez la vision communautaire de Motard de Cœur avant le lancement complet du service." },
       { property: "og:url", content: "/community" },
     ],
     links: [{ rel: "canonical", href: "/community" }],
@@ -23,17 +23,17 @@ export const Route = createFileRoute("/community")({
 });
 
 const GROUPS = [
-  { name: "Harley Riders France", members: 12400, img: bike, tag: "Cruiser" },
-  { name: "Sport Bike Addicts", members: 8900, img: community, tag: "Sport" },
-  { name: "Custom & Café Racer", members: 5600, img: bike, tag: "Custom" },
-  { name: "Touring Europe", members: 7800, img: community, tag: "Touring" },
+  { name: "Cruiser & Harley", img: bike, tag: "Cruiser" },
+  { name: "Sportives & sensations", img: community, tag: "Sport" },
+  { name: "Custom & Café Racer", img: bike, tag: "Custom" },
+  { name: "Touring & grands trajets", img: community, tag: "Touring" },
 ];
 
 const POSTS = [
-  { user: "Sophie L.", img: w1, time: "il y a 2h", text: "Première sortie matinale dans les Cévennes. La brume, le soleil qui perce, le vrombissement... pure magie ✨", likes: 142, comments: 28, photo: community },
-  { user: "Marc D.", img: m1, time: "il y a 5h", text: "Qui est partant pour un trackday à Magny-Cours le 15 ? On peut covoiturer depuis Paris.", likes: 67, comments: 41 },
-  { user: "Camille R.", img: w2, time: "hier", text: "Mon nouveau projet custom prend forme. Bientôt les photos finales 🔥", likes: 234, comments: 56, photo: bike },
-  { user: "Antoine V.", img: m2, time: "il y a 2j", text: "10 ans de Harley aujourd'hui. Merci à cette communauté pour les rencontres incroyables.", likes: 412, comments: 89 },
+  { user: "Sorties locales", img: w1, time: "à venir", text: "Un espace pour proposer une balade, trouver un itinéraire et rouler avec des personnes qui partagent le même rythme.", photo: community },
+  { user: "Conseils motards", img: m1, time: "à venir", text: "Une rubrique pour échanger sur l'équipement, la sécurité, les itinéraires et les premières sorties." },
+  { user: "Projets custom", img: w2, time: "à venir", text: "Un futur fil pour partager ses projets, ses envies de moto et ses inspirations de route.", photo: bike },
+  { user: "Rencontres respectueuses", img: m2, time: "à venir", text: "Une communauté pensée pour prendre le temps d'échanger avant de se retrouver sur la route." },
 ];
 
 function Community() {
@@ -43,22 +43,22 @@ function Community() {
         <div className="mx-auto max-w-7xl">
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Tribu</span>
           <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">La <span className="text-gradient-red italic">communauté</span> avant tout.</h1>
-          <p className="text-muted-foreground max-w-2xl text-lg">Groupes, discussions, plans de rides. Chaque jour, des milliers de motards partagent leur passion.</p>
+          <p className="text-muted-foreground max-w-2xl text-lg">Groupes, discussions et plans de rides sont prévus pour une prochaine phase du projet.</p>
         </div>
       </section>
 
       <section className="py-16 px-6">
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-display text-3xl mb-8 flex items-center gap-3"><Flame className="text-primary" /> Groupes populaires</h2>
+          <h2 className="font-display text-3xl mb-8 flex items-center gap-3"><Flame className="text-primary" /> Groupes envisagés</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {GROUPS.map((g, i) => (
-              <article key={i} className="group relative aspect-[4/5] rounded-2xl overflow-hidden hover-lift cursor-pointer">
+              <article key={i} className="group relative aspect-[4/5] rounded-2xl overflow-hidden hover-lift">
                 <img src={g.img} alt={g.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-overlay" />
                 <div className="absolute inset-x-0 bottom-0 p-6">
                   <span className="glass-red px-3 py-1 rounded-full text-[10px] uppercase tracking-widest">{g.tag}</span>
                   <h3 className="font-display text-2xl mt-3 mb-1">{g.name}</h3>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Users className="h-3 w-3" /> {g.members.toLocaleString()} membres</p>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Users className="h-3 w-3" /> Communauté à ouvrir</p>
                 </div>
               </article>
             ))}
@@ -69,7 +69,7 @@ function Community() {
       <section className="py-16 px-6">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-6">
-            <h2 className="font-display text-3xl flex items-center gap-3"><MessageCircle className="text-primary" /> Feed de la tribu</h2>
+            <h2 className="font-display text-3xl flex items-center gap-3"><MessageCircle className="text-primary" /> Futur feed de la tribu</h2>
 
             {POSTS.map((p, i) => (
               <article key={i} className="glass rounded-2xl p-6 hover-lift">
@@ -85,9 +85,9 @@ function Community() {
                   <img src={p.photo} alt="" className="rounded-xl mb-4 w-full max-h-80 object-cover" loading="lazy" />
                 )}
                 <div className="flex items-center gap-6 text-sm text-muted-foreground border-t border-border/40 pt-4">
-                  <button className="flex items-center gap-2 hover:text-primary transition"><Heart className="h-4 w-4" /> {p.likes}</button>
-                  <button className="flex items-center gap-2 hover:text-primary transition"><MessageCircle className="h-4 w-4" /> {p.comments}</button>
-                  <button className="flex items-center gap-2 hover:text-primary transition ml-auto"><Share2 className="h-4 w-4" /> Partager</button>
+                  <button type="button" disabled className="flex cursor-not-allowed items-center gap-2 opacity-75"><Heart className="h-4 w-4" /> À venir</button>
+                  <button type="button" disabled className="flex cursor-not-allowed items-center gap-2 opacity-75"><MessageCircle className="h-4 w-4" /> À venir</button>
+                  <button type="button" disabled className="flex cursor-not-allowed items-center gap-2 opacity-75 ml-auto"><Share2 className="h-4 w-4" /> À venir</button>
                 </div>
               </article>
             ))}
@@ -98,16 +98,16 @@ function Community() {
               <h3 className="font-display text-xl mb-4 flex items-center gap-2"><MapPin className="text-primary h-5 w-5" /> Ride planning</h3>
               <ul className="space-y-4">
                 {[
-                  { name: "Pyrénées Loop", date: "Sam 14 Juin", joined: 12 },
-                  { name: "Verdon Sunset", date: "Dim 22 Juin", joined: 8 },
-                  { name: "Vosges Route", date: "Sam 5 Juil", joined: 18 },
+                  { name: "Boucles régionales", date: "à proposer" },
+                  { name: "Balades sunset", date: "à organiser" },
+                  { name: "Routes week-end", date: "à construire" },
                 ].map((r, i) => (
                   <li key={i} className="flex items-center justify-between text-sm py-2 border-b border-border/40 last:border-0">
                     <div>
                       <div className="font-medium">{r.name}</div>
                       <div className="text-xs text-muted-foreground">{r.date}</div>
                     </div>
-                    <span className="text-primary text-xs">+{r.joined} riders</span>
+                    <span className="text-primary text-xs">prévu</span>
                   </li>
                 ))}
               </ul>
@@ -117,8 +117,8 @@ function Community() {
               <img src={community} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-overlay" />
               <div className="absolute inset-x-0 bottom-0 p-6">
-                <p className="text-xs uppercase tracking-widest text-primary mb-2">Citation du jour</p>
-                <p className="font-display text-2xl italic">"Quatre roues déplacent le corps, deux roues déplacent l'âme."</p>
+                <p className="text-xs uppercase tracking-widest text-primary mb-2">Esprit du projet</p>
+                <p className="font-display text-2xl italic">"La route rapproche les cœurs quand elle reste sincère, libre et respectueuse."</p>
               </div>
             </div>
           </aside>

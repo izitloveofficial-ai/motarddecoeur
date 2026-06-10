@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Heart, MessageCircle, MapPin, Search, SlidersHorizontal, BadgeCheck } from "lucide-react";
-import { useState } from "react";
 import w1 from "@/assets/profile-woman.jpg";
 import w2 from "@/assets/profile-woman2.jpg";
 import m1 from "@/assets/profile-man.jpg";
@@ -11,9 +10,9 @@ export const Route = createFileRoute("/profiles")({
   head: () => ({
     meta: [
       { title: "Membres — Motard de Cœur" },
-      { name: "description", content: "Découvrez les motards de la communauté. Profils vérifiés, matching authentique." },
+      { name: "description", content: "Aperçu de la future expérience membres Motard de Cœur avant le lancement des profils réels." },
       { property: "og:title", content: "Membres — Motard de Cœur" },
-      { property: "og:description", content: "Rencontrez des passionnés de moto près de chez vous." },
+      { property: "og:description", content: "Découvrez la vision des futurs profils motards et pré-inscrivez-vous au lancement." },
       { property: "og:url", content: "/profiles" },
     ],
     links: [{ rel: "canonical", href: "/profiles" }],
@@ -36,15 +35,13 @@ const PROFILES: Profile[] = [
 ];
 
 function Profiles() {
-  const [liked, setLiked] = useState<Set<number>>(new Set());
-
   return (
     <Layout>
       <section className="py-16 px-6 border-b border-border/40">
         <div className="mx-auto max-w-7xl">
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Communauté</span>
-          <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">Trouvez votre <span className="text-gradient-red italic">complice de route</span></h1>
-          <p className="text-muted-foreground max-w-2xl">48 000+ motards vérifiés. Filtrez par moto, style, ville.</p>
+          <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">Imaginez votre <span className="text-gradient-red italic">complice de route</span></h1>
+          <p className="text-muted-foreground max-w-2xl">Ces profils sont des exemples de maquette. Les profils réels seront ouverts dans une prochaine phase.</p>
 
           {/* Filters */}
           <div className="mt-10 flex flex-wrap gap-3 items-center">
@@ -75,7 +72,7 @@ function Profiles() {
 
                 {/* Match badge */}
                 <div className="absolute top-4 right-4 glass-red px-3 py-1.5 rounded-full text-xs font-medium">
-                  {p.match}% match
+                  Exemple
                 </div>
 
                 {/* Bottom content */}
@@ -103,18 +100,14 @@ function Profiles() {
               <div className="flex border-t border-border/40">
                 <button
                   type="button"
-                  onClick={() => {
-                    const n = new Set(liked);
-                    n.has(i) ? n.delete(i) : n.add(i);
-                    setLiked(n);
-                  }}
-                  className={`flex-1 py-4 flex items-center justify-center gap-2 text-sm uppercase tracking-wider transition ${liked.has(i) ? "bg-gradient-red text-primary-foreground" : "hover:bg-primary/10"}`}
+                  disabled
+                  className="flex-1 cursor-not-allowed py-4 flex items-center justify-center gap-2 text-sm uppercase tracking-wider text-muted-foreground opacity-75 transition"
                 >
-                  <Heart className={`h-4 w-4 ${liked.has(i) ? "fill-current" : ""}`} /> Like
+                  <Heart className="h-4 w-4" /> Like à venir
                 </button>
                 <div className="w-px bg-border" />
                 <button type="button" disabled className="flex-1 cursor-not-allowed py-4 flex items-center justify-center gap-2 text-sm uppercase tracking-wider text-muted-foreground opacity-75 transition">
-                  <MessageCircle className="h-4 w-4" /> Bientôt
+                  <MessageCircle className="h-4 w-4" /> Message à venir
                 </button>
               </div>
             </article>
