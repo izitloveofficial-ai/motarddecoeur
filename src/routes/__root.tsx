@@ -93,9 +93,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@graph": [
             {
               "@type": "Organization",
-              "@id": "https://coeur-road-connect.lovable.app/#organization",
+              "@id": "https://motarddecoeur.lovable.app/#organization",
               name: "Motard de Cœur",
-              url: "https://coeur-road-connect.lovable.app",
+              url: "https://motarddecoeur.lovable.app",
               sameAs: [
                 "https://instagram.com/motarddecoeur",
                 "https://facebook.com/motarddecoeur",
@@ -104,11 +104,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             },
             {
               "@type": "WebSite",
-              "@id": "https://coeur-road-connect.lovable.app/#website",
-              url: "https://coeur-road-connect.lovable.app",
+              "@id": "https://motarddecoeur.lovable.app/#website",
+              url: "https://motarddecoeur.lovable.app",
               name: "Motard de Cœur",
               description: "Communauté premium de rencontres et événements pour motards.",
-              publisher: { "@id": "https://coeur-road-connect.lovable.app/#organization" },
+              publisher: { "@id": "https://motarddecoeur.lovable.app/#organization" },
             },
           ],
         }),
