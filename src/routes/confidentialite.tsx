@@ -4,6 +4,7 @@ import { Layout } from "@/components/Layout";
 import { ShieldCheck } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
+const CONTACT_EMAIL = "contact@motarddecoeur.fr";
 
 export const Route = createFileRoute("/confidentialite")({
   head: () => ({
@@ -63,8 +64,10 @@ function Confidentialite() {
 
         <LegalSection title="Conservation et suppression">
           <p>
-            Les données sont conservées le temps nécessaire à la préparation du lancement. Vous pouvez demander la suppression de vos données
-            à tout moment via la page <Link to="/contact" className="text-primary hover:underline">contact</Link>.
+            Les données sont conservées le temps nécessaire à la préparation du lancement. Vous pouvez demander l'accès,
+            la rectification ou la suppression de vos données à tout moment via la page{" "}
+            <Link to="/contact" className="text-primary hover:underline">contact</Link>{" "}
+            ou par email à <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
           </p>
         </LegalSection>
 
