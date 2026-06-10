@@ -5,6 +5,8 @@ import { Layout } from "@/components/Layout";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { Bike, CheckCircle2, Clock, HeartHandshake, Mail, MapPin, Send } from "lucide-react";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 export const Route = createFileRoute("/join")({
   head: () => ({
     meta: [
@@ -12,9 +14,9 @@ export const Route = createFileRoute("/join")({
       { name: "description", content: "Inscrivez-vous pour être prévenu du lancement de Motard de Cœur : rencontres, balades, événements et affinités entre passionnés de moto." },
       { property: "og:title", content: "Pré-inscription — Motard de Cœur" },
       { property: "og:description", content: "La communauté Motard de Cœur ouvre bientôt. Soyez prévenu du lancement." },
-      { property: "og:url", content: "/join" },
+      { property: "og:url", content: `${SITE_URL}/join` },
     ],
-    links: [{ rel: "canonical", href: "/join" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/join` }],
   }),
   component: Join,
 });
@@ -30,11 +32,20 @@ const sexOptions = [
 
 const rideTypes = ["", "Permis en cours", "125 cc", "Roadster", "Custom", "Sportive", "Touring", "Trail", "Autre"];
 
+const ageSchema = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.coerce
+    .number({ required_error: "Indiquez votre âge.", invalid_type_error: "Indiquez votre âge." })
+    .int("Indiquez un âge entier.")
+    .min(18, "La pré-inscription est réservée aux personnes majeures.")
+    .max(99, "Indiquez un âge valide."),
+);
+
 const preinscriptionSchema = z.object({
   first_name: z.string().trim().min(2, "Indiquez au moins 2 caractères.").max(80, "Prénom trop long."),
   email: z.string().trim().email("Indiquez une adresse email valide.").max(254, "Email trop long.").transform((value) => value.toLowerCase()),
   city: z.string().trim().min(2, "Indiquez votre ville ou région.").max(120, "Ville ou région trop longue."),
-  age: z.coerce.number({ invalid_type_error: "Indiquez votre âge." }).int("Indiquez un âge entier.").min(18, "La pré-inscription est réservée aux personnes majeures.").max(99, "Indiquez un âge valide."),
+  age: ageSchema,
   sex: z.enum(["femme", "homme", "non_binaire", "prefere_ne_pas_dire", "autre"], {
     required_error: "Choisissez une option.",
     invalid_type_error: "Choisissez une option.",
