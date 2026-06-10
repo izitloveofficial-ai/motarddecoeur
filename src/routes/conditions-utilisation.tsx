@@ -4,6 +4,7 @@ import { Layout } from "@/components/Layout";
 import { ScrollText } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
+const CONTACT_EMAIL = "contact@motarddecoeur.fr";
 
 export const Route = createFileRoute("/conditions-utilisation")({
   head: () => ({
@@ -65,7 +66,8 @@ function ConditionsUtilisation() {
             <LegalSection title="Données personnelles">
               <p>
                 Les données de pré-inscription sont traitées selon la <Link to="/confidentialite" className="text-primary hover:underline">politique de confidentialité</Link>.
-                Aucune donnée n'est vendue. Une demande de suppression peut être effectuée via la page contact.
+                Aucune donnée n'est vendue. Une demande d'accès, de rectification ou de suppression peut être effectuée via la page contact
+                ou par email à <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
               </p>
             </LegalSection>
 

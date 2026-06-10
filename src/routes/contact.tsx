@@ -3,16 +3,16 @@ import { Layout } from "@/components/Layout";
 import { Mail, Send, ShieldCheck } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
-const CONTACT_EMAIL = "";
+const CONTACT_EMAIL = "contact@motarddecoeur.fr";
 const hasContactEmail = CONTACT_EMAIL.length > 0;
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Motard de Cœur" },
-      { name: "description", content: "Point de contact provisoire de Motard de Cœur avant l'ouverture complète du service." },
+      { name: "description", content: "Contact officiel de Motard de Cœur pour les demandes générales et RGPD." },
       { property: "og:title", content: "Contact — Motard de Cœur" },
-      { property: "og:description", content: "Suivez l'ouverture de Motard de Cœur et les informations de contact officielles avant le lancement." },
+      { property: "og:description", content: "Contactez Motard de Cœur pour les demandes générales, RGPD et liées au lancement." },
       { property: "og:url", content: `${SITE_URL}/contact` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/contact` }],
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/contact")({
           "@type": "ContactPage",
           name: "Contact — Motard de Cœur",
           url: `${SITE_URL}/contact`,
-          description: "Page de contact provisoire de Motard de Cœur avant l'ouverture complète du service.",
+          description: "Page de contact officielle de Motard de Cœur pour les demandes générales et RGPD.",
           publisher: {
             "@type": "Organization",
             name: "Motard de Cœur",
@@ -45,7 +45,7 @@ function Contact() {
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Contact</span>
           <h1 className="font-display text-5xl md:text-7xl mt-4">Restons <span className="text-gradient-red italic">en lien.</span></h1>
           <p className="text-muted-foreground max-w-2xl mt-4 text-lg">
-            Motard de Cœur est en préparation. L'adresse officielle de contact, y compris pour les demandes RGPD, sera confirmée avant l'ouverture publique et la collecte réelle.
+            Motard de Cœur est en préparation. Pour toute demande générale ou RGPD, vous pouvez écrire à contact@motarddecoeur.fr.
           </p>
         </div>
       </section>
@@ -58,7 +58,7 @@ function Contact() {
           >
             <h2 className="font-display text-3xl mb-2">Écrivez-nous</h2>
             <p className="text-muted-foreground text-sm mb-6">
-              Le formulaire de contact n'est pas encore connecté. Il sera activé quand le canal officiel de contact sera confirmé.
+              Le formulaire de contact n'est pas encore connecté. En attendant, utilisez l'adresse officielle ci-dessous.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-5">
@@ -137,7 +137,7 @@ function Contact() {
                   <div>
                     <div className="text-xs uppercase tracking-widest text-muted-foreground">Demandes RGPD</div>
                     <div className="text-muted-foreground">
-                      Le canal officiel de suppression ou d'accès aux données sera affiché ici avant l'activation de la collecte Supabase.
+                      Pour accéder, rectifier ou demander la suppression de vos données, écrivez à contact@motarddecoeur.fr.
                     </div>
                   </div>
                 </li>
@@ -154,7 +154,7 @@ function Contact() {
             <div className="glass-red rounded-2xl p-8">
               <h3 className="font-display text-2xl mb-3">Avant la collecte</h3>
               <p className="text-sm text-foreground/80">
-                Tant que le canal de contact officiel n'est pas confirmé, la pré-inscription ne doit pas être ouverte en collecte réelle.
+                Avant l'activation de la collecte réelle, la configuration Supabase devra être vérifiée et testée.
               </p>
             </div>
           </div>

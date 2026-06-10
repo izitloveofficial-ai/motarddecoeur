@@ -4,6 +4,7 @@ import { Layout } from "@/components/Layout";
 import { FileText } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
+const CONTACT_EMAIL = "contact@motarddecoeur.fr";
 
 export const Route = createFileRoute("/mentions-legales")({
   head: () => ({
@@ -50,7 +51,8 @@ function MentionsLegales() {
 
             <LegalSection title="Contact">
               <p>
-                L'adresse email officielle n'étant pas encore confirmée, les demandes doivent être effectuées via la page contact du site.
+                Pour toute demande générale ou RGPD, Motard de Cœur peut être contacté à l'adresse{" "}
+                <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
               </p>
             </LegalSection>
 
