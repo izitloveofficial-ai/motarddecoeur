@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProfilesRouteImport } from './routes/profiles'
 import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ConditionsUtilisationRouteImport } from './routes/conditions-utilisation'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -34,6 +37,11 @@ const PremiumRoute = PremiumRouteImport.update({
   path: '/premium',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
   path: '/join',
@@ -47,6 +55,16 @@ const EventsRoute = EventsRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConditionsUtilisationRoute = ConditionsUtilisationRouteImport.update({
+  id: '/conditions-utilisation',
+  path: '/conditions-utilisation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommunityRoute = CommunityRouteImport.update({
@@ -69,9 +87,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/community': typeof CommunityRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/conditions-utilisation': typeof ConditionsUtilisationRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/join': typeof JoinRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -80,9 +101,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/community': typeof CommunityRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/conditions-utilisation': typeof ConditionsUtilisationRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/join': typeof JoinRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -92,9 +116,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/community': typeof CommunityRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/conditions-utilisation': typeof ConditionsUtilisationRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/join': typeof JoinRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -105,9 +132,12 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/community'
+    | '/confidentialite'
+    | '/conditions-utilisation'
     | '/contact'
     | '/events'
     | '/join'
+    | '/mentions-legales'
     | '/premium'
     | '/profiles'
     | '/sitemap.xml'
@@ -116,9 +146,12 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/community'
+    | '/confidentialite'
+    | '/conditions-utilisation'
     | '/contact'
     | '/events'
     | '/join'
+    | '/mentions-legales'
     | '/premium'
     | '/profiles'
     | '/sitemap.xml'
@@ -127,9 +160,12 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/community'
+    | '/confidentialite'
+    | '/conditions-utilisation'
     | '/contact'
     | '/events'
     | '/join'
+    | '/mentions-legales'
     | '/premium'
     | '/profiles'
     | '/sitemap.xml'
@@ -139,9 +175,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   CommunityRoute: typeof CommunityRoute
+  ConfidentialiteRoute: typeof ConfidentialiteRoute
+  ConditionsUtilisationRoute: typeof ConditionsUtilisationRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
   JoinRoute: typeof JoinRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
   PremiumRoute: typeof PremiumRoute
   ProfilesRoute: typeof ProfilesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -170,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PremiumRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/join': {
       id: '/join'
       path: '/join'
@@ -189,6 +235,20 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conditions-utilisation': {
+      id: '/conditions-utilisation'
+      path: '/conditions-utilisation'
+      fullPath: '/conditions-utilisation'
+      preLoaderRoute: typeof ConditionsUtilisationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/community': {
@@ -219,9 +279,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CommunityRoute: CommunityRoute,
+  ConfidentialiteRoute: ConfidentialiteRoute,
+  ConditionsUtilisationRoute: ConditionsUtilisationRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
   JoinRoute: JoinRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
   PremiumRoute: PremiumRoute,
   ProfilesRoute: ProfilesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
