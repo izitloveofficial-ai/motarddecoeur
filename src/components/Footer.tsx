@@ -2,6 +2,9 @@ import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, Youtube, Send } from "lucide-react";
 import logo from "@/assets/logo.png";
 
+const CONTACT_EMAIL = "";
+const hasContactEmail = CONTACT_EMAIL.length > 0;
+
 const socialLinks = [
   { href: "https://instagram.com/motarddecoeur", label: "Instagram", Icon: Instagram },
   { href: "https://facebook.com/motarddecoeur", label: "Facebook", Icon: Facebook },
@@ -27,13 +30,24 @@ export function Footer() {
               disabled
               className="flex-1 px-4 py-3 bg-input/40 border border-border rounded-full text-sm text-muted-foreground disabled:cursor-not-allowed focus:outline-none"
             />
-            <a
-              href="mailto:hello@motarddecoeur.fr"
-              className="px-4 py-3 bg-gradient-red rounded-full text-primary-foreground hover:shadow-glow transition"
-              aria-label="Contacter Motard de Cœur par email"
-            >
-              <Send className="h-4 w-4" />
-            </a>
+            {hasContactEmail ? (
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="px-4 py-3 bg-gradient-red rounded-full text-primary-foreground hover:shadow-glow transition"
+                aria-label="Contacter Motard de Cœur par email"
+              >
+                <Send className="h-4 w-4" />
+              </a>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="cursor-not-allowed px-4 py-3 bg-gradient-red rounded-full text-primary-foreground opacity-75 transition"
+                aria-label="Email bientôt disponible"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
 
