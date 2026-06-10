@@ -1,7 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Mail, MapPin, Phone, Instagram, Facebook, Youtube, Send } from "lucide-react";
-import { useState } from "react";
+
+const CONTACT_EMAIL = "";
+const hasContactEmail = CONTACT_EMAIL.length > 0;
+
+const socialLinks = [
+  { href: "https://instagram.com/motarddecoeur", label: "Instagram", Icon: Instagram },
+  { href: "https://facebook.com/motarddecoeur", label: "Facebook", Icon: Facebook },
+  { href: "https://youtube.com/motarddecoeur", label: "YouTube", Icon: Youtube },
+];
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -21,7 +29,7 @@ export const Route = createFileRoute("/contact")({
           "@type": "LocalBusiness",
           name: "Motard de Cœur",
           url: "https://coeur-road-connect.lovable.app",
-          email: "hello@motarddecoeur.fr",
+          ...(hasContactEmail ? { email: CONTACT_EMAIL } : {}),
           telephone: "+33 4 22 13 56 78",
           address: {
             "@type": "PostalAddress",
@@ -31,11 +39,7 @@ export const Route = createFileRoute("/contact")({
             addressCountry: "FR",
           },
           openingHours: "Mo-Su 00:00-23:59",
-          sameAs: [
-            "https://instagram.com/motarddecoeur",
-            "https://facebook.com/motarddecoeur",
-            "https://youtube.com/motarddecoeur",
-          ],
+          sameAs: socialLinks.map((link) => link.href),
         }),
       },
     ],
@@ -44,7 +48,6 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
-  const [sent, setSent] = useState(false);
   return (
     <Layout>
       <section className="py-20 px-6 border-b border-border/40">
@@ -61,30 +64,32 @@ function Contact() {
         <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-16">
           <form
             className="glass rounded-2xl p-10 space-y-5"
-            onSubmit={(e) => { e.preventDefault(); setSent(true); }}
+            onSubmit={(e) => e.preventDefault()}
           >
             <h2 className="font-display text-3xl mb-2">Écrivez-nous</h2>
-            <p className="text-muted-foreground text-sm mb-6">Tous les champs sont requis.</p>
+            <p className="text-muted-foreground text-sm mb-6">
+              Le formulaire sera bientôt connecté. L'adresse email sera ajoutée dès confirmation.
+            </p>
 
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
                 <label htmlFor="contact-firstname" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Prénom</label>
-                <input id="contact-firstname" name="firstname" autoComplete="given-name" required className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow" />
+                <input id="contact-firstname" name="firstname" autoComplete="given-name" disabled className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none" />
               </div>
               <div>
                 <label htmlFor="contact-lastname" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Nom</label>
-                <input id="contact-lastname" name="lastname" autoComplete="family-name" required className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow" />
+                <input id="contact-lastname" name="lastname" autoComplete="family-name" disabled className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none" />
               </div>
             </div>
 
             <div>
               <label htmlFor="contact-email" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Email</label>
-              <input id="contact-email" name="email" autoComplete="email" required type="email" className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow" />
+              <input id="contact-email" name="email" autoComplete="email" disabled type="email" className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none" />
             </div>
 
             <div>
               <label htmlFor="contact-subject" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Sujet</label>
-              <select id="contact-subject" name="subject" required className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow">
+              <select id="contact-subject" name="subject" disabled className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none">
                 <option>Support technique</option>
                 <option>Partenariat</option>
                 <option>Événement</option>
@@ -95,15 +100,27 @@ function Contact() {
 
             <div>
               <label htmlFor="contact-message" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Message</label>
-              <textarea id="contact-message" name="message" required rows={5} className="w-full px-4 py-3 bg-input/60 border border-border rounded-lg focus:outline-none focus:ring-red-glow resize-none" />
+              <textarea id="contact-message" name="message" disabled rows={5} className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none resize-none" />
             </div>
 
-            <button
-              type="submit"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-red text-primary-foreground rounded-full uppercase tracking-wider text-sm font-medium shadow-glow hover:scale-105 transition"
-            >
-              {sent ? "Message envoyé ✓" : <>Envoyer <Send className="h-4 w-4" /></>}
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                disabled
+                className="inline-flex cursor-not-allowed items-center gap-2 px-8 py-4 bg-gradient-red text-primary-foreground rounded-full uppercase tracking-wider text-sm font-medium opacity-75 shadow-glow transition"
+              >
+                Formulaire bientôt connecté
+              </button>
+              {hasContactEmail ? (
+                <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex items-center gap-2 px-6 py-3 glass rounded-full text-sm text-foreground hover:bg-foreground/10 transition">
+                  <Send className="h-4 w-4" /> Envoyer un email
+                </a>
+              ) : (
+                <button type="button" disabled className="inline-flex cursor-not-allowed items-center gap-2 px-6 py-3 glass rounded-full text-sm text-muted-foreground opacity-75 transition">
+                  <Send className="h-4 w-4" /> Email bientôt disponible
+                </button>
+              )}
+            </div>
           </form>
 
           <div className="space-y-8">
@@ -116,7 +133,11 @@ function Contact() {
                   </div>
                   <div>
                     <div className="text-xs uppercase tracking-widest text-muted-foreground">Email</div>
-                    <div>hello@motarddecoeur.fr</div>
+                    {hasContactEmail ? (
+                      <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary transition">{CONTACT_EMAIL}</a>
+                    ) : (
+                      <div className="text-muted-foreground">Bientôt disponible</div>
+                    )}
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
@@ -143,8 +164,8 @@ function Contact() {
             <div className="glass rounded-2xl p-8">
               <h3 className="font-display text-2xl mb-6">Réseaux sociaux</h3>
               <div className="flex gap-3">
-                {[Instagram, Facebook, Youtube].map((Icon, i) => (
-                  <a key={i} href="#" className="grid place-items-center w-14 h-14 rounded-full glass hover:bg-gradient-red transition" aria-label="social">
+                {socialLinks.map(({ href, label, Icon }) => (
+                  <a key={label} href={href} className="grid place-items-center w-14 h-14 rounded-full glass hover:bg-gradient-red transition" aria-label={label}>
                     <Icon className="h-5 w-5" />
                   </a>
                 ))}

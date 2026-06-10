@@ -48,18 +48,18 @@ function Profiles() {
 
           {/* Filters */}
           <div className="mt-10 flex flex-wrap gap-3 items-center">
-            <label htmlFor="profile-search" className="flex items-center gap-2 flex-1 min-w-[280px] max-w-md glass px-4 py-3 rounded-full">
+            <label htmlFor="profile-search" className="flex items-center gap-2 flex-1 min-w-[280px] max-w-md glass px-4 py-3 rounded-full opacity-75">
               <Search className="h-4 w-4 text-muted-foreground" />
               <span className="sr-only">Rechercher un motard</span>
-              <input id="profile-search" type="search" aria-label="Rechercher par nom, moto ou ville" placeholder="Recherche par nom, moto, ville..." className="bg-transparent flex-1 outline-none text-sm" />
+              <input id="profile-search" type="search" aria-label="Recherche bientôt disponible" placeholder="Recherche bientôt disponible" disabled className="bg-transparent flex-1 cursor-not-allowed outline-none text-sm text-muted-foreground" />
             </label>
             {["Tous", "Harley", "Sport", "Touring", "Custom", "Vintage"].map((f, i) => (
-              <button key={i} className="px-4 py-2 glass rounded-full text-sm hover:bg-primary/20 hover:border-primary/40 transition">
+              <button key={i} type="button" disabled className="cursor-not-allowed px-4 py-2 glass rounded-full text-sm text-muted-foreground opacity-75 transition">
                 {f}
               </button>
             ))}
-            <button className="ml-auto inline-flex items-center gap-2 px-4 py-2 glass-red rounded-full text-sm">
-              <SlidersHorizontal className="h-4 w-4" /> Filtres avancés
+            <button type="button" disabled className="ml-auto inline-flex cursor-not-allowed items-center gap-2 px-4 py-2 glass-red rounded-full text-sm opacity-75">
+              <SlidersHorizontal className="h-4 w-4" /> Filtres bientôt disponibles
             </button>
           </div>
         </div>
@@ -102,6 +102,7 @@ function Profiles() {
 
               <div className="flex border-t border-border/40">
                 <button
+                  type="button"
                   onClick={() => {
                     const n = new Set(liked);
                     n.has(i) ? n.delete(i) : n.add(i);
@@ -112,8 +113,8 @@ function Profiles() {
                   <Heart className={`h-4 w-4 ${liked.has(i) ? "fill-current" : ""}`} /> Like
                 </button>
                 <div className="w-px bg-border" />
-                <button className="flex-1 py-4 flex items-center justify-center gap-2 text-sm uppercase tracking-wider hover:bg-foreground/5 transition">
-                  <MessageCircle className="h-4 w-4" /> Message
+                <button type="button" disabled className="flex-1 cursor-not-allowed py-4 flex items-center justify-center gap-2 text-sm uppercase tracking-wider text-muted-foreground opacity-75 transition">
+                  <MessageCircle className="h-4 w-4" /> Bientôt
                 </button>
               </div>
             </article>
@@ -121,8 +122,8 @@ function Profiles() {
         </div>
 
         <div className="text-center mt-16">
-          <button className="px-8 py-4 glass rounded-full uppercase tracking-wider text-sm hover:bg-primary/20 transition">
-            Charger plus de motards
+          <button type="button" disabled className="cursor-not-allowed px-8 py-4 glass rounded-full uppercase tracking-wider text-sm text-muted-foreground opacity-75 transition">
+            Plus de profils bientôt disponibles
           </button>
         </div>
       </section>

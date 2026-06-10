@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { Calendar, MapPin, Users, ArrowRight } from "lucide-react";
+import { MapPin, Users, ArrowRight } from "lucide-react";
 import hero from "@/assets/hero-sunset.jpg";
 import event from "@/assets/event-night.jpg";
 import community from "@/assets/community-ride.jpg";
@@ -67,19 +67,19 @@ function Events() {
       {/* Featured */}
       <section className="py-16 px-6">
         <div className="mx-auto max-w-7xl">
-          <div className="relative rounded-3xl overflow-hidden aspect-[21/9] shadow-elegant">
+          <div className="relative min-h-[34rem] rounded-3xl overflow-hidden shadow-elegant md:aspect-[21/9] md:min-h-0">
             <img src={EVENTS[0].img} alt={EVENTS[0].title} className="absolute inset-0 w-full h-full object-cover" width={1920} height={822} />
             <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/60 to-transparent" />
-            <div className="absolute inset-0 p-10 md:p-16 flex flex-col justify-center max-w-2xl">
+            <div className="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl">
               <span className="self-start glass-red px-4 py-1.5 rounded-full text-xs uppercase tracking-widest mb-4">Vedette</span>
               <div className="text-primary uppercase tracking-[0.3em] text-xs mb-3">{EVENTS[0].date}</div>
               <h2 className="font-display text-4xl md:text-6xl mb-4">{EVENTS[0].title}</h2>
-              <p className="text-foreground/80 mb-6 flex items-center gap-4">
+              <p className="text-foreground/80 mb-6 flex flex-wrap items-center gap-4">
                 <span className="flex items-center gap-1"><MapPin className="h-4 w-4" />{EVENTS[0].loc}</span>
                 <span className="flex items-center gap-1"><Users className="h-4 w-4" />{EVENTS[0].spots} places</span>
               </p>
-              <button className="self-start inline-flex items-center gap-2 px-7 py-3 bg-gradient-red rounded-full uppercase tracking-wider text-sm font-medium shadow-glow hover:scale-105 transition">
-                Réserver ma place <ArrowRight className="h-4 w-4" />
+              <button type="button" disabled className="self-start inline-flex cursor-not-allowed items-center gap-2 px-7 py-3 bg-gradient-red rounded-full uppercase tracking-wider text-sm font-medium opacity-75 shadow-glow transition">
+                Réservation bientôt disponible <ArrowRight className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -103,8 +103,8 @@ function Events() {
                   <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{e.loc}</span>
                   <span className="flex items-center gap-1"><Users className="h-3 w-3" />{e.spots}</span>
                 </div>
-                <button className="w-full py-3 rounded-full bg-foreground/5 hover:bg-gradient-red hover:text-primary-foreground transition text-sm uppercase tracking-wider">
-                  S'inscrire
+                <button type="button" disabled className="w-full cursor-not-allowed py-3 rounded-full bg-foreground/5 text-sm uppercase tracking-wider text-muted-foreground opacity-75 transition">
+                  Inscription bientôt disponible
                 </button>
               </div>
             </article>
