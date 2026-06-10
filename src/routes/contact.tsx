@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Mail, MapPin, Phone, Instagram, Facebook, Youtube, Send } from "lucide-react";
 
-const CONTACT_EMAIL = "hello@motarddecoeur.fr";
+const CONTACT_EMAIL = "";
+const hasContactEmail = CONTACT_EMAIL.length > 0;
 
 const socialLinks = [
   { href: "https://instagram.com/motarddecoeur", label: "Instagram", Icon: Instagram },
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/contact")({
           "@type": "LocalBusiness",
           name: "Motard de Cœur",
           url: "https://coeur-road-connect.lovable.app",
-          email: CONTACT_EMAIL,
+          ...(hasContactEmail ? { email: CONTACT_EMAIL } : {}),
           telephone: "+33 4 22 13 56 78",
           address: {
             "@type": "PostalAddress",
@@ -67,7 +68,7 @@ function Contact() {
           >
             <h2 className="font-display text-3xl mb-2">Écrivez-nous</h2>
             <p className="text-muted-foreground text-sm mb-6">
-              Le formulaire sera bientôt connecté. En attendant, contactez-nous par email.
+              Le formulaire sera bientôt connecté. L'adresse email sera ajoutée dès confirmation.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-5">
@@ -110,9 +111,15 @@ function Contact() {
               >
                 Formulaire bientôt connecté
               </button>
-              <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex items-center gap-2 px-6 py-3 glass rounded-full text-sm text-foreground hover:bg-foreground/10 transition">
-                <Send className="h-4 w-4" /> Envoyer un email
-              </a>
+              {hasContactEmail ? (
+                <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex items-center gap-2 px-6 py-3 glass rounded-full text-sm text-foreground hover:bg-foreground/10 transition">
+                  <Send className="h-4 w-4" /> Envoyer un email
+                </a>
+              ) : (
+                <button type="button" disabled className="inline-flex cursor-not-allowed items-center gap-2 px-6 py-3 glass rounded-full text-sm text-muted-foreground opacity-75 transition">
+                  <Send className="h-4 w-4" /> Email bientôt disponible
+                </button>
+              )}
             </div>
           </form>
 
@@ -126,7 +133,11 @@ function Contact() {
                   </div>
                   <div>
                     <div className="text-xs uppercase tracking-widest text-muted-foreground">Email</div>
-                    <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary transition">{CONTACT_EMAIL}</a>
+                    {hasContactEmail ? (
+                      <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary transition">{CONTACT_EMAIL}</a>
+                    ) : (
+                      <div className="text-muted-foreground">Bientôt disponible</div>
+                    )}
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
