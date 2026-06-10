@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { Layout } from "@/components/Layout";
 import { FileText } from "lucide-react";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 export const Route = createFileRoute("/mentions-legales")({
   head: () => ({
     meta: [
@@ -10,9 +12,9 @@ export const Route = createFileRoute("/mentions-legales")({
       { name: "description", content: "Mentions légales du site Motard de Cœur, actuellement publié sur Lovable." },
       { property: "og:title", content: "Mentions légales — Motard de Cœur" },
       { property: "og:description", content: "Informations légales du site Motard de Cœur." },
-      { property: "og:url", content: "/mentions-legales" },
+      { property: "og:url", content: `${SITE_URL}/mentions-legales` },
     ],
-    links: [{ rel: "canonical", href: "/mentions-legales" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/mentions-legales` }],
   }),
   component: MentionsLegales,
 });
