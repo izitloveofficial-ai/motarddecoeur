@@ -6,6 +6,8 @@ import w2 from "@/assets/profile-woman2.jpg";
 import m1 from "@/assets/profile-man.jpg";
 import m2 from "@/assets/profile-man2.jpg";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 export const Route = createFileRoute("/profiles")({
   head: () => ({
     meta: [
@@ -13,9 +15,9 @@ export const Route = createFileRoute("/profiles")({
       { name: "description", content: "Aperçu de la future expérience membres Motard de Cœur avant le lancement des profils réels." },
       { property: "og:title", content: "Membres — Motard de Cœur" },
       { property: "og:description", content: "Découvrez la vision des futurs profils motards et pré-inscrivez-vous au lancement." },
-      { property: "og:url", content: "/profiles" },
+      { property: "og:url", content: `${SITE_URL}/profiles` },
     ],
-    links: [{ rel: "canonical", href: "/profiles" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/profiles` }],
   }),
   component: Profiles,
 });
@@ -43,7 +45,6 @@ function Profiles() {
           <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">Imaginez votre <span className="text-gradient-red italic">complice de route</span></h1>
           <p className="text-muted-foreground max-w-2xl">Ces profils sont des exemples de maquette. Les profils réels seront ouverts dans une prochaine phase.</p>
 
-          {/* Filters */}
           <div className="mt-10 flex flex-wrap gap-3 items-center">
             <label htmlFor="profile-search" className="flex items-center gap-2 flex-1 min-w-[280px] max-w-md glass px-4 py-3 rounded-full opacity-75">
               <Search className="h-4 w-4 text-muted-foreground" />
@@ -70,12 +71,10 @@ function Profiles() {
                 <img src={p.img} alt={p.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-overlay" />
 
-                {/* Match badge */}
                 <div className="absolute top-4 right-4 glass-red px-3 py-1.5 rounded-full text-xs font-medium">
                   Exemple
                 </div>
 
-                {/* Bottom content */}
                 <div className="absolute inset-x-0 bottom-0 p-6">
                   <div className="flex items-center gap-2 mb-1">
                     <h2 className="text-2xl font-display">{p.name}, <span className="text-foreground/70">{p.age}</span></h2>

@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { Layout } from "@/components/Layout";
 import { ShieldCheck } from "lucide-react";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 export const Route = createFileRoute("/confidentialite")({
   head: () => ({
     meta: [
@@ -10,9 +12,9 @@ export const Route = createFileRoute("/confidentialite")({
       { name: "description", content: "Politique de confidentialité de Motard de Cœur pour la pré-inscription et l'information sur le lancement." },
       { property: "og:title", content: "Politique de confidentialité — Motard de Cœur" },
       { property: "og:description", content: "Découvrez comment Motard de Cœur utilise les données de pré-inscription." },
-      { property: "og:url", content: "/confidentialite" },
+      { property: "og:url", content: `${SITE_URL}/confidentialite` },
     ],
-    links: [{ rel: "canonical", href: "/confidentialite" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/confidentialite` }],
   }),
   component: Confidentialite,
 });

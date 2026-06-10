@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { Layout } from "@/components/Layout";
 import { ScrollText } from "lucide-react";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 export const Route = createFileRoute("/conditions-utilisation")({
   head: () => ({
     meta: [
@@ -10,9 +12,9 @@ export const Route = createFileRoute("/conditions-utilisation")({
       { name: "description", content: "Conditions d'utilisation de la version actuelle de Motard de Cœur et de sa pré-inscription." },
       { property: "og:title", content: "Conditions d'utilisation — Motard de Cœur" },
       { property: "og:description", content: "Cadre d'utilisation de Motard de Cœur avant le lancement complet du service." },
-      { property: "og:url", content: "/conditions-utilisation" },
+      { property: "og:url", content: `${SITE_URL}/conditions-utilisation` },
     ],
-    links: [{ rel: "canonical", href: "/conditions-utilisation" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/conditions-utilisation` }],
   }),
   component: ConditionsUtilisation,
 });

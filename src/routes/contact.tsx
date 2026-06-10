@@ -1,15 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { Mail, Instagram, Facebook, Youtube, Send, ShieldCheck } from "lucide-react";
+import { Mail, Send, ShieldCheck } from "lucide-react";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
 const CONTACT_EMAIL = "";
 const hasContactEmail = CONTACT_EMAIL.length > 0;
-
-const socialLinks = [
-  { href: "https://instagram.com/motarddecoeur", label: "Instagram", Icon: Instagram },
-  { href: "https://facebook.com/motarddecoeur", label: "Facebook", Icon: Facebook },
-  { href: "https://youtube.com/motarddecoeur", label: "YouTube", Icon: Youtube },
-];
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -18,9 +13,9 @@ export const Route = createFileRoute("/contact")({
       { name: "description", content: "Point de contact provisoire de Motard de Cœur avant l'ouverture complète du service." },
       { property: "og:title", content: "Contact — Motard de Cœur" },
       { property: "og:description", content: "Suivez l'ouverture de Motard de Cœur et les informations de contact officielles avant le lancement." },
-      { property: "og:url", content: "/contact" },
+      { property: "og:url", content: `${SITE_URL}/contact` },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/contact` }],
     scripts: [
       {
         type: "application/ld+json",
@@ -28,12 +23,12 @@ export const Route = createFileRoute("/contact")({
           "@context": "https://schema.org",
           "@type": "ContactPage",
           name: "Contact — Motard de Cœur",
-          url: "https://motarddecoeur.lovable.app/contact",
+          url: `${SITE_URL}/contact`,
           description: "Page de contact provisoire de Motard de Cœur avant l'ouverture complète du service.",
           publisher: {
             "@type": "Organization",
             name: "Motard de Cœur",
-            url: "https://motarddecoeur.lovable.app",
+            url: SITE_URL,
           },
         }),
       },
@@ -50,7 +45,7 @@ function Contact() {
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Contact</span>
           <h1 className="font-display text-5xl md:text-7xl mt-4">Restons <span className="text-gradient-red italic">en lien.</span></h1>
           <p className="text-muted-foreground max-w-2xl mt-4 text-lg">
-            Motard de Cœur est en préparation. Les coordonnées officielles seront publiées ici avant l'ouverture de la collecte réelle.
+            Motard de Cœur est en préparation. L'adresse officielle de contact, y compris pour les demandes RGPD, sera confirmée avant l'ouverture publique et la collecte réelle.
           </p>
         </div>
       </section>
@@ -131,7 +126,7 @@ function Contact() {
                     {hasContactEmail ? (
                       <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary transition">{CONTACT_EMAIL}</a>
                     ) : (
-                      <div className="text-muted-foreground">Adresse officielle à confirmer avant collecte réelle</div>
+                      <div className="text-muted-foreground">Adresse officielle à confirmer avant ouverture publique</div>
                     )}
                   </div>
                 </li>
@@ -150,15 +145,10 @@ function Contact() {
             </div>
 
             <div className="glass rounded-2xl p-8">
-              <h3 className="font-display text-2xl mb-6">Réseaux sociaux</h3>
-              <div className="flex gap-3">
-                {socialLinks.map(({ href, label, Icon }) => (
-                  <a key={label} href={href} className="grid place-items-center w-14 h-14 rounded-full glass hover:bg-gradient-red transition" aria-label={label}>
-                    <Icon className="h-5 w-5" />
-                  </a>
-                ))}
-              </div>
-              <p className="text-sm text-muted-foreground mt-6">Les comptes sociaux officiels seront confirmés avant le lancement public.</p>
+              <h3 className="font-display text-2xl mb-3">Réseaux sociaux</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Les comptes sociaux officiels ne sont pas encore confirmés. Ils seront ajoutés uniquement après validation.
+              </p>
             </div>
 
             <div className="glass-red rounded-2xl p-8">
