@@ -2,9 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, Youtube, Send } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-const CONTACT_EMAIL = "";
-const hasContactEmail = CONTACT_EMAIL.length > 0;
-
 const socialLinks = [
   { href: "https://instagram.com/motarddecoeur", label: "Instagram", Icon: Instagram },
   { href: "https://facebook.com/motarddecoeur", label: "Facebook", Icon: Facebook },
