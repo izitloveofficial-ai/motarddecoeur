@@ -28,7 +28,7 @@ export const Route = createFileRoute("/contact")({
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           name: "Motard de Cœur",
-          url: "https://coeur-road-connect.lovable.app",
+          url: "https://motarddecoeur.lovable.app",
           ...(hasContactEmail ? { email: CONTACT_EMAIL } : {}),
           telephone: "+33 4 22 13 56 78",
           address: {
