@@ -1,14 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { Send } from "lucide-react";
-import logo from "@/assets/logo.jpg";
+import logoMotard from "@/assets/logo-motard-de-coeur.png";
 
 export function Footer() {
   return (
     <footer className="relative mt-32 border-t border-border/40 bg-card/40">
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-2 mb-4">
-            <img src={logo} alt="Motard de Cœur" width={56} height={56} loading="lazy" className="h-12 w-12 object-contain" />
+          <div className="flex items-center gap-3 mb-4">
+            <img src={logoMotard} alt="Les Motards de Cœur" width={132} height={110} loading="lazy" className="h-16 w-32 object-contain" />
             <span className="font-display text-2xl text-gradient-metal">Motard de Cœur</span>
           </div>
           <p className="text-muted-foreground max-w-md mb-6 italic">
