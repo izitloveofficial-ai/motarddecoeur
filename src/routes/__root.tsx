@@ -9,9 +9,11 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 
+import brandLogo from "@/assets/logo.svg";
 import appCss from "../styles.css?url";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
+const BRAND_LOGO_URL = `${SITE_URL}${brandLogo}`;
 
 function NotFoundComponent() {
   return (
@@ -79,10 +81,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "Motard de Cœur" },
       { property: "og:site_name", content: "Motard de Cœur" },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: BRAND_LOGO_URL },
+      { property: "og:image:alt", content: "Logo Les Motards de Cœur" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: BRAND_LOGO_URL },
+      { name: "twitter:image:alt", content: "Logo Les Motards de Cœur" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/svg+xml", href: brandLogo },
+      { rel: "apple-touch-icon", href: brandLogo },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;800;900&family=Inter:wght@300;400;500;600;700&display=swap" },
@@ -98,6 +106,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@id": `${SITE_URL}/#organization`,
               name: "Motard de Cœur",
               url: SITE_URL,
+              logo: BRAND_LOGO_URL,
+              image: BRAND_LOGO_URL,
             },
             {
               "@type": "WebSite",
