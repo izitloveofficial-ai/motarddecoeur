@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import logoMotard from "@/assets/logo-motard-de-coeur.png";
+
+const logoMotard = "/logo-motard-de-coeur.png";
 
 const links = [
   { to: "/", label: "Accueil" },
@@ -25,7 +26,7 @@ export function Navbar() {
             alt="Les Motards de Cœur"
             width={204}
             height={170}
-            className="h-16 w-40 shrink-0 object-contain transition-transform group-hover:scale-105 md:h-20 md:w-52"
+            className="h-14 w-40 shrink-0 object-cover object-center transition-transform group-hover:scale-105 md:h-16 md:w-48"
           />
         </Link>
 
