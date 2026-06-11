@@ -16,8 +16,8 @@ import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ConditionsUtilisationRouteImport } from './routes/conditions-utilisation'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
+import { Route as ConditionsUtilisationRouteImport } from './routes/conditions-utilisation'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -57,14 +57,14 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConditionsUtilisationRoute = ConditionsUtilisationRouteImport.update({
-  id: '/conditions-utilisation',
-  path: '/conditions-utilisation',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
   id: '/confidentialite',
   path: '/confidentialite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConditionsUtilisationRoute = ConditionsUtilisationRouteImport.update({
+  id: '/conditions-utilisation',
+  path: '/conditions-utilisation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommunityRoute = CommunityRouteImport.update({
@@ -87,8 +87,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/community': typeof CommunityRoute
-  '/confidentialite': typeof ConfidentialiteRoute
   '/conditions-utilisation': typeof ConditionsUtilisationRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/join': typeof JoinRoute
@@ -101,8 +101,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/community': typeof CommunityRoute
-  '/confidentialite': typeof ConfidentialiteRoute
   '/conditions-utilisation': typeof ConditionsUtilisationRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/join': typeof JoinRoute
@@ -116,8 +116,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/community': typeof CommunityRoute
-  '/confidentialite': typeof ConfidentialiteRoute
   '/conditions-utilisation': typeof ConditionsUtilisationRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/join': typeof JoinRoute
@@ -132,8 +132,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/community'
-    | '/confidentialite'
     | '/conditions-utilisation'
+    | '/confidentialite'
     | '/contact'
     | '/events'
     | '/join'
@@ -146,8 +146,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/community'
-    | '/confidentialite'
     | '/conditions-utilisation'
+    | '/confidentialite'
     | '/contact'
     | '/events'
     | '/join'
@@ -160,8 +160,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/community'
-    | '/confidentialite'
     | '/conditions-utilisation'
+    | '/confidentialite'
     | '/contact'
     | '/events'
     | '/join'
@@ -175,8 +175,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   CommunityRoute: typeof CommunityRoute
-  ConfidentialiteRoute: typeof ConfidentialiteRoute
   ConditionsUtilisationRoute: typeof ConditionsUtilisationRoute
+  ConfidentialiteRoute: typeof ConfidentialiteRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
   JoinRoute: typeof JoinRoute
@@ -237,18 +237,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conditions-utilisation': {
-      id: '/conditions-utilisation'
-      path: '/conditions-utilisation'
-      fullPath: '/conditions-utilisation'
-      preLoaderRoute: typeof ConditionsUtilisationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/confidentialite': {
       id: '/confidentialite'
       path: '/confidentialite'
       fullPath: '/confidentialite'
       preLoaderRoute: typeof ConfidentialiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conditions-utilisation': {
+      id: '/conditions-utilisation'
+      path: '/conditions-utilisation'
+      fullPath: '/conditions-utilisation'
+      preLoaderRoute: typeof ConditionsUtilisationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/community': {
@@ -279,8 +279,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CommunityRoute: CommunityRoute,
-  ConfidentialiteRoute: ConfidentialiteRoute,
   ConditionsUtilisationRoute: ConditionsUtilisationRoute,
+  ConfidentialiteRoute: ConfidentialiteRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
   JoinRoute: JoinRoute,
