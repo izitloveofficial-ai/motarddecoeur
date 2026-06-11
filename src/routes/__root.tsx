@@ -9,7 +9,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 
-import brandLogo from "@/assets/logo.svg";
+import brandLogo from "@/assets/logo.jpg";
 import appCss from "../styles.css?url";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
@@ -89,7 +89,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/svg+xml", href: brandLogo },
+      { rel: "icon", type: "image/jpeg", href: brandLogo },
       { rel: "apple-touch-icon", href: brandLogo },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
