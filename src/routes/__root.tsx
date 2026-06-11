@@ -9,7 +9,8 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 
-import brandLogo from "@/assets/logo.jpg";
+import brandLogo from "@/assets/logo-motard-de-coeur.png";
+import faviconMoto from "@/assets/favicon-motard-de-coeur.png";
 import appCss from "../styles.css?url";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
@@ -89,8 +90,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/jpeg", href: brandLogo },
-      { rel: "apple-touch-icon", href: brandLogo },
+      { rel: "icon", type: "image/png", href: faviconMoto },
+      { rel: "apple-touch-icon", href: faviconMoto },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;800;900&family=Inter:wght@300;400;500;600;700&display=swap" },

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import logo from "@/assets/logo.jpg";
+import logoMotard from "@/assets/logo-motard-de-coeur.png";
 
 const links = [
   { to: "/", label: "Accueil" },
@@ -19,23 +19,14 @@ export function Navbar() {
     <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 xl:py-4">
-        <Link to="/" className="flex min-w-0 items-center gap-3 group xl:gap-4">
+        <Link to="/" className="flex min-w-0 items-center group">
           <img
-            src={logo}
-            alt="Motard de Cœur"
-            width={80}
-            height={80}
-            className="h-12 w-12 shrink-0 object-contain transition-transform group-hover:scale-105 drop-shadow-lg md:h-14 md:w-14 xl:h-16 xl:w-16"
+            src={logoMotard}
+            alt="Les Motards de Cœur"
+            width={204}
+            height={170}
+            className="h-16 w-40 shrink-0 object-contain transition-transform group-hover:scale-105 md:h-20 md:w-52"
           />
-
-          <div className="flex min-w-0 flex-col leading-tight">
-            <span className="font-display text-lg tracking-wider text-neutral-900 sm:text-xl md:text-2xl">
-              Motard de <span className="text-primary">Cœur</span>
-            </span>
-            <span className="text-[9px] uppercase tracking-[0.2em] text-neutral-500 sm:tracking-[0.24em] md:text-[10px]">
-              Ride · Connect · Feel
-            </span>
-          </div>
         </Link>
 
         <div className="hidden xl:flex items-center gap-5 2xl:gap-8">
