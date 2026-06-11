@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Send } from "lucide-react";
-import logo from "@/assets/logo.svg";
+import logo from "@/assets/logo.jpg";
 
 export function Footer() {
   return (
