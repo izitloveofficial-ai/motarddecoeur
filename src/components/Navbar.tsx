@@ -23,16 +23,16 @@ export function Navbar() {
           <img
             src={logo}
             alt="Motard de Cœur"
-            width={140}
-            height={140}
-            className="h-20 w-20 shrink-0 object-contain transition-transform group-hover:scale-105 drop-shadow-lg md:h-24 md:w-24 xl:h-28 xl:w-28"
+            width={80}
+            height={80}
+            className="h-12 w-12 shrink-0 object-contain transition-transform group-hover:scale-105 drop-shadow-lg md:h-14 md:w-14 xl:h-16 xl:w-16"
           />
 
           <div className="flex min-w-0 flex-col leading-tight">
-            <span className="font-display text-xl tracking-wider text-neutral-900 sm:text-2xl">
+            <span className="font-display text-lg tracking-wider text-neutral-900 sm:text-xl md:text-2xl">
               Motard de <span className="text-primary">Cœur</span>
             </span>
-            <span className="text-[10px] uppercase tracking-[0.24em] text-neutral-500 sm:tracking-[0.3em]">
+            <span className="text-[9px] uppercase tracking-[0.2em] text-neutral-500 sm:tracking-[0.24em] md:text-[10px]">
               Ride · Connect · Feel
             </span>
           </div>
