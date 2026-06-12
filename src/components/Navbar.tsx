@@ -1,8 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-
-const logoMotard = "/logo-motard-de-coeur.png";
+import logoMotard from "@/assets/logo-motard-de-coeur.png";
 
 const links = [
   { to: "/", label: "Accueil" },
@@ -20,13 +19,13 @@ export function Navbar() {
     <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 xl:py-4">
-        <Link to="/" className="flex min-w-0 items-center group">
+        <Link to="/" className="flex shrink-0 items-center group">
           <img
             src={logoMotard}
             alt="Les Motards de Cœur"
             width={204}
             height={170}
-            className="h-14 w-40 shrink-0 object-cover object-center transition-transform group-hover:scale-105 md:h-16 md:w-48"
+            className="block h-auto w-36 shrink-0 object-contain transition-transform group-hover:scale-105 sm:w-40 md:w-48 xl:w-52"
           />
         </Link>
 
