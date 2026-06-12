@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Send } from "lucide-react";
-import logoMotard from "@/assets/logo-motard-de-coeur.png";
+
+const logoMotard = "/logo-motard-de-coeur.png";
 
 export function Footer() {
   return (
@@ -8,7 +9,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3 mb-4">
-            <img src={logoMotard} alt="Les Motards de Cœur" width={132} height={110} loading="lazy" className="h-16 w-32 object-contain" />
+            <img src={logoMotard} alt="Les Motards de Cœur" width={132} height={110} loading="lazy" className="h-14 w-32 object-cover object-center" />
             <span className="font-display text-2xl text-gradient-metal">Motard de Cœur</span>
           </div>
           <p className="text-muted-foreground max-w-md mb-6 italic">
