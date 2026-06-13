@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Send } from "lucide-react";
-import logoMotard from "@/assets/logo-motard-de-coeur.png";
 
 export function Footer() {
   return (
@@ -8,8 +7,8 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3 mb-4">
-            <img src={logoMotard} alt="Les Motards de Cœur" width={132} height={110} loading="lazy" className="block h-auto w-28 shrink-0 object-contain sm:w-32" />
-            <span className="font-display text-2xl text-gradient-metal">Motard de Cœur</span>
+            <img src="/favicon.png" alt="" aria-hidden="true" width={96} height={96} loading="lazy" className="block h-14 w-14 shrink-0 object-contain sm:h-16 sm:w-16" />
+            <span className="font-display text-2xl font-bold uppercase leading-none tracking-wide text-gradient-metal">Motards<br />de Cœur</span>
           </div>
           <p className="text-muted-foreground max-w-md mb-6 italic">
             "La route rapproche les cœurs."
@@ -50,7 +49,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-border/40 py-6 px-6 text-center text-xs text-muted-foreground tracking-wider">
-        <div>© {new Date().getFullYear()} Motard de Cœur — Find someone who shares your road.</div>
+        <div>© {new Date().getFullYear()} Motards de Cœur — Find someone who shares your road.</div>
         <div className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-2 normal-case tracking-normal">
           <Link to="/confidentialite" className="hover:text-primary transition">Politique de confidentialité</Link>
           <Link to="/mentions-legales" className="hover:text-primary transition">Mentions légales</Link>

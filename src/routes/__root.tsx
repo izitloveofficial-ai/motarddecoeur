@@ -12,7 +12,8 @@ import {
 import appCss from "../styles.css?url";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
-const BRAND_LOGO_URL = `${SITE_URL}/logo-motard-de-coeur.png`;
+const BRAND_LOGO_URL = `${SITE_URL}/favicon.png`;
+const BRAND_NAME = "Motards de Cœur";
 
 function NotFoundComponent() {
   return (
@@ -76,15 +77,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Motard de Cœur" },
-      { name: "author", content: "Motard de Cœur" },
-      { property: "og:site_name", content: "Motard de Cœur" },
+      { title: BRAND_NAME },
+      { name: "author", content: BRAND_NAME },
+      { property: "og:site_name", content: BRAND_NAME },
       { property: "og:type", content: "website" },
       { property: "og:image", content: BRAND_LOGO_URL },
-      { property: "og:image:alt", content: "Logo Les Motards de Cœur" },
+      { property: "og:image:alt", content: "Logo Motards de Cœur" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: BRAND_LOGO_URL },
-      { name: "twitter:image:alt", content: "Logo Les Motards de Cœur" },
+      { name: "twitter:image:alt", content: "Logo Motards de Cœur" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -103,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             {
               "@type": "Organization",
               "@id": `${SITE_URL}/#organization`,
-              name: "Motard de Cœur",
+              name: BRAND_NAME,
               url: SITE_URL,
               logo: BRAND_LOGO_URL,
               image: BRAND_LOGO_URL,
@@ -112,7 +113,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@type": "WebSite",
               "@id": `${SITE_URL}/#website`,
               url: SITE_URL,
-              name: "Motard de Cœur",
+              name: BRAND_NAME,
               description: "Communauté premium de rencontres et événements pour motards.",
               publisher: { "@id": `${SITE_URL}/#organization` },
             },
