@@ -13,7 +13,7 @@ import appCss from "../styles.css?url";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 const BRAND_LOGO_URL = `${SITE_URL}/favicon.png`;
-const BRAND_NAME = "Motard de Cœur";
+const BRAND_NAME = "Motards de Cœur";
 
 function NotFoundComponent() {
   return (
@@ -82,10 +82,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: BRAND_NAME },
       { property: "og:type", content: "website" },
       { property: "og:image", content: BRAND_LOGO_URL },
-      { property: "og:image:alt", content: "Logo Motard de Cœur" },
+      { property: "og:image:alt", content: "Logo Motards de Cœur" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: BRAND_LOGO_URL },
-      { name: "twitter:image:alt", content: "Logo Motard de Cœur" },
+      { name: "twitter:image:alt", content: "Logo Motards de Cœur" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
