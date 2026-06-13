@@ -1,14 +1,17 @@
 import { Link } from "@tanstack/react-router";
 import { Send } from "lucide-react";
+import { BrandLogo } from "./BrandLogo";
 
 export function Footer() {
   return (
     <footer className="relative mt-32 border-t border-border/40 bg-card/40">
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-3 mb-4">
-            <img src="/favicon.png" alt="" aria-hidden="true" width={96} height={96} loading="lazy" className="block h-14 w-14 shrink-0 object-contain sm:h-16 sm:w-16" />
-            <span className="font-display text-2xl font-bold uppercase leading-none tracking-wide text-gradient-metal">Motards<br />de Cœur</span>
+          <div className="mb-4">
+            <BrandLogo
+              markClassName="h-14 w-14 sm:h-16 sm:w-16"
+              textClassName="text-2xl text-gradient-metal"
+            />
           </div>
           <p className="text-muted-foreground max-w-md mb-6 italic">
             "La route rapproche les cœurs."
