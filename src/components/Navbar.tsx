@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { BrandLogo } from "./BrandLogo";
 
 const links = [
   { to: "/", label: "Accueil" },
@@ -18,18 +19,11 @@ export function Navbar() {
     <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 xl:py-2">
-        <Link to="/" aria-label="Motards de Cœur - Accueil" className="flex shrink-0 items-center gap-3 group">
-          <img
-            src="/favicon.png"
-            alt=""
-            aria-hidden="true"
-            width={96}
-            height={96}
-            className="block h-12 w-12 shrink-0 object-contain transition-transform group-hover:scale-105 sm:h-14 sm:w-14 md:h-16 md:w-16 xl:h-[72px] xl:w-[72px]"
+        <Link to="/" aria-label="Motards de Cœur - Accueil" className="group shrink-0">
+          <BrandLogo
+            markClassName="h-12 w-12 transition-transform group-hover:scale-105 sm:h-14 sm:w-14 md:h-16 md:w-16 xl:h-[72px] xl:w-[72px]"
+            textClassName="text-lg text-neutral-950 sm:text-xl md:text-2xl"
           />
-          <span className="font-display text-lg font-bold uppercase leading-none tracking-wide text-neutral-950 sm:text-xl md:text-2xl">
-            Motards<br />de Cœur
-          </span>
         </Link>
 
         <div className="hidden xl:flex items-center gap-5 2xl:gap-8">
