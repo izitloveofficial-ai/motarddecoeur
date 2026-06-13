@@ -22,8 +22,8 @@ export function Navbar() {
         <Link to="/" aria-label="Motards de Cœur - Accueil" className="group shrink-0">
           <BrandLogo
             className="transition-transform group-hover:scale-[1.02]"
-            markClassName="h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14"
-            textClassName="text-base text-neutral-950 sm:text-lg md:text-xl"
+            markClassName="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 xl:h-[72px] xl:w-[72px]"
+            textClassName="text-base text-neutral-950 sm:text-lg md:text-xl xl:text-[1.65rem]"
           />
         </Link>
 
