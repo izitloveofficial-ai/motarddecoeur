@@ -8,7 +8,10 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
           <div className="mb-4">
-            <BrandLogo imageClassName="h-16 w-auto rounded-md bg-white sm:h-20" />
+            <BrandLogo
+              markClassName="h-14 w-14 sm:h-16 sm:w-16"
+              textClassName="text-xl text-foreground sm:text-2xl"
+            />
           </div>
           <p className="text-muted-foreground max-w-md mb-6 italic">
             "La route rapproche les cœurs."
