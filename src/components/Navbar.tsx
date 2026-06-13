@@ -21,7 +21,7 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 xl:py-2">
         <Link to="/" aria-label="Motards de Cœur - Accueil" className="group shrink-0">
           <BrandLogo
-            markClassName="h-12 w-12 transition-transform group-hover:scale-105 sm:h-14 sm:w-14 md:h-16 md:w-16 xl:h-[72px] xl:w-[72px]"
+            className="transition-transform group-hover:scale-[1.02]"
             textClassName="text-lg text-neutral-950 sm:text-xl md:text-2xl"
           />
         </Link>
