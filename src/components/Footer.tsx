@@ -8,10 +8,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
           <div className="mb-4">
-            <BrandLogo
-              markClassName="h-14 w-14 sm:h-16 sm:w-16"
-              textClassName="text-2xl text-gradient-metal"
-            />
+            <BrandLogo imageClassName="h-16 w-auto rounded-md bg-white sm:h-20" />
           </div>
           <p className="text-muted-foreground max-w-md mb-6 italic">
             "La route rapproche les cœurs."
@@ -52,7 +49,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-border/40 py-6 px-6 text-center text-xs text-muted-foreground tracking-wider">
-        <div>© {new Date().getFullYear()} Motards de Cœur — Find someone who shares your road.</div>
+        <div>© {new Date().getFullYear()} Motard de Cœur — Find someone who shares your road.</div>
         <div className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-2 normal-case tracking-normal">
           <Link to="/confidentialite" className="hover:text-primary transition">Politique de confidentialité</Link>
           <Link to="/mentions-legales" className="hover:text-primary transition">Mentions légales</Link>
