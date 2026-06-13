@@ -19,10 +19,10 @@ export function Navbar() {
     <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 xl:py-2">
-        <Link to="/" aria-label="Motards de Cœur - Accueil" className="group shrink-0">
+        <Link to="/" aria-label="Motard de Cœur - Accueil" className="group shrink-0">
           <BrandLogo
             className="transition-transform group-hover:scale-[1.02]"
-            textClassName="text-lg text-neutral-950 sm:text-xl md:text-2xl"
+            imageClassName="h-12 w-auto sm:h-14 md:h-16 xl:h-[68px]"
           />
         </Link>
 
