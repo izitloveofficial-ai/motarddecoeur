@@ -1,8 +1,8 @@
-# Motard de Cœur
+# Motards de Cœur
 
 > Plateforme premium de rencontres et de communauté pour passionnés de moto. Ride. Connect. Feel.
 
-Motard de Cœur réunit des motards autour d'un projet de matching authentique, d'événements envisagés (road trips, festivals, charity rides) et d'une communauté soudée à construire progressivement.
+Motards de Cœur réunit des motards autour d'un projet de matching authentique, d'événements envisagés (road trips, festivals, charity rides) et d'une communauté soudée à construire progressivement.
 
 ## Pages
 
@@ -11,5 +11,5 @@ Motard de Cœur réunit des motards autour d'un projet de matching authentique, 
 - [Événements](/events): Vision des futurs road trips, festivals et rassemblements biker.
 - [Communauté](/community): Groupes, feed social et ride planning envisagés entre passionnés.
 - [Premium](/premium): Présentation des formules Free, Premium et VIP Club prévues.
-- [À propos](/about): Histoire, vision et valeurs de Motard de Cœur.
+- [À propos](/about): Histoire, vision et valeurs de Motards de Cœur.
 - [Contact](/contact): Contact officiel, demandes RGPD et informations de projet.
