@@ -10,10 +10,10 @@ const SITE_URL = "https://motarddecoeur.lovable.app";
 export const Route = createFileRoute("/join")({
   head: () => ({
     meta: [
-      { title: "Pré-inscription — Motard de Cœur" },
-      { name: "description", content: "Inscrivez-vous pour être prévenu du lancement de Motard de Cœur : rencontres, balades, événements et affinités entre passionnés de moto." },
-      { property: "og:title", content: "Pré-inscription — Motard de Cœur" },
-      { property: "og:description", content: "La communauté Motard de Cœur ouvre bientôt. Soyez prévenu du lancement." },
+      { title: "Pré-inscription — Motards de Cœur" },
+      { name: "description", content: "Inscrivez-vous pour être prévenu du lancement de Motards de Cœur : rencontres, balades, événements et affinités entre passionnés de moto." },
+      { property: "og:title", content: "Pré-inscription — Motards de Cœur" },
+      { property: "og:description", content: "La communauté Motards de Cœur ouvre bientôt. Soyez prévenu du lancement." },
       { property: "og:url", content: `${SITE_URL}/join` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/join` }],
@@ -125,7 +125,7 @@ function Join() {
       return;
     }
 
-    setStatus({ type: "success", message: "Pré-inscription confirmée. Vous serez prévenu au lancement de Motard de Cœur." });
+    setStatus({ type: "success", message: "Pré-inscription confirmée. Vous serez prévenu au lancement de Motards de Cœur." });
     form.reset();
   };
 
@@ -138,7 +138,7 @@ function Join() {
               <Clock className="h-3 w-3" /> Ouverture prochaine
             </span>
             <h1 className="font-display text-5xl md:text-7xl leading-none mb-6">
-              La communauté <span className="text-gradient-red italic">Motard de Cœur</span> ouvre bientôt.
+              La communauté <span className="text-gradient-red italic">Motards de Cœur</span> ouvre bientôt.
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mb-8">
               Rencontres, balades, événements et affinités entre passionnés de moto.
@@ -164,7 +164,7 @@ function Join() {
               <span className="text-primary uppercase tracking-[0.35em] text-xs">Pré-inscription</span>
               <h2 className="font-display text-3xl mt-3 mb-3">Soyez prévenu du lancement</h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Remplissez ce formulaire pour rejoindre la première liste d'attente Motard de Cœur.
+                Remplissez ce formulaire pour rejoindre la première liste d'attente Motards de Cœur.
                 Aucun compte, aucun paiement et aucune messagerie ne sont créés à cette étape.
               </p>
             </div>
@@ -214,7 +214,7 @@ function Join() {
               <label className="flex items-start gap-3 rounded-xl border border-border bg-input/30 p-4 text-sm text-muted-foreground">
                 <input type="checkbox" name="consent_rgpd" className="mt-1 accent-primary" />
                 <span>
-                  J'accepte que Motard de Cœur conserve ces informations pour me recontacter au sujet du lancement, conformément à la{" "}
+                  J'accepte que Motards de Cœur conserve ces informations pour me recontacter au sujet du lancement, conformément à la{" "}
                   <Link to="/confidentialite" className="text-primary hover:underline">politique de confidentialité</Link>.
                 </span>
               </label>
