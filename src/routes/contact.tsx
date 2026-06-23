@@ -9,10 +9,10 @@ const hasContactEmail = CONTACT_EMAIL.length > 0;
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Motard de Cœur" },
-      { name: "description", content: "Contact officiel de Motard de Cœur pour les demandes générales et RGPD." },
-      { property: "og:title", content: "Contact — Motard de Cœur" },
-      { property: "og:description", content: "Contactez Motard de Cœur pour les demandes générales, RGPD et liées au lancement." },
+      { title: "Contact — Motards de Cœur" },
+      { name: "description", content: "Contact officiel de Motards de Cœur pour les demandes générales et RGPD." },
+      { property: "og:title", content: "Contact — Motards de Cœur" },
+      { property: "og:description", content: "Contactez Motards de Cœur pour les demandes générales, RGPD et liées au lancement." },
       { property: "og:url", content: `${SITE_URL}/contact` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/contact` }],
@@ -22,12 +22,12 @@ export const Route = createFileRoute("/contact")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ContactPage",
-          name: "Contact — Motard de Cœur",
+          name: "Contact — Motards de Cœur",
           url: `${SITE_URL}/contact`,
-          description: "Page de contact officielle de Motard de Cœur pour les demandes générales et RGPD.",
+          description: "Page de contact officielle de Motards de Cœur pour les demandes générales et RGPD.",
           publisher: {
             "@type": "Organization",
-            name: "Motard de Cœur",
+            name: "Motards de Cœur",
             url: SITE_URL,
           },
         }),
@@ -45,7 +45,7 @@ function Contact() {
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Contact</span>
           <h1 className="font-display text-5xl md:text-7xl mt-4">Restons <span className="text-gradient-red italic">en lien.</span></h1>
           <p className="text-muted-foreground max-w-2xl mt-4 text-lg">
-            Motard de Cœur est en préparation. Pour toute demande générale ou RGPD, vous pouvez écrire à contact@motarddecoeur.fr.
+            Motards de Cœur est en préparation. Pour toute demande générale ou RGPD, vous pouvez écrire à contact@motarddecoeur.fr.
           </p>
         </div>
       </section>
