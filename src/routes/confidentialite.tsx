@@ -9,10 +9,10 @@ const CONTACT_EMAIL = "contact@motarddecoeur.fr";
 export const Route = createFileRoute("/confidentialite")({
   head: () => ({
     meta: [
-      { title: "Politique de confidentialité — Motard de Cœur" },
-      { name: "description", content: "Politique de confidentialité de Motard de Cœur pour la pré-inscription et l'information sur le lancement." },
-      { property: "og:title", content: "Politique de confidentialité — Motard de Cœur" },
-      { property: "og:description", content: "Découvrez comment Motard de Cœur utilise les données de pré-inscription." },
+      { title: "Politique de confidentialité — Motards de Cœur" },
+      { name: "description", content: "Politique de confidentialité de Motards de Cœur pour la pré-inscription et l'information sur le lancement." },
+      { property: "og:title", content: "Politique de confidentialité — Motards de Cœur" },
+      { property: "og:description", content: "Découvrez comment Motards de Cœur utilise les données de pré-inscription." },
       { property: "og:url", content: `${SITE_URL}/confidentialite` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/confidentialite` }],
@@ -26,12 +26,12 @@ function Confidentialite() {
       <LegalPage
         eyebrow="Confidentialité"
         title="Politique de confidentialité"
-        intro="Cette page explique comment Motard de Cœur traite les données transmises lors de la pré-inscription au lancement."
+        intro="Cette page explique comment Motards de Cœur traite les données transmises lors de la pré-inscription au lancement."
       >
         <LegalSection title="Finalité de la collecte">
           <p>
             Les informations envoyées via la page de pré-inscription servent uniquement à constituer une liste d'attente,
-            à mesurer l'intérêt pour Motard de Cœur et à vous informer du lancement du service.
+            à mesurer l'intérêt pour Motards de Cœur et à vous informer du lancement du service.
           </p>
         </LegalSection>
 
@@ -58,7 +58,7 @@ function Confidentialite() {
 
         <LegalSection title="Vente ou partage commercial">
           <p>
-            Motard de Cœur ne vend pas les données de pré-inscription. Les informations transmises ne sont pas revendues à des tiers.
+            Motards de Cœur ne vend pas les données de pré-inscription. Les informations transmises ne sont pas revendues à des tiers.
           </p>
         </LegalSection>
 
@@ -80,7 +80,7 @@ function Confidentialite() {
 
         <LegalSection title="Évolution de cette politique">
           <p>
-            Cette politique pourra être mise à jour lorsque Motard de Cœur proposera de nouvelles fonctionnalités comme les comptes,
+            Cette politique pourra être mise à jour lorsque Motards de Cœur proposera de nouvelles fonctionnalités comme les comptes,
             les profils, les événements, la messagerie ou les offres premium.
           </p>
         </LegalSection>
