@@ -37,10 +37,10 @@ export function Footer() {
           <h4 className="text-sm uppercase tracking-widest text-foreground mb-4">Communauté</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><Link to="/join" className="hover:text-primary transition">Pré-inscription</Link></li>
-            <li><Link to="/profiles" className="hover:text-primary transition">Membres</Link></li>
-            <li><Link to="/events" className="hover:text-primary transition">Événements</Link></li>
-            <li><Link to="/community" className="hover:text-primary transition">Forums</Link></li>
-            <li><Link to="/premium" className="hover:text-primary transition">Premium</Link></li>
+            <li><Link to="/profiles" className="hover:text-primary transition">Aperçu membres</Link></li>
+            <li><Link to="/events" className="hover:text-primary transition">Événements à venir</Link></li>
+            <li><Link to="/community" className="hover:text-primary transition">Communauté à venir</Link></li>
+            <li><Link to="/premium" className="hover:text-primary transition">Premium à venir</Link></li>
           </ul>
         </div>
 
