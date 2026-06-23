@@ -9,10 +9,10 @@ const CONTACT_EMAIL = "contact@motarddecoeur.fr";
 export const Route = createFileRoute("/conditions-utilisation")({
   head: () => ({
     meta: [
-      { title: "Conditions d'utilisation — Motard de Cœur" },
-      { name: "description", content: "Conditions d'utilisation de la version actuelle de Motard de Cœur et de sa pré-inscription." },
-      { property: "og:title", content: "Conditions d'utilisation — Motard de Cœur" },
-      { property: "og:description", content: "Cadre d'utilisation de Motard de Cœur avant le lancement complet du service." },
+      { title: "Conditions d'utilisation — Motards de Cœur" },
+      { name: "description", content: "Conditions d'utilisation de la version actuelle de Motards de Cœur et de sa pré-inscription." },
+      { property: "og:title", content: "Conditions d'utilisation — Motards de Cœur" },
+      { property: "og:description", content: "Cadre d'utilisation de Motards de Cœur avant le lancement complet du service." },
       { property: "og:url", content: `${SITE_URL}/conditions-utilisation` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/conditions-utilisation` }],
@@ -31,21 +31,21 @@ function ConditionsUtilisation() {
             </span>
             <h1 className="font-display text-5xl md:text-7xl mt-4 mb-6">Conditions d'utilisation</h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Ces conditions encadrent l'utilisation de la version actuelle du site Motard de Cœur, avant l'ouverture de l'application complète.
+              Ces conditions encadrent l'utilisation de la version actuelle du site Motards de Cœur, avant l'ouverture de l'application complète.
             </p>
           </div>
 
           <div className="glass rounded-3xl p-6 md:p-10 space-y-10 text-muted-foreground leading-relaxed">
             <LegalSection title="Service actuellement proposé">
               <p>
-                Motard de Cœur est actuellement un site de présentation avec une page de pré-inscription au lancement.
+                Motards de Cœur est actuellement un site de présentation avec une page de pré-inscription au lancement.
                 Il ne propose pas encore de compte utilisateur, de profil public, de messagerie, de paiement ou de rencontre active.
               </p>
             </LegalSection>
 
             <LegalSection title="Pré-inscription">
               <p>
-                La pré-inscription permet de manifester son intérêt pour le lancement de Motard de Cœur.
+                La pré-inscription permet de manifester son intérêt pour le lancement de Motards de Cœur.
                 Elle ne garantit pas un accès immédiat au service final et ne crée pas de compte utilisateur.
               </p>
             </LegalSection>
@@ -58,7 +58,7 @@ function ConditionsUtilisation() {
 
             <LegalSection title="Respect et sécurité">
               <p>
-                Motard de Cœur est pensé comme une communauté respectueuse entre passionnés de moto.
+                Motards de Cœur est pensé comme une communauté respectueuse entre passionnés de moto.
                 Les futurs services pourront inclure des règles complémentaires de modération, de sécurité et de comportement.
               </p>
             </LegalSection>
