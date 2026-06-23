@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { Heart, MessageCircle, MapPin, Search, SlidersHorizontal, BadgeCheck } from "lucide-react";
+import { Heart, MessageCircle, MapPin, Search, SlidersHorizontal } from "lucide-react";
 import w1 from "@/assets/profile-woman.jpg";
 import w2 from "@/assets/profile-woman2.jpg";
 import m1 from "@/assets/profile-man.jpg";
@@ -24,14 +24,14 @@ export const Route = createFileRoute("/profiles")({
 
 type Profile = {
   name: string; age: number; bike: string; city: string; style: string;
-  tags: string[]; match: number; img: string; verified?: boolean;
+  tags: string[]; match: number; img: string;
 };
 
 const PROFILES: Profile[] = [
-  { name: "Sophie", age: 29, bike: "Harley Sportster", city: "Lyon", style: "Touring", tags: ["Liberté", "Voyage", "Café racer"], match: 96, img: w1, verified: true },
-  { name: "Marc", age: 34, bike: "Ducati Monster", city: "Marseille", style: "Sport", tags: ["Adrénaline", "Trackday", "Bricoleur"], match: 92, img: m1, verified: true },
+  { name: "Sophie", age: 29, bike: "Harley Sportster", city: "Lyon", style: "Touring", tags: ["Liberté", "Voyage", "Café racer"], match: 96, img: w1 },
+  { name: "Marc", age: 34, bike: "Ducati Monster", city: "Marseille", style: "Sport", tags: ["Adrénaline", "Trackday", "Bricoleur"], match: 92, img: m1 },
   { name: "Camille", age: 27, bike: "Triumph Bonneville", city: "Bordeaux", style: "Vintage", tags: ["Café racer", "Photo", "Évasion"], match: 89, img: w2 },
-  { name: "Antoine", age: 52, bike: "Harley Road King", city: "Paris", style: "Cruiser", tags: ["Brotherhood", "Road trip", "Blues"], match: 87, img: m2, verified: true },
+  { name: "Antoine", age: 52, bike: "Harley Road King", city: "Paris", style: "Cruiser", tags: ["Brotherhood", "Road trip", "Blues"], match: 87, img: m2 },
   { name: "Léa", age: 31, bike: "BMW R nineT", city: "Strasbourg", style: "Custom", tags: ["Design", "Voyage", "Yoga"], match: 84, img: w1 },
   { name: "Julien", age: 38, bike: "KTM 1290 SuperDuke", city: "Toulouse", style: "Hyper-naked", tags: ["Mountain", "Solo", "Café"], match: 81, img: m1 },
 ];
@@ -41,9 +41,12 @@ function Profiles() {
     <Layout>
       <section className="py-16 px-6 border-b border-border/40">
         <div className="mx-auto max-w-7xl">
-          <span className="text-primary uppercase tracking-[0.4em] text-xs">Communauté</span>
+          <span className="text-primary uppercase tracking-[0.4em] text-xs">Aperçu de maquette</span>
           <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">Imaginez votre <span className="text-gradient-red italic">complice de route</span></h1>
-          <p className="text-muted-foreground max-w-2xl">Ces profils sont des exemples de maquette. Les profils réels seront ouverts dans une prochaine phase.</p>
+          <p className="text-muted-foreground max-w-2xl">
+            Ces cartes sont des exemples fictifs destinés à présenter l'ambiance du futur service.
+            Aucun profil membre réel, like ou message privé n'est encore disponible.
+          </p>
 
           <div className="mt-10 flex flex-wrap gap-3 items-center">
             <label htmlFor="profile-search" className="flex items-center gap-2 flex-1 min-w-[280px] max-w-md glass px-4 py-3 rounded-full opacity-75">
@@ -72,13 +75,12 @@ function Profiles() {
                 <div className="absolute inset-0 bg-gradient-overlay" />
 
                 <div className="absolute top-4 right-4 glass-red px-3 py-1.5 rounded-full text-xs font-medium">
-                  Exemple
+                  Exemple fictif
                 </div>
 
                 <div className="absolute inset-x-0 bottom-0 p-6">
                   <div className="flex items-center gap-2 mb-1">
                     <h2 className="text-2xl font-display">{p.name}, <span className="text-foreground/70">{p.age}</span></h2>
-                    {p.verified && <BadgeCheck className="h-5 w-5 text-primary fill-primary/20" />}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-foreground/80 mb-3">
                     <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{p.city}</span>
@@ -115,7 +117,7 @@ function Profiles() {
 
         <div className="text-center mt-16">
           <Link to="/join" className="inline-flex px-8 py-4 glass rounded-full uppercase tracking-wider text-sm hover:bg-primary/20 transition">
-            Pré-inscription au lancement
+            Me préinscrire au lancement
           </Link>
         </div>
       </section>

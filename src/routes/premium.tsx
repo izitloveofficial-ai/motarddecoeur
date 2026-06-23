@@ -36,7 +36,7 @@ const PLANS = [
   },
   {
     name: "Premium",
-    price: "À l'étude",
+    price: "Non actif",
     desc: "Fonctionnalités envisagées",
     features: [
       { ok: true, text: "Profils plus complets" },
@@ -77,7 +77,7 @@ function Premium() {
           </span>
           <h1 className="font-display text-5xl md:text-7xl mb-6">Une expérience <span className="text-gradient-red italic">à construire</span></h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Les offres premium ne sont pas encore ouvertes. Cette page présente les pistes envisagées après la pré-inscription.
+            Les offres premium ne sont pas encore ouvertes. Aucun abonnement, paiement ou avantage commercial n'est actif pendant cette phase de pré-lancement.
           </p>
         </div>
       </section>
@@ -117,14 +117,14 @@ function Premium() {
                 to="/join"
                 className={`block w-full py-4 rounded-full text-center uppercase tracking-wider text-sm font-medium transition ${p.popular ? "bg-gradient-red text-primary-foreground shadow-glow hover:scale-[1.02]" : "bg-foreground/10 hover:bg-foreground/20"}`}
               >
-                Pré-inscription
+                Me préinscrire
               </Link>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-16 text-sm text-muted-foreground flex items-center justify-center gap-2">
-          <Zap className="h-4 w-4 text-primary" /> Aucun paiement ni abonnement n'est connecté pour l'instant.
+          <Zap className="h-4 w-4 text-primary" /> Aucun paiement, abonnement ou espace premium n'est connecté pour l'instant.
         </div>
       </section>
     </Layout>
