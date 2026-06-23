@@ -7,10 +7,10 @@ const SITE_URL = "https://motarddecoeur.lovable.app";
 export const Route = createFileRoute("/premium")({
   head: () => ({
     meta: [
-      { title: "Premium — Motard de Cœur" },
-      { name: "description", content: "Aperçu des futures pistes premium Motard de Cœur, non disponibles au lancement de la pré-inscription." },
-      { property: "og:title", content: "Premium — Motard de Cœur" },
-      { property: "og:description", content: "Découvrez la vision des futures offres premium Motard de Cœur avant l'ouverture commerciale." },
+      { title: "Premium — Motards de Cœur" },
+      { name: "description", content: "Aperçu des futures pistes premium Motards de Cœur, non disponibles au lancement de la pré-inscription." },
+      { property: "og:title", content: "Premium — Motards de Cœur" },
+      { property: "og:description", content: "Découvrez la vision des futures offres premium Motards de Cœur avant l'ouverture commerciale." },
       { property: "og:url", content: `${SITE_URL}/premium` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/premium` }],
