@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { MessageCircle, Users, MapPin, Flame, Heart, Share2 } from "lucide-react";
 import community from "@/assets/community-ride.jpg";
@@ -43,9 +43,12 @@ function Community() {
     <Layout>
       <section className="py-16 px-6 border-b border-border/40">
         <div className="mx-auto max-w-7xl">
-          <span className="text-primary uppercase tracking-[0.4em] text-xs">Tribu</span>
+          <span className="text-primary uppercase tracking-[0.4em] text-xs">Communauté en préparation</span>
           <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">La <span className="text-gradient-red italic">communauté</span> avant tout.</h1>
-          <p className="text-muted-foreground max-w-2xl text-lg">Groupes, discussions et plans de rides sont prévus pour une prochaine phase du projet.</p>
+          <p className="text-muted-foreground max-w-2xl text-lg">
+            Groupes, discussions et plans de rides sont prévus pour une prochaine phase du projet.
+            Aucun fil social, forum ou compte membre n'est ouvert pour l'instant.
+          </p>
         </div>
       </section>
 
@@ -60,7 +63,7 @@ function Community() {
                 <div className="absolute inset-x-0 bottom-0 p-6">
                   <span className="glass-red px-3 py-1 rounded-full text-[10px] uppercase tracking-widest">{g.tag}</span>
                   <h3 className="font-display text-2xl mt-3 mb-1">{g.name}</h3>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Users className="h-3 w-3" /> Communauté à ouvrir</p>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Users className="h-3 w-3" /> Espace à ouvrir</p>
                 </div>
               </article>
             ))}
@@ -71,7 +74,7 @@ function Community() {
       <section className="py-16 px-6">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-6">
-            <h2 className="font-display text-3xl flex items-center gap-3"><MessageCircle className="text-primary" /> Futur feed de la tribu</h2>
+            <h2 className="font-display text-3xl flex items-center gap-3"><MessageCircle className="text-primary" /> Exemples de futurs espaces</h2>
 
             {POSTS.map((p, i) => (
               <article key={i} className="glass rounded-2xl p-6 hover-lift">
@@ -93,6 +96,12 @@ function Community() {
                 </div>
               </article>
             ))}
+
+            <div className="text-center pt-4">
+              <Link to="/join" className="inline-flex px-8 py-4 glass rounded-full uppercase tracking-wider text-sm hover:bg-primary/20 transition">
+                Rejoindre la pré-inscription
+              </Link>
+            </div>
           </div>
 
           <aside className="space-y-8">
