@@ -9,9 +9,9 @@ const SITE_URL = "https://motarddecoeur.lovable.app";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "À propos — Motard de Cœur" },
-      { name: "description", content: "L'histoire de Motard de Cœur : créer des liens authentiques entre passionnés de moto." },
-      { property: "og:title", content: "À propos — Motard de Cœur" },
+      { title: "À propos — Motards de Cœur" },
+      { name: "description", content: "L'histoire de Motards de Cœur : créer des liens authentiques entre passionnés de moto." },
+      { property: "og:title", content: "À propos — Motards de Cœur" },
       { property: "og:description", content: "Notre mission : connecter les cœurs sur la route." },
       { property: "og:url", content: `${SITE_URL}/about` },
     ],
@@ -40,7 +40,7 @@ function About() {
             "Parfois, il suffit d'une rencontre pour changer de route."
           </p>
           <p>
-            Motard de Cœur n'est pas né dans un garage, ni autour d'un plan
+            Motards de Cœur n'est pas né dans un garage, ni autour d'un plan
             marketing. Tout a commencé par une rencontre inattendue, sur un
             site de rencontre tout ce qu'il y a de plus classique. Elle était
             passionnée de moto. Moi, pas du tout.
@@ -66,7 +66,7 @@ function About() {
             De cette belle histoire est née une évidence : les plus belles
             rencontres ne se font pas sur des applis génériques. Elles se font
             entre passionnés, ou grâce à des passionnés capables de transmettre
-            leur feu. <strong className="text-primary">Motard de Cœur</strong>{" "}
+            leur feu. <strong className="text-primary">Motards de Cœur</strong>{" "}
             est né pour ça — offrir à d'autres la rencontre qui les fera, eux
             aussi, enfourcher leur première moto, ou trouver la personne avec
             qui partager la prochaine route.
