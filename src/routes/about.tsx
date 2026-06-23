@@ -67,9 +67,8 @@ function About() {
             rencontres ne se font pas sur des applis génériques. Elles se font
             entre passionnés, ou grâce à des passionnés capables de transmettre
             leur feu. <strong className="text-primary">Motards de Cœur</strong>{" "}
-            est né pour ça — offrir à d'autres la rencontre qui les fera, eux
-            aussi, enfourcher leur première moto, ou trouver la personne avec
-            qui partager la prochaine route.
+            est né pour ça — préparer un espace où d'autres pourront, demain,
+            trouver la personne avec qui partager la prochaine route.
           </p>
           <p className="text-xl text-foreground font-display italic">
             Parce qu'au fond, <em>la route rapproche les cœurs</em>.
@@ -109,9 +108,9 @@ function About() {
             <span className="text-primary uppercase tracking-[0.4em] text-xs">Mission</span>
             <h2 className="font-display text-5xl mt-4 mb-6">Connecter les âmes libres.</h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              Nous existons pour briser l'isolement du motard solitaire. Pour
-              transformer chaque rencontre en aventure, chaque match en road trip,
-              chaque conversation en histoire qui mérite d'être racontée.
+              Le projet veut aider les motards à sortir de l'isolement, à rencontrer
+              des personnes qui partagent leur passion et à transformer de futures
+              conversations en balades, lorsque les fonctionnalités seront ouvertes progressivement.
             </p>
           </div>
         </div>
