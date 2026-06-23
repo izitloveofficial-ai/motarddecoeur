@@ -20,10 +20,10 @@ const EVENTS = [
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
-      { title: "Événements — Motard de Cœur" },
-      { name: "description", content: "Pistes d'événements Motard de Cœur : balades, festivals, rassemblements et rides solidaires à confirmer." },
-      { property: "og:title", content: "Événements — Motard de Cœur" },
-      { property: "og:description", content: "Découvrez les idées d'événements envisagées pour la future communauté Motard de Cœur." },
+      { title: "Événements — Motards de Cœur" },
+      { name: "description", content: "Pistes d'événements Motards de Cœur : balades, festivals, rassemblements et rides solidaires à confirmer." },
+      { property: "og:title", content: "Événements — Motards de Cœur" },
+      { property: "og:description", content: "Découvrez les idées d'événements envisagées pour la future communauté Motards de Cœur." },
       { property: "og:url", content: `${SITE_URL}/events` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/events` }],

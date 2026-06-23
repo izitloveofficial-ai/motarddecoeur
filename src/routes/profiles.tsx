@@ -11,9 +11,9 @@ const SITE_URL = "https://motarddecoeur.lovable.app";
 export const Route = createFileRoute("/profiles")({
   head: () => ({
     meta: [
-      { title: "Membres — Motard de Cœur" },
-      { name: "description", content: "Aperçu de la future expérience membres Motard de Cœur avant le lancement des profils réels." },
-      { property: "og:title", content: "Membres — Motard de Cœur" },
+      { title: "Membres — Motards de Cœur" },
+      { name: "description", content: "Aperçu de la future expérience membres Motards de Cœur avant le lancement des profils réels." },
+      { property: "og:title", content: "Membres — Motards de Cœur" },
       { property: "og:description", content: "Découvrez la vision des futurs profils motards et pré-inscrivez-vous au lancement." },
       { property: "og:url", content: `${SITE_URL}/profiles` },
     ],

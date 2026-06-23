@@ -13,10 +13,10 @@ const SITE_URL = "https://motarddecoeur.lovable.app";
 export const Route = createFileRoute("/community")({
   head: () => ({
     meta: [
-      { title: "Communauté — Motard de Cœur" },
-      { name: "description", content: "Vision de la future communauté Motard de Cœur : groupes, discussions, balades et expériences partagées." },
-      { property: "og:title", content: "Communauté — Motard de Cœur" },
-      { property: "og:description", content: "Découvrez la vision communautaire de Motard de Cœur avant le lancement complet du service." },
+      { title: "Communauté — Motards de Cœur" },
+      { name: "description", content: "Vision de la future communauté Motards de Cœur : groupes, discussions, balades et expériences partagées." },
+      { property: "og:title", content: "Communauté — Motards de Cœur" },
+      { property: "og:description", content: "Découvrez la vision communautaire de Motards de Cœur avant le lancement complet du service." },
       { property: "og:url", content: `${SITE_URL}/community` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/community` }],
