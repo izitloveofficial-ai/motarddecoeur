@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { MapPin, Users, ArrowRight } from "lucide-react";
 import hero from "@/assets/hero-sunset.jpg";
@@ -40,7 +40,7 @@ function Events() {
           <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">L'asphalte <span className="text-gradient-red italic">vous appelle.</span></h1>
           <p className="text-muted-foreground max-w-2xl text-lg">
             Balades, festivals et rides solidaires font partie des idées de lancement.
-            Les dates et inscriptions seront confirmées plus tard.
+            Aucun événement n'est encore confirmé, réservable ou ouvert aux inscriptions.
           </p>
         </div>
       </section>
@@ -58,9 +58,9 @@ function Events() {
                 <span className="flex items-center gap-1"><MapPin className="h-4 w-4" />{EVENTS[0].loc}</span>
                 <span className="flex items-center gap-1"><Users className="h-4 w-4" />{EVENTS[0].spots}</span>
               </p>
-              <button type="button" disabled className="self-start inline-flex cursor-not-allowed items-center gap-2 px-7 py-3 bg-gradient-red rounded-full uppercase tracking-wider text-sm font-medium opacity-75 shadow-glow transition">
-                Inscription non ouverte <ArrowRight className="h-4 w-4" />
-              </button>
+              <Link to="/join" className="self-start inline-flex items-center gap-2 px-7 py-3 bg-gradient-red rounded-full uppercase tracking-wider text-sm font-medium shadow-glow transition hover:scale-105">
+                Être prévenu du lancement <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </div>
@@ -83,7 +83,7 @@ function Events() {
                   <span className="flex items-center gap-1"><Users className="h-3 w-3" />{e.spots}</span>
                 </div>
                 <button type="button" disabled className="w-full cursor-not-allowed py-3 rounded-full bg-foreground/5 text-sm uppercase tracking-wider text-muted-foreground opacity-75 transition">
-                  Inscription bientôt disponible
+                  Réservation non ouverte
                 </button>
               </div>
             </article>
