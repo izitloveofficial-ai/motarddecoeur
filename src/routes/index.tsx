@@ -9,16 +9,18 @@ import w1 from "@/assets/profile-woman.jpg";
 import m1 from "@/assets/profile-man.jpg";
 import w2 from "@/assets/profile-woman2.jpg";
 
+const SITE_URL = "https://motarddecoeur.lovable.app";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Motard de Cœur — La route rapproche les cœurs" },
-      { name: "description", content: "Pré-inscrivez-vous au lancement de Motard de Cœur, le projet de communauté pour motards, rencontres, balades et événements." },
-      { property: "og:title", content: "Motard de Cœur — Ride. Connect. Feel." },
+      { title: "Motards de Cœur — La route rapproche les cœurs" },
+      { name: "description", content: "Pré-inscrivez-vous au lancement de Motards de Cœur, le projet de communauté pour motards, rencontres, balades et événements." },
+      { property: "og:title", content: "Motards de Cœur — Ride. Connect. Feel." },
       { property: "og:description", content: "Projet de plateforme de rencontres et de communauté pour passionnés de moto." },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: SITE_URL },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: SITE_URL }],
   }),
   component: Home,
 });
@@ -51,7 +53,7 @@ function Home() {
               <span className="text-gradient-red italic">les cœurs.</span>
             </h1>
             <p className="text-lg md:text-xl text-foreground/80 max-w-xl mb-10 leading-relaxed">
-              Motard de Cœur prépare un espace pour les passionnés de moto qui veulent
+              Motards de Cœur prépare un espace pour les passionnés de moto qui veulent
               partager plus qu'un trajet : des rencontres, des balades et une communauté
               construite autour de la route.
             </p>
@@ -149,7 +151,7 @@ function Home() {
               <p className="text-sm italic text-foreground/90">
                 "Créer un espace où la passion de la route devient le point de départ d'une vraie rencontre."
               </p>
-              <p className="text-xs text-muted-foreground mt-2">— Vision Motard de Cœur</p>
+              <p className="text-xs text-muted-foreground mt-2">— Vision Motards de Cœur</p>
             </div>
           </div>
           <div>
@@ -159,7 +161,7 @@ function Home() {
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6">
               Chaque rencontre commence par un regard, mais les plus belles
-              histoires peuvent aussi démarrer autour d'une passion commune. Motard de Cœur
+              histoires peuvent aussi démarrer autour d'une passion commune. Motards de Cœur
               veut faire de la route un terrain d'entente sincère.
             </p>
             <Link to="/about" className="inline-flex items-center gap-2 text-primary hover:gap-3 transition-all">
