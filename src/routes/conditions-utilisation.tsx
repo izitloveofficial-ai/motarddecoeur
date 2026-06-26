@@ -4,7 +4,7 @@ import { Layout } from "@/components/Layout";
 import { ScrollText } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
-const CONTACT_EMAIL = "contact@motarddecoeur.fr";
+const CONTACT_EMAIL = "contact@motardsdecoeur.com";
 
 export const Route = createFileRoute("/conditions-utilisation")({
   head: () => ({
