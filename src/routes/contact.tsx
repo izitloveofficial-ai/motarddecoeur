@@ -3,7 +3,7 @@ import { Layout } from "@/components/Layout";
 import { Mail, Send, ShieldCheck } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
-const CONTACT_EMAIL = "contact@motarddecoeur.fr";
+const CONTACT_EMAIL = "contact@motardsdecoeur.com";
 const hasContactEmail = CONTACT_EMAIL.length > 0;
 
 export const Route = createFileRoute("/contact")({
@@ -45,7 +45,7 @@ function Contact() {
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Contact</span>
           <h1 className="font-display text-5xl md:text-7xl mt-4">Restons <span className="text-gradient-red italic">en lien.</span></h1>
           <p className="text-muted-foreground max-w-2xl mt-4 text-lg">
-            Motards de Cœur est en préparation. Pour toute demande générale ou RGPD, vous pouvez écrire à contact@motarddecoeur.fr.
+            Motards de Cœur est en préparation. Pour toute demande générale ou RGPD, vous pouvez écrire à contact@motardsdecoeur.com.
           </p>
         </div>
       </section>
@@ -137,7 +137,7 @@ function Contact() {
                   <div>
                     <div className="text-xs uppercase tracking-widest text-muted-foreground">Demandes RGPD</div>
                     <div className="text-muted-foreground">
-                      Pour accéder, rectifier ou demander la suppression de vos données, écrivez à contact@motarddecoeur.fr.
+                      Pour accéder, rectifier ou demander la suppression de vos données, écrivez à contact@motardsdecoeur.com.
                     </div>
                   </div>
                 </li>
