@@ -56,6 +56,13 @@ function Confidentialite() {
           </p>
         </LegalSection>
 
+        <LegalSection title="Outil de collecte">
+          <p>
+            La pré-inscription est actuellement collectée via Tally, un service externe de formulaire.
+            Les informations transmises via ce formulaire sont utilisées uniquement pour vous recontacter au sujet du lancement.
+          </p>
+        </LegalSection>
+
         <LegalSection title="Vente ou partage commercial">
           <p>
             Motards de Cœur ne vend pas les données de pré-inscription. Les informations transmises ne sont pas revendues à des tiers.
@@ -73,8 +80,8 @@ function Confidentialite() {
 
         <LegalSection title="Sécurité">
           <p>
-            Les pré-inscriptions sont destinées à être stockées dans Supabase avec des règles d'accès limitant la lecture publique.
-            La configuration finale doit être vérifiée avant l'ouverture officielle de la collecte.
+            La collecte actuelle passe par Tally. Avant l'ouverture officielle de fonctionnalités plus avancées,
+            les règles d'accès, de conservation et de sécurité devront être revérifiées selon l'outil retenu.
           </p>
         </LegalSection>
 
