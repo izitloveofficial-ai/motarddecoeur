@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { Bike, CheckCircle2, Clock, ExternalLink, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
+import { Bike, Clock, ExternalLink, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 const TALLY_FORM_URL = "https://tally.so/r/44q7ok";
