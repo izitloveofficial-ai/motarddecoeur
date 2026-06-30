@@ -9,10 +9,10 @@ const TALLY_EMBED_URL = "https://tally.so/embed/44q7ok?alignLeft=1&hideTitle=1&t
 export const Route = createFileRoute("/join")({
   head: () => ({
     meta: [
-      { title: "Pré-inscription — Motards de Cœur" },
-      { name: "description", content: "Inscrivez-vous gratuitement pour être prévenu du lancement de Motards de Cœur : rencontres, balades, événements et affinités entre passionnés de moto." },
-      { property: "og:title", content: "Pré-inscription — Motards de Cœur" },
-      { property: "og:description", content: "La communauté Motards de Cœur ouvre bientôt. Pré-inscrivez-vous gratuitement et sans engagement." },
+      { title: "Pré-inscription gratuite — Motards de Cœur" },
+      { name: "description", content: "Pré-inscrivez-vous gratuitement à Motards de Cœur pour être recontacté au lancement : rencontres, balades, amitié et communauté motarde." },
+      { property: "og:title", content: "Pré-inscription gratuite — Motards de Cœur" },
+      { property: "og:description", content: "Motards de Cœur arrive bientôt. Pré-inscription gratuite et sans engagement pour les passionnés de moto." },
       { property: "og:url", content: `${SITE_URL}/join` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/join` }],
@@ -27,20 +27,22 @@ function Join() {
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 glass-red px-4 py-2 rounded-full text-xs uppercase tracking-widest mb-6">
-              <Clock className="h-3 w-3" /> Pré-inscription ouverte
+              <Clock className="h-3 w-3" /> Pré-inscription gratuite
             </span>
             <h1 className="font-display text-5xl md:text-7xl leading-none mb-6">
-              La communauté <span className="text-gradient-red italic">Motards de Cœur</span> ouvre bientôt.
+              Motards de Cœur arrive bientôt pour les passionnés de moto.
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mb-8">
-              Rencontres, balades, événements et affinités entre passionnés de moto.
-              Pré-inscris-toi gratuitement et sans engagement pour être prévenu du lancement.
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mb-5">
+              Rencontres, balades, amitié et communauté motarde : pré-inscris-toi gratuitement et sans engagement pour être recontacté dès le lancement.
+            </p>
+            <p className="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
+              Le projet rassemble les motards et motardes qui veulent créer de vrais liens autour de la route, des sorties et d'une passion commune.
             </p>
             <div className="grid gap-4 sm:grid-cols-3 max-w-3xl">
               {[
-                { icon: HeartHandshake, title: "Rencontres", text: "Des affinités entre passionnés." },
-                { icon: Bike, title: "Balades", text: "Des rides et sorties locales." },
-                { icon: MapPin, title: "Événements", text: "Des rendez-vous biker à venir." },
+                { icon: MapPin, title: "Motards proches", text: "Rencontrer des motards proches de sa région." },
+                { icon: Bike, title: "Balades moto", text: "Organiser ou rejoindre des balades moto." },
+                { icon: HeartHandshake, title: "Accès prioritaire", text: "Être informé en priorité du lancement." },
               ].map((item) => (
                 <div key={item.title} className="glass rounded-2xl p-5">
                   <item.icon className="h-5 w-5 text-primary mb-3" />
