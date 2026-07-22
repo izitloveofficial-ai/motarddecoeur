@@ -45,7 +45,7 @@ function Profiles() {
           <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">Imaginez votre <span className="text-gradient-red italic">complice de route</span></h1>
           <p className="text-muted-foreground max-w-2xl">
             Ces cartes sont des exemples fictifs destinés à présenter l'ambiance du futur service.
-            Aucun profil membre réel, like ou message privé n'est encore disponible.
+            Aucun profil membre réel, coup de cœur ou message privé n'est encore disponible.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-3 items-center">
