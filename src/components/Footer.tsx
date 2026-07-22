@@ -52,7 +52,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-border/40 py-6 px-6 text-center text-xs text-muted-foreground tracking-wider">
-        <div>© {new Date().getFullYear()} Motards de Cœur — Find someone who shares your road.</div>
+        <div>© {new Date().getFullYear()} Motards de Cœur — Trouvez quelqu'un qui partage votre route.</div>
         <div className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-2 normal-case tracking-normal">
           <Link to="/confidentialite" className="hover:text-primary transition">Politique de confidentialité</Link>
           <Link to="/mentions-legales" className="hover:text-primary transition">Mentions légales</Link>

@@ -28,12 +28,12 @@ type Profile = {
 };
 
 const PROFILES: Profile[] = [
-  { name: "Sophie", age: 29, bike: "Harley Sportster", city: "Lyon", style: "Touring", tags: ["Liberté", "Voyage", "Café racer"], match: 96, img: w1 },
-  { name: "Marc", age: 34, bike: "Ducati Monster", city: "Marseille", style: "Sport", tags: ["Adrénaline", "Trackday", "Bricoleur"], match: 92, img: m1 },
+  { name: "Sophie", age: 29, bike: "Harley Sportster", city: "Lyon", style: "Grand tourisme", tags: ["Liberté", "Voyage", "Café racer"], match: 96, img: w1 },
+  { name: "Marc", age: 34, bike: "Ducati Monster", city: "Marseille", style: "Sport", tags: ["Adrénaline", "Circuit", "Bricoleur"], match: 92, img: m1 },
   { name: "Camille", age: 27, bike: "Triumph Bonneville", city: "Bordeaux", style: "Vintage", tags: ["Café racer", "Photo", "Évasion"], match: 89, img: w2 },
-  { name: "Antoine", age: 52, bike: "Harley Road King", city: "Paris", style: "Cruiser", tags: ["Brotherhood", "Road trip", "Blues"], match: 87, img: m2 },
-  { name: "Léa", age: 31, bike: "BMW R nineT", city: "Strasbourg", style: "Custom", tags: ["Design", "Voyage", "Yoga"], match: 84, img: w1 },
-  { name: "Julien", age: 38, bike: "KTM 1290 SuperDuke", city: "Toulouse", style: "Hyper-naked", tags: ["Mountain", "Solo", "Café"], match: 81, img: m1 },
+  { name: "Antoine", age: 52, bike: "Harley Road King", city: "Paris", style: "Route", tags: ["Fraternité", "Voyage moto", "Blues"], match: 87, img: m2 },
+  { name: "Léa", age: 31, bike: "BMW R nineT", city: "Strasbourg", style: "Préparation", tags: ["Design", "Voyage", "Yoga"], match: 84, img: w1 },
+  { name: "Julien", age: 38, bike: "KTM 1290 SuperDuke", city: "Toulouse", style: "Roadster sportif", tags: ["Montagne", "En solo", "Café"], match: 81, img: m1 },
 ];
 
 function Profiles() {
@@ -45,7 +45,7 @@ function Profiles() {
           <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">Imaginez votre <span className="text-gradient-red italic">complice de route</span></h1>
           <p className="text-muted-foreground max-w-2xl">
             Ces cartes sont des exemples fictifs destinés à présenter l'ambiance du futur service.
-            Aucun profil membre réel, like ou message privé n'est encore disponible.
+            Aucun profil membre réel, coup de cœur ou message privé n'est encore disponible.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-3 items-center">
@@ -54,7 +54,7 @@ function Profiles() {
               <span className="sr-only">Rechercher un motard</span>
               <input id="profile-search" type="search" aria-label="Recherche bientôt disponible" placeholder="Recherche bientôt disponible" disabled className="bg-transparent flex-1 cursor-not-allowed outline-none text-sm text-muted-foreground" />
             </label>
-            {["Tous", "Harley", "Sport", "Touring", "Custom", "Vintage"].map((f, i) => (
+            {["Tous", "Harley", "Sport", "Grand tourisme", "Préparation", "Vintage"].map((f, i) => (
               <button key={i} type="button" disabled className="cursor-not-allowed px-4 py-2 glass rounded-full text-sm text-muted-foreground opacity-75 transition">
                 {f}
               </button>
@@ -104,7 +104,7 @@ function Profiles() {
                   disabled
                   className="flex-1 cursor-not-allowed py-4 flex items-center justify-center gap-2 text-sm uppercase tracking-wider text-muted-foreground opacity-75 transition"
                 >
-                  <Heart className="h-4 w-4" /> Like à venir
+                  <Heart className="h-4 w-4" /> Coup de cœur à venir
                 </button>
                 <div className="w-px bg-border" />
                 <button type="button" disabled className="flex-1 cursor-not-allowed py-4 flex items-center justify-center gap-2 text-sm uppercase tracking-wider text-muted-foreground opacity-75 transition">

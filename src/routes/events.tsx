@@ -9,19 +9,19 @@ import bike from "@/assets/bike-dark.jpg";
 const SITE_URL = "https://motarddecoeur.lovable.app";
 
 const EVENTS = [
-  { date: "À VENIR", title: "Sunset Ride — Côte d'Azur", loc: "Nice → Monaco", type: "Road trip", spots: "places à définir", img: hero, featured: true },
-  { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon · projet", type: "Festival", spots: "format à préciser", img: event },
-  { date: "À VENIR", title: "Charity Ride for Heroes", loc: "Paris · projet", type: "Charity", spots: "à organiser", img: community },
-  { date: "À VENIR", title: "Custom Bike Show", loc: "Bordeaux · projet", type: "Meetup", spots: "à organiser", img: bike },
-  { date: "À VENIR", title: "Alpine Twisties Tour", loc: "Annecy → Chamonix", type: "Road trip", spots: "à définir", img: hero },
-  { date: "À VENIR", title: "Night Rumble Marseille", loc: "Vieux-Port · projet", type: "Meetup", spots: "à organiser", img: event },
+  { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", type: "Balade", spots: "places à définir", img: hero, featured: true },
+  { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon — à venir", type: "Festival", spots: "format à préciser", img: event },
+  { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", type: "Solidaire", spots: "à organiser", img: community },
+  { date: "À VENIR", title: "Expo moto custom", loc: "Bordeaux — à venir", type: "Rencontre", spots: "à organiser", img: bike },
+  { date: "À VENIR", title: "Balade des lacets alpins", loc: "Annecy — Chamonix", type: "Balade", spots: "à définir", img: hero },
+  { date: "À VENIR", title: "Balade nocturne à Marseille", loc: "Vieux-Port — à venir", type: "Rencontre", spots: "à organiser", img: event },
 ];
 
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
       { title: "Événements — Motards de Cœur" },
-      { name: "description", content: "Pistes d'événements Motards de Cœur : balades, festivals, rassemblements et rides solidaires à confirmer." },
+      { name: "description", content: "Pistes d'événements Motards de Cœur : balades, festivals, rassemblements et balades solidaires à confirmer." },
       { property: "og:title", content: "Événements — Motards de Cœur" },
       { property: "og:description", content: "Découvrez les idées d'événements envisagées pour la future communauté Motards de Cœur." },
       { property: "og:url", content: `${SITE_URL}/events` },
@@ -39,7 +39,7 @@ function Events() {
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Agenda à construire</span>
           <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">L'asphalte <span className="text-gradient-red italic">vous appelle.</span></h1>
           <p className="text-muted-foreground max-w-2xl text-lg">
-            Balades, festivals et rides solidaires font partie des idées de lancement.
+            Balades, festivals et balades solidaires font partie des idées de lancement.
             Aucun événement n'est encore confirmé, réservable ou ouvert aux inscriptions.
           </p>
         </div>

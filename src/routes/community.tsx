@@ -25,10 +25,10 @@ export const Route = createFileRoute("/community")({
 });
 
 const GROUPS = [
-  { name: "Cruiser & Harley", img: bike, tag: "Cruiser" },
+  { name: "Routières & Harley", img: bike, tag: "Route" },
   { name: "Sportives & sensations", img: community, tag: "Sport" },
-  { name: "Custom & Café Racer", img: bike, tag: "Custom" },
-  { name: "Touring & grands trajets", img: community, tag: "Touring" },
+  { name: "Préparations & café racers", img: bike, tag: "Prépa" },
+  { name: "Grand tourisme & longs trajets", img: community, tag: "Voyage" },
 ];
 
 const POSTS = [
@@ -46,7 +46,7 @@ function Community() {
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Communauté en préparation</span>
           <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">La <span className="text-gradient-red italic">communauté</span> avant tout.</h1>
           <p className="text-muted-foreground max-w-2xl text-lg">
-            Groupes, discussions et plans de rides sont prévus pour une prochaine phase du projet.
+            Groupes, discussions et projets de balades sont prévus pour une prochaine phase du projet.
             Aucun fil social, forum ou compte membre n'est ouvert pour l'instant.
           </p>
         </div>
@@ -106,12 +106,12 @@ function Community() {
 
           <aside className="space-y-8">
             <div className="glass rounded-2xl p-6">
-              <h3 className="font-display text-xl mb-4 flex items-center gap-2"><MapPin className="text-primary h-5 w-5" /> Ride planning</h3>
+              <h3 className="font-display text-xl mb-4 flex items-center gap-2"><MapPin className="text-primary h-5 w-5" /> Organisation des balades</h3>
               <ul className="space-y-4">
                 {[
                   { name: "Boucles régionales", date: "à proposer" },
-                  { name: "Balades sunset", date: "à organiser" },
-                  { name: "Routes week-end", date: "à construire" },
+                  { name: "Balades au coucher du soleil", date: "à organiser" },
+                  { name: "Itinéraires week-end", date: "à construire" },
                 ].map((r, i) => (
                   <li key={i} className="flex items-center justify-between text-sm py-2 border-b border-border/40 last:border-0">
                     <div>
