@@ -3,7 +3,6 @@ import { Layout } from "@/components/Layout";
 import { Heart, MessageCircle, Users, Calendar, Shield, Sparkles, ArrowRight, Star, MapPin, Zap } from "lucide-react";
 import heroImg from "@/assets/hero-sunset.jpg";
 import bikeImg from "@/assets/bike-dark.jpg";
-import communityImg from "@/assets/community-ride.jpg";
 import eventImg from "@/assets/event-night.jpg";
 import w1 from "@/assets/profile-woman.jpg";
 import m1 from "@/assets/profile-man.jpg";
