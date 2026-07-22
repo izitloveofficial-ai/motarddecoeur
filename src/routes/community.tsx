@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { MessageCircle, Users, MapPin, Flame, Heart, Share2 } from "lucide-react";
-import community from "@/assets/community-ride.jpg";
 import w1 from "@/assets/profile-woman.jpg";
 import m1 from "@/assets/profile-man.jpg";
 import w2 from "@/assets/profile-woman2.jpg";
@@ -11,7 +10,6 @@ import bike from "@/assets/bike-dark.jpg";
 const SITE_URL = "https://motarddecoeur.lovable.app";
 const rideGroupImg = "https://images.unsplash.com/photo-1690540293162-bfb097e68a34?auto=format&fit=crop&w=1200&q=80";
 const customRiderImg = "https://images.unsplash.com/photo-1588085605951-20676d3e5b20?auto=format&fit=crop&w=1200&q=80";
-const eveningRideImg = "https://images.unsplash.com/photo-1526213135254-8f8a2cfc166b?auto=format&fit=crop&w=1200&q=80";
 const riderPortraitImg = "https://images.unsplash.com/photo-1591216121950-ec5f1ea2d251?auto=format&fit=crop&w=1200&q=80";
 const womanRiderImg = "https://images.unsplash.com/photo-1752750773769-eefdadbf6721?auto=format&fit=crop&w=1200&q=80";
 
