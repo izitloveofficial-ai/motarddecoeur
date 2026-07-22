@@ -8,7 +8,7 @@ const SITE_URL = "https://motarddecoeur.lovable.app";
 
 const rideGroupImg = "https://images.unsplash.com/photo-1690540293162-bfb097e68a34?auto=format&fit=crop&w=1600&q=80";
 const solidarityRideImg = "https://images.unsplash.com/photo-1588085605951-20676d3e5b20?auto=format&fit=crop&w=1600&q=80";
-const alpineRideImg = "https://images.unsplash.com/photo-1642855172063-84f015fd8292?auto=format&fit=crop&w=1600&q=80";
+const alpineRideImg = "https://images.unsplash.com/photo-1642850467954-fde7f718c242?auto=format&fit=crop&w=1600&q=80";
 const nightRideImg = "https://images.unsplash.com/photo-1526213135254-8f8a2cfc166b?auto=format&fit=crop&w=1600&q=80";
 
 const EVENTS = [
