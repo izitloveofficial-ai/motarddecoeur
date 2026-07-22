@@ -45,7 +45,7 @@ function Home() {
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-32 w-full">
           <div className="max-w-3xl animate-fade-up">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-red text-xs uppercase tracking-[0.3em] text-foreground mb-8">
-              <Sparkles className="h-3 w-3" /> Projet de communauté biker
+              <Sparkles className="h-3 w-3" /> Projet de communauté motarde
             </span>
             <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold leading-[0.95] text-foreground mb-6">
               La route<br />
@@ -93,7 +93,7 @@ function Home() {
         </div>
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground text-xs uppercase tracking-[0.4em] animate-pulse">
-          Scroll
+          Défiler
         </div>
       </section>
 
@@ -114,10 +114,10 @@ function Home() {
             {[
               { icon: Heart, title: "Affinités motardes", desc: "Objectif : rapprocher les personnes par style de route, valeurs et envies de balade." },
               { icon: Users, title: "Communauté à construire", desc: "La première étape est la pré-inscription, avant l'ouverture progressive des fonctionnalités." },
-              { icon: Calendar, title: "Événements envisagés", desc: "Balades, sorties locales et rendez-vous biker pourront être proposés après le lancement." },
+              { icon: Calendar, title: "Événements envisagés", desc: "Balades, sorties locales et rendez-vous motards pourront être proposés après le lancement." },
               { icon: Shield, title: "Sécurité prévue", desc: "La vérification et la modération feront partie des priorités avant les profils publics." },
               { icon: MessageCircle, title: "Messagerie à venir", desc: "Les échanges privés seront étudiés dans une phase dédiée, après les comptes utilisateurs." },
-              { icon: Zap, title: "Filtres envisagés", desc: "Ville, type de moto, style de ride et préférences pourront guider les futures rencontres." },
+              { icon: Zap, title: "Filtres envisagés", desc: "Ville, type de moto, style de balade et préférences pourront guider les futures rencontres." },
             ].map((f, i) => (
               <div
                 key={i}
@@ -248,7 +248,7 @@ function Home() {
               Une expérience <span className="text-gradient-red italic">à construire</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mb-8">
-              Les fonctionnalités premium, les événements VIP et les options avancées seront étudiés après la validation du socle de pré-inscription.
+              Les fonctionnalités premium, les événements privilégiés et les options avancées seront étudiés après la validation du socle de pré-inscription.
             </p>
             <Link
               to="/premium"
