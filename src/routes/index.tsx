@@ -217,9 +217,9 @@ function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { date: "À VENIR", title: "Sunset Ride — Côte d'Azur", loc: "Nice → Monaco", img: heroImg },
-              { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon · projet", img: eventImg },
-              { date: "À VENIR", title: "Charity Ride for Heroes", loc: "Paris · projet", img: communityImg },
+              { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", img: heroImg },
+              { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon — à venir", img: eventImg },
+              { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", img: communityImg },
             ].map((e, i) => (
               <div key={i} className="group relative overflow-hidden rounded-2xl aspect-[4/5] hover-lift">
                 <img src={e.img} alt={e.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
