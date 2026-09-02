@@ -3,15 +3,13 @@ import { Layout } from "@/components/Layout";
 import { Heart, MessageCircle, Users, Calendar, Shield, Sparkles, ArrowRight, Star, MapPin, Zap } from "lucide-react";
 import heroImg from "@/assets/hero-sunset.jpg";
 import bikeImg from "@/assets/bike-dark.jpg";
+import communityImg from "@/assets/community-ride.jpg";
 import eventImg from "@/assets/event-night.jpg";
 import w1 from "@/assets/profile-woman.jpg";
 import m1 from "@/assets/profile-man.jpg";
 import w2 from "@/assets/profile-woman2.jpg";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
-const rideGroupImg = "https://images.unsplash.com/photo-1690540293162-bfb097e68a34?auto=format&fit=crop&w=1200&q=80";
-const solidarityRideImg = "https://images.unsplash.com/photo-1588085605951-20676d3e5b20?auto=format&fit=crop&w=1200&q=80";
-const premiumCommunityImg = "https://images.unsplash.com/photo-1752750773769-eefdadbf6721?auto=format&fit=crop&w=1600&q=80";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -219,9 +217,9 @@ function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", img: rideGroupImg },
+              { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", img: communityImg },
               { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon — à venir", img: eventImg },
-              { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", img: solidarityRideImg },
+              { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", img: bikeImg },
             ].map((e, i) => (
               <div key={i} className="group relative overflow-hidden rounded-2xl aspect-[4/5] hover-lift">
                 <img src={e.img} alt={e.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
@@ -242,7 +240,7 @@ function Home() {
       {/* PREMIUM CTA */}
       <section className="py-32 px-6">
         <div className="mx-auto max-w-5xl glass rounded-3xl overflow-hidden relative ring-red-glow">
-          <img src={premiumCommunityImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" loading="lazy" />
+          <img src={communityImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-r from-background/95 to-background/40" />
           <div className="relative z-10 p-16 md:p-20">
             <span className="text-primary uppercase tracking-[0.4em] text-xs">Premium</span>
