@@ -6,9 +6,12 @@ import m1 from "@/assets/profile-man.jpg";
 import w2 from "@/assets/profile-woman2.jpg";
 import m2 from "@/assets/profile-man2.jpg";
 import bike from "@/assets/bike-dark.jpg";
-import community from "@/assets/community-ride.jpg";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
+const rideGroupImg = "https://images.unsplash.com/photo-1690540293162-bfb097e68a34?auto=format&fit=crop&w=1200&q=80";
+const customRiderImg = "https://images.unsplash.com/photo-1588085605951-20676d3e5b20?auto=format&fit=crop&w=1200&q=80";
+const riderPortraitImg = "https://images.unsplash.com/photo-1591216121950-ec5f1ea2d251?auto=format&fit=crop&w=1200&q=80";
+const womanRiderImg = "https://images.unsplash.com/photo-1752750773769-eefdadbf6721?auto=format&fit=crop&w=1200&q=80";
 
 export const Route = createFileRoute("/community")({
   head: () => ({
@@ -26,15 +29,15 @@ export const Route = createFileRoute("/community")({
 
 const GROUPS = [
   { name: "Routières & Harley", img: bike, tag: "Route" },
-  { name: "Sportives & sensations", img: m1, tag: "Sport" },
-  { name: "Préparations & café racers", img: w2, tag: "Prépa" },
-  { name: "Grand tourisme & longs trajets", img: community, tag: "Voyage" },
+  { name: "Sportives & sensations", img: riderPortraitImg, tag: "Sport" },
+  { name: "Préparations & café racers", img: customRiderImg, tag: "Prépa" },
+  { name: "Grand tourisme & longs trajets", img: rideGroupImg, tag: "Voyage" },
 ];
 
 const POSTS = [
-  { user: "Sorties locales", img: w1, time: "à venir", text: "Un espace pour proposer une balade, trouver un itinéraire et rouler avec des personnes qui partagent le même rythme.", photo: community },
+  { user: "Sorties locales", img: w1, time: "à venir", text: "Un espace pour proposer une balade, trouver un itinéraire et rouler avec des personnes qui partagent le même rythme.", photo: rideGroupImg },
   { user: "Conseils motards", img: m1, time: "à venir", text: "Une rubrique pour échanger sur l'équipement, la sécurité, les itinéraires et les premières sorties." },
-  { user: "Projets custom", img: w2, time: "à venir", text: "Un futur fil pour partager ses projets, ses envies de moto et ses inspirations de route.", photo: bike },
+  { user: "Projets custom", img: w2, time: "à venir", text: "Un futur fil pour partager ses projets, ses envies de moto et ses inspirations de route.", photo: customRiderImg },
   { user: "Rencontres respectueuses", img: m2, time: "à venir", text: "Une communauté pensée pour prendre le temps d'échanger avant de se retrouver sur la route." },
 ];
 
@@ -125,7 +128,7 @@ function Community() {
             </div>
 
             <div className="relative rounded-2xl overflow-hidden aspect-[4/5]">
-              <img src={community} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+              <img src={womanRiderImg} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-overlay" />
               <div className="absolute inset-x-0 bottom-0 p-6">
                 <p className="text-xs uppercase tracking-widest text-primary mb-2">Esprit du projet</p>

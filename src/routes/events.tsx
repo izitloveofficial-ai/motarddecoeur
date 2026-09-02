@@ -1,20 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { MapPin, Users, ArrowRight } from "lucide-react";
-import hero from "@/assets/hero-sunset.jpg";
 import event from "@/assets/event-night.jpg";
-import community from "@/assets/community-ride.jpg";
 import bike from "@/assets/bike-dark.jpg";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 
+const rideGroupImg = "https://images.unsplash.com/photo-1690540293162-bfb097e68a34?auto=format&fit=crop&w=1600&q=80";
+const solidarityRideImg = "https://images.unsplash.com/photo-1588085605951-20676d3e5b20?auto=format&fit=crop&w=1600&q=80";
+const alpineRideImg = "https://images.unsplash.com/photo-1642850467954-fde7f718c242?auto=format&fit=crop&w=1600&q=80";
+const nightRideImg = "https://images.unsplash.com/photo-1526213135254-8f8a2cfc166b?auto=format&fit=crop&w=1600&q=80";
+
 const EVENTS = [
-  { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", type: "Balade", spots: "places à définir", img: community, featured: true },
+  { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", type: "Balade", spots: "places à définir", img: rideGroupImg, featured: true },
   { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon — à venir", type: "Festival", spots: "format à préciser", img: event },
-  { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", type: "Solidaire", spots: "à organiser", img: hero },
+  { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", type: "Solidaire", spots: "à organiser", img: solidarityRideImg },
   { date: "À VENIR", title: "Expo moto custom", loc: "Bordeaux — à venir", type: "Rencontre", spots: "à organiser", img: bike },
-  { date: "À VENIR", title: "Balade des lacets alpins", loc: "Annecy — Chamonix", type: "Balade", spots: "à définir", img: community },
-  { date: "À VENIR", title: "Balade nocturne à Marseille", loc: "Vieux-Port — à venir", type: "Rencontre", spots: "à organiser", img: event },
+  { date: "À VENIR", title: "Balade des lacets alpins", loc: "Annecy — Chamonix", type: "Balade", spots: "à définir", img: alpineRideImg },
+  { date: "À VENIR", title: "Balade nocturne à Marseille", loc: "Vieux-Port — à venir", type: "Rencontre", spots: "à organiser", img: nightRideImg },
 ];
 
 export const Route = createFileRoute("/events")({
