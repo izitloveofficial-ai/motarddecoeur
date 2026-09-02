@@ -7,8 +7,6 @@ import m1 from "@/assets/profile-man.jpg";
 import m2 from "@/assets/profile-man2.jpg";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
-const womanRiderImg = "https://images.unsplash.com/photo-1752750773769-eefdadbf6721?auto=format&fit=crop&w=1200&q=80";
-const riderPortraitImg = "https://images.unsplash.com/photo-1591216121950-ec5f1ea2d251?auto=format&fit=crop&w=1200&q=80";
 
 export const Route = createFileRoute("/profiles")({
   head: () => ({
@@ -34,8 +32,8 @@ const PROFILES: Profile[] = [
   { name: "Marc", age: 34, bike: "Ducati Monster", city: "Marseille", style: "Sport", tags: ["Adrénaline", "Circuit", "Bricoleur"], match: 92, img: m1 },
   { name: "Camille", age: 27, bike: "Triumph Bonneville", city: "Bordeaux", style: "Vintage", tags: ["Café racer", "Photo", "Évasion"], match: 89, img: w2 },
   { name: "Antoine", age: 52, bike: "Harley Road King", city: "Paris", style: "Route", tags: ["Fraternité", "Voyage moto", "Blues"], match: 87, img: m2 },
-  { name: "Léa", age: 31, bike: "BMW R nineT", city: "Strasbourg", style: "Préparation", tags: ["Design", "Voyage", "Yoga"], match: 84, img: womanRiderImg },
-  { name: "Julien", age: 38, bike: "KTM 1290 SuperDuke", city: "Toulouse", style: "Roadster sportif", tags: ["Montagne", "En solo", "Café"], match: 81, img: riderPortraitImg },
+  { name: "Léa", age: 31, bike: "BMW R nineT", city: "Strasbourg", style: "Préparation", tags: ["Design", "Voyage", "Yoga"], match: 84, img: w1 },
+  { name: "Julien", age: 38, bike: "KTM 1290 SuperDuke", city: "Toulouse", style: "Roadster sportif", tags: ["Montagne", "En solo", "Café"], match: 81, img: m1 },
 ];
 
 function Profiles() {
