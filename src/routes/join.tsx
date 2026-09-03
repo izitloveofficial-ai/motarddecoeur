@@ -2,7 +2,6 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
-import { notifyPreinscription } from "@/lib/api/preinscription.functions";
 import bikeDetail from "@/assets/bike-dark.jpg";
 import { Bike, CheckCircle2, Clock, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
 
@@ -66,26 +65,17 @@ function Join() {
     }
 
     const data = new FormData(form);
-    const preinscription = {
-      firstName: String(data.get("first_name") ?? "").trim(),
+    setStatus("submitting");
+    const { error } = await supabase.from("preinscriptions").insert({
+      first_name: String(data.get("first_name") ?? "").trim(),
       email: String(data.get("email") ?? "")
         .trim()
         .toLowerCase(),
-      location: String(data.get("location") ?? "").trim() || undefined,
-      riderProfile: String(data.get("rider_profile") ?? "") || undefined,
-      favoriteBike: String(data.get("favorite_bike") ?? "").trim() || undefined,
-      primaryInterest: String(data.get("primary_interest") ?? "") || undefined,
-      message: String(data.get("message") ?? "").trim() || undefined,
-    };
-    setStatus("submitting");
-    const { error } = await supabase.from("preinscriptions").insert({
-      first_name: preinscription.firstName,
-      email: preinscription.email,
-      location: preinscription.location ?? null,
-      rider_profile: preinscription.riderProfile ?? null,
-      favorite_bike: preinscription.favoriteBike ?? null,
-      primary_interest: preinscription.primaryInterest ?? null,
-      message: preinscription.message ?? null,
+      location: String(data.get("location") ?? "").trim() || null,
+      rider_profile: String(data.get("rider_profile") ?? "") || null,
+      favorite_bike: String(data.get("favorite_bike") ?? "").trim() || null,
+      primary_interest: String(data.get("primary_interest") ?? "") || null,
+      message: String(data.get("message") ?? "").trim() || null,
       consent_rgpd: data.get("consent_rgpd") === "on",
     });
 
@@ -104,15 +94,6 @@ function Join() {
     setFeedback(
       "Merci, votre pré-inscription est bien enregistrée. Vous serez informé dès l’ouverture de Motards de Cœur.",
     );
-
-    // The visitor sees confirmation as soon as Supabase succeeds. Notification delivery is
-    // best-effort and cannot turn a successful registration into an error.
-    void notifyPreinscription({ data: preinscription }).catch((notificationError) => {
-      console.error(
-        "La notification de pré-inscription n’a pas pu être demandée",
-        notificationError,
-      );
-    });
   }
 
   const fieldClass =
