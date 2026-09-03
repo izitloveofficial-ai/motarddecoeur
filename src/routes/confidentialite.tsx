@@ -10,9 +10,16 @@ export const Route = createFileRoute("/confidentialite")({
   head: () => ({
     meta: [
       { title: "Politique de confidentialité — Motards de Cœur" },
-      { name: "description", content: "Politique de confidentialité de Motards de Cœur pour la pré-inscription et l'information sur le lancement." },
+      {
+        name: "description",
+        content:
+          "Politique de confidentialité de Motards de Cœur pour la pré-inscription et l'information sur le lancement.",
+      },
       { property: "og:title", content: "Politique de confidentialité — Motards de Cœur" },
-      { property: "og:description", content: "Découvrez comment Motards de Cœur utilise les données de pré-inscription." },
+      {
+        property: "og:description",
+        content: "Découvrez comment Motards de Cœur utilise les données de pré-inscription.",
+      },
       { property: "og:url", content: `${SITE_URL}/confidentialite` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/confidentialite` }],
@@ -30,8 +37,9 @@ function Confidentialite() {
       >
         <LegalSection title="Finalité de la collecte">
           <p>
-            Les informations envoyées via la page de pré-inscription servent uniquement à constituer une liste d'attente,
-            à mesurer l'intérêt pour Motards de Cœur et à vous informer du lancement du service.
+            Les informations envoyées via la page de pré-inscription servent uniquement à constituer
+            une liste d'attente, à mesurer l'intérêt pour Motards de Cœur et à vous informer du
+            lancement du service.
           </p>
         </LegalSection>
 
@@ -41,9 +49,9 @@ function Confidentialite() {
             <li>prénom ;</li>
             <li>adresse email ;</li>
             <li>ville ou région ;</li>
-            <li>âge ;</li>
-            <li>sexe ;</li>
-            <li>type de moto ou permis ;</li>
+            <li>profil motard ;</li>
+            <li>type de moto ou moto préférée ;</li>
+            <li>recherche principale ;</li>
             <li>message facultatif ;</li>
             <li>consentement à être recontacté au sujet du lancement.</li>
           </ul>
@@ -51,44 +59,56 @@ function Confidentialite() {
 
         <LegalSection title="Utilisation des données">
           <p>
-            Ces données ne sont pas utilisées pour créer un compte, activer une messagerie, déclencher un paiement ou publier un profil.
-            Elles servent uniquement à gérer la pré-inscription et les informations liées au lancement.
+            Ces données ne sont pas utilisées pour créer un compte, activer une messagerie,
+            déclencher un paiement ou publier un profil. Elles servent uniquement à gérer la
+            pré-inscription et les informations liées au lancement.
           </p>
         </LegalSection>
 
         <LegalSection title="Outil de collecte">
           <p>
-            La pré-inscription est actuellement collectée via Tally, un service externe de formulaire.
-            Les informations transmises via ce formulaire sont utilisées uniquement pour vous recontacter au sujet du lancement.
+            La pré-inscription est collectée depuis le formulaire interne de Motards de Cœur. Les
+            informations transmises sont utilisées uniquement pour vous recontacter au sujet du
+            lancement.
           </p>
         </LegalSection>
 
         <LegalSection title="Vente ou partage commercial">
           <p>
-            Motards de Cœur ne vend pas les données de pré-inscription. Les informations transmises ne sont pas revendues à des tiers.
+            Motards de Cœur ne vend pas les données de pré-inscription. Les informations transmises
+            ne sont pas revendues à des tiers.
           </p>
         </LegalSection>
 
         <LegalSection title="Conservation et suppression">
           <p>
-            Les données sont conservées le temps nécessaire à la préparation du lancement. Vous pouvez demander l'accès,
-            la rectification ou la suppression de vos données à tout moment via la page{" "}
-            <Link to="/contact" className="text-primary hover:underline">contact</Link>{" "}
-            ou par email à <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>.
+            Les données sont conservées le temps nécessaire à la préparation du lancement. Vous
+            pouvez demander l'accès, la rectification ou la suppression de vos données à tout moment
+            via la page{" "}
+            <Link to="/contact" className="text-primary hover:underline">
+              contact
+            </Link>{" "}
+            ou par email à{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">
+              {CONTACT_EMAIL}
+            </a>
+            .
           </p>
         </LegalSection>
 
         <LegalSection title="Sécurité">
           <p>
-            La collecte actuelle passe par Tally. Avant l'ouverture officielle de fonctionnalités plus avancées,
-            les règles d'accès, de conservation et de sécurité devront être revérifiées selon l'outil retenu.
+            L’accès public permet uniquement l’envoi d’une pré-inscription consentie. La
+            consultation, la modification et la suppression des données ne sont pas ouvertes aux
+            visiteurs.
           </p>
         </LegalSection>
 
         <LegalSection title="Évolution de cette politique">
           <p>
-            Cette politique pourra être mise à jour lorsque Motards de Cœur proposera de nouvelles fonctionnalités comme les comptes,
-            les profils, les événements, la messagerie ou les offres premium.
+            Cette politique pourra être mise à jour lorsque Motards de Cœur proposera de nouvelles
+            fonctionnalités comme les comptes, les profils, les événements, la messagerie ou les
+            offres premium.
           </p>
         </LegalSection>
       </LegalPage>

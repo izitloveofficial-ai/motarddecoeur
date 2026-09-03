@@ -1,20 +1,26 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { Bike, Clock, ExternalLink, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { Bike, CheckCircle2, Clock, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
-const TALLY_FORM_URL = "https://tally.so/r/44q7ok";
-const TALLY_EMBED_URL =
-  "https://tally.so/embed/44q7ok?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1";
 
-declare global {
-  interface Window {
-    Tally?: {
-      loadEmbeds: () => void;
-    };
-  }
-}
+const riderOptions = [
+  ["motard", "Motard"],
+  ["motarde", "Motarde"],
+  ["passager_passagere", "Passager / passagère"],
+  ["passionne_moto", "Passionné(e) de moto"],
+  ["permis_en_cours", "Permis en cours"],
+] as const;
+
+const searchOptions = [
+  ["rencontre_serieuse", "Une rencontre sérieuse"],
+  ["balades_moto", "Des balades moto"],
+  ["amitie", "De l’amitié"],
+  ["communaute_motards", "Une communauté de motards"],
+  ["indecis", "Je ne sais pas encore"],
+] as const;
 
 export const Route = createFileRoute("/join")({
   head: () => ({
@@ -39,21 +45,58 @@ export const Route = createFileRoute("/join")({
 });
 
 function Join() {
-  useEffect(() => {
-    const existingScript = document.querySelector<HTMLScriptElement>(
-      'script[src="https://tally.so/widgets/embed.js"]',
-    );
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [feedback, setFeedback] = useState("");
 
-    if (existingScript) {
-      window.Tally?.loadEmbeds();
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setFeedback("");
+
+    const form = event.currentTarget;
+    if (!form.reportValidity()) return;
+
+    if (!isSupabaseConfigured || !supabase) {
+      setStatus("error");
+      setFeedback(
+        "Le stockage des pré-inscriptions n’est pas encore configuré. Vos informations n’ont pas été envoyées.",
+      );
       return;
     }
 
-    const script = document.createElement("script");
-    script.src = "https://tally.so/widgets/embed.js";
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
+    const data = new FormData(form);
+    setStatus("submitting");
+    const { error } = await supabase.from("preinscriptions").insert({
+      first_name: String(data.get("first_name") ?? "").trim(),
+      email: String(data.get("email") ?? "")
+        .trim()
+        .toLowerCase(),
+      location: String(data.get("location") ?? "").trim() || null,
+      rider_profile: String(data.get("rider_profile") ?? "") || null,
+      favorite_bike: String(data.get("favorite_bike") ?? "").trim() || null,
+      primary_interest: String(data.get("primary_interest") ?? "") || null,
+      message: String(data.get("message") ?? "").trim() || null,
+      consent_rgpd: data.get("consent_rgpd") === "on",
+    });
+
+    if (error) {
+      setStatus("error");
+      setFeedback(
+        error.code === "23505"
+          ? "Cette adresse email figure déjà sur la liste de pré-inscription."
+          : "Une erreur empêche l’envoi pour le moment. Veuillez réessayer dans quelques instants.",
+      );
+      return;
+    }
+
+    form.reset();
+    setStatus("success");
+    setFeedback(
+      "Merci, votre pré-inscription est bien enregistrée. Vous serez informé dès l’ouverture de Motards de Cœur.",
+    );
+  }
+
+  const fieldClass =
+    "mt-2 w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25";
 
   return (
     <Layout>
@@ -101,15 +144,15 @@ function Join() {
 
             <div className="mt-8 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-muted-foreground leading-relaxed">
               <div className="mb-2 flex items-center gap-2 text-foreground">
-                <ShieldCheck className="h-4 w-4 text-primary" /> Collecte via Tally
+                <ShieldCheck className="h-4 w-4 text-primary" /> Données protégées
               </div>
-              Les données de pré-inscription sont collectées via notre formulaire Tally afin de vous
-              recontacter au lancement. Aucun compte, paiement, profil public ou messagerie n'est
-              créé à cette étape. Aucun paiement ne vous sera demandé pendant le pré-lancement.
+              Vos informations servent uniquement à gérer la pré-inscription et à vous informer du
+              lancement. Aucun compte, paiement, profil public ou messagerie n'est créé à cette
+              étape.
             </div>
           </div>
 
-          <div className="glass space-y-6 rounded-3xl p-4 sm:p-6 lg:p-8">
+          <div className="glass space-y-6 rounded-3xl p-5 sm:p-7 lg:p-9">
             <div>
               <span className="text-primary uppercase tracking-[0.35em] text-xs">
                 Gratuit · Sans engagement
@@ -118,37 +161,114 @@ function Join() {
                 Je rejoins la liste de pré-inscription
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Remplissez le formulaire Tally officiel pour rejoindre la communauté avant le
-                lancement.
+                Dites-nous-en un peu plus sur vous. Les champs marqués d’un astérisque sont
+                obligatoires.
               </p>
             </div>
 
-            <a
-              href={TALLY_FORM_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex w-full items-center justify-center gap-2 px-8 py-4 bg-gradient-red text-primary-foreground rounded-full uppercase tracking-wider text-sm font-medium shadow-glow hover:scale-[1.02] transition-all"
-            >
-              Me pré-inscrire gratuitement <ExternalLink className="h-4 w-4" />
-            </a>
-
-            <div className="min-h-[1200px] overflow-hidden rounded-2xl border border-border bg-background/60 md:min-h-[1350px]">
-              <iframe
-                src={TALLY_EMBED_URL}
-                title="Formulaire de pré-inscription Motards de Cœur"
-                loading="lazy"
-                className="h-[1200px] min-h-[1200px] w-full border-0 bg-transparent md:h-[1350px] md:min-h-[1350px]"
-              />
-            </div>
-
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Si le formulaire ne s'affiche pas correctement, utilisez le bouton ci-dessus pour
-              l'ouvrir directement sur Tally. Consultez aussi notre{" "}
-              <Link to="/confidentialite" className="text-primary hover:underline">
-                politique de confidentialité
-              </Link>
-              .
-            </p>
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <label className="text-sm font-medium">
+                  Prénom *
+                  <input
+                    className={fieldClass}
+                    name="first_name"
+                    type="text"
+                    autoComplete="given-name"
+                    required
+                    maxLength={80}
+                  />
+                </label>
+                <label className="text-sm font-medium">
+                  Email *
+                  <input
+                    className={fieldClass}
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    maxLength={254}
+                  />
+                </label>
+              </div>
+              <label className="block text-sm font-medium">
+                Ville / région
+                <input
+                  className={fieldClass}
+                  name="location"
+                  type="text"
+                  autoComplete="address-level2"
+                  maxLength={120}
+                />
+              </label>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <label className="text-sm font-medium">
+                  Tu es
+                  <select className={fieldClass} name="rider_profile" defaultValue="">
+                    <option value="">Sélectionner</option>
+                    {riderOptions.map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="text-sm font-medium">
+                  Type de moto ou moto préférée
+                  <input className={fieldClass} name="favorite_bike" type="text" maxLength={120} />
+                </label>
+              </div>
+              <label className="block text-sm font-medium">
+                Tu recherches principalement
+                <select className={fieldClass} name="primary_interest" defaultValue="">
+                  <option value="">Sélectionner</option>
+                  {searchOptions.map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm font-medium">
+                Message libre
+                <textarea
+                  className={`${fieldClass} min-h-32 resize-y`}
+                  name="message"
+                  maxLength={1000}
+                />
+              </label>
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background/40 p-4 text-sm text-muted-foreground">
+                <input
+                  className="mt-1 h-4 w-4 accent-primary"
+                  name="consent_rgpd"
+                  type="checkbox"
+                  required
+                />
+                <span>
+                  J’accepte que mes données soient utilisées pour gérer ma pré-inscription et
+                  m’informer du lancement de Motards de Cœur. *{" "}
+                  <Link to="/confidentialite" className="text-primary hover:underline">
+                    Politique de confidentialité
+                  </Link>
+                </span>
+              </label>
+              <button
+                disabled={status === "submitting"}
+                className="w-full rounded-full bg-gradient-red px-8 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow transition-all hover:scale-[1.01] disabled:cursor-wait disabled:opacity-60"
+                type="submit"
+              >
+                {status === "submitting" ? "Envoi en cours…" : "Valider ma pré-inscription"}
+              </button>
+              {feedback && (
+                <div
+                  role="status"
+                  className={`flex items-start gap-3 rounded-xl border p-4 text-sm leading-relaxed ${status === "success" ? "border-green-500/40 bg-green-500/10 text-green-200" : "border-primary/40 bg-primary/10 text-foreground"}`}
+                >
+                  {status === "success" && <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />}
+                  <span>{feedback}</span>
+                </div>
+              )}
+            </form>
           </div>
         </div>
       </section>
