@@ -1,12 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { MessageCircle, Users, MapPin, Flame, Heart, Share2 } from "lucide-react";
-import w1 from "@/assets/profile-woman.jpg";
-import m1 from "@/assets/profile-man.jpg";
-import w2 from "@/assets/profile-woman2.jpg";
-import m2 from "@/assets/profile-man2.jpg";
-import bike from "@/assets/bike-dark.jpg";
-import community from "@/assets/community-ride.jpg";
+import c1 from "@/assets/avatar-c1.jpg";
+import c2 from "@/assets/avatar-c2.jpg";
+import c3 from "@/assets/avatar-c3.jpg";
+import c4 from "@/assets/avatar-c4.jpg";
+import gTouring from "@/assets/group-touring.jpg";
+import gSport from "@/assets/group-sport.jpg";
+import gWorkshop from "@/assets/group-workshop.jpg";
+import gTravel from "@/assets/group-travel.jpg";
+import postLocal from "@/assets/post-local.jpg";
+import postCustom from "@/assets/post-custom.jpg";
+import ctaCommunity from "@/assets/cta-community.jpg";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 

@@ -5,9 +5,11 @@ import heroImg from "@/assets/hero-sunset.jpg";
 import bikeImg from "@/assets/bike-dark.jpg";
 import communityImg from "@/assets/community-ride.jpg";
 import eventImg from "@/assets/event-night.jpg";
-import w1 from "@/assets/profile-woman.jpg";
-import m1 from "@/assets/profile-man.jpg";
-import w2 from "@/assets/profile-woman2.jpg";
+import teamA from "@/assets/avatar-team-1.jpg";
+import teamB from "@/assets/avatar-team-2.jpg";
+import teamC from "@/assets/avatar-team-3.jpg";
+import solidaireImg from "@/assets/home-solidaire.jpg";
+import ctaRoad from "@/assets/cta-road.jpg";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 

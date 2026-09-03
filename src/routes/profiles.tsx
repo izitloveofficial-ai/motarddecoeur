@@ -5,6 +5,8 @@ import w1 from "@/assets/profile-woman.jpg";
 import w2 from "@/assets/profile-woman2.jpg";
 import m1 from "@/assets/profile-man.jpg";
 import m2 from "@/assets/profile-man2.jpg";
+import lea from "@/assets/profile-lea.jpg";
+import julien from "@/assets/profile-julien.jpg";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 
