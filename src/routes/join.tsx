@@ -96,12 +96,15 @@ function Join() {
   }
 
   const fieldClass =
-    "mt-2 w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25";
+    "mt-2 w-full rounded-xl border border-white/15 bg-[#302526]/90 px-4 py-3 text-sm text-[#fff9f0] shadow-inner shadow-black/15 outline-none transition placeholder:text-[#cdbdb5] hover:border-white/25 focus:border-[#d75a4f] focus:bg-[#38292a] focus:ring-2 focus:ring-[#d75a4f]/30";
 
   return (
     <Layout>
-      <section className="py-20 px-6 border-b border-border/40">
-        <div className="mx-auto grid max-w-[1440px] gap-12 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-start">
+      <section className="relative overflow-hidden border-b border-[#8d5b55]/25 bg-[#21191a] px-6 py-16 sm:py-20">
+        <div className="pointer-events-none absolute -left-24 top-12 h-80 w-80 rounded-full bg-[#7b2027]/25 blur-3xl" />
+        <div className="pointer-events-none absolute -right-28 top-1/3 h-96 w-96 rounded-full bg-[#c16b52]/15 blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-[#6b2528]/20 to-transparent" />
+        <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-start lg:gap-12">
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 glass-red px-4 py-2 rounded-full text-xs uppercase tracking-widest mb-6">
               <Clock className="h-3 w-3" /> Pré-inscription gratuite
@@ -109,11 +112,11 @@ function Join() {
             <h1 className="font-display text-5xl md:text-7xl leading-none mb-6">
               Soyez parmi les premiers motards inscrits.
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mb-5">
+            <p className="mb-5 max-w-2xl text-lg leading-relaxed text-[#d8cbc4]">
               Motards de Cœur arrive bientôt. Pré-inscrivez-vous gratuitement pour découvrir les
               futures rencontres entre motards, balades et la communauté moto.
             </p>
-            <p className="text-base text-muted-foreground leading-relaxed max-w-2xl mb-8">
+            <p className="mb-8 max-w-2xl text-base leading-relaxed text-[#c9bbb4]">
               Quelques instants suffisent. Vous serez informé dès l'ouverture des fonctionnalités.
             </p>
             <div className="grid gap-4 sm:grid-cols-3 max-w-3xl">
@@ -134,15 +137,18 @@ function Join() {
                   text: "Être informé en priorité du lancement.",
                 },
               ].map((item) => (
-                <div key={item.title} className="glass rounded-2xl p-5">
+                <div
+                  key={item.title}
+                  className="rounded-2xl border border-[#d9b7a7]/15 bg-[#39292a]/80 p-5 shadow-[0_12px_35px_rgba(10,4,4,0.22)] backdrop-blur-xl"
+                >
                   <item.icon className="h-5 w-5 text-primary mb-3" />
                   <h2 className="font-display text-xl mb-1">{item.title}</h2>
-                  <p className="text-sm text-muted-foreground">{item.text}</p>
+                  <p className="text-sm leading-relaxed text-[#cdbfba]">{item.text}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-8 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-muted-foreground leading-relaxed">
+            <div className="mt-8 rounded-2xl border border-[#d5655b]/35 bg-[#552529]/55 p-5 text-sm leading-relaxed text-[#d8c9c2] shadow-[0_12px_35px_rgba(10,4,4,0.18)]">
               <div className="mb-2 flex items-center gap-2 text-foreground">
                 <ShieldCheck className="h-4 w-4 text-primary" /> Données protégées
               </div>
@@ -152,7 +158,7 @@ function Join() {
             </div>
           </div>
 
-          <div className="glass space-y-6 rounded-3xl p-5 sm:p-7 lg:p-9">
+          <div className="space-y-6 rounded-3xl border border-[#e2b7a5]/20 bg-[#342728]/95 p-5 shadow-[0_24px_70px_rgba(8,3,3,0.38),0_0_60px_rgba(142,40,42,0.12)] backdrop-blur-xl sm:p-7 lg:p-9">
             <div>
               <span className="text-primary uppercase tracking-[0.35em] text-xs">
                 Gratuit · Sans engagement
@@ -160,7 +166,7 @@ function Join() {
               <h2 className="font-display text-3xl mt-3 mb-3">
                 Je rejoins la liste de pré-inscription
               </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm leading-relaxed text-[#d4c6bf]">
                 Dites-nous-en un peu plus sur vous. Les champs marqués d’un astérisque sont
                 obligatoires.
               </p>
@@ -237,7 +243,7 @@ function Join() {
                   maxLength={1000}
                 />
               </label>
-              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background/40 p-4 text-sm text-muted-foreground">
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#dfb6a5]/15 bg-[#281e1f]/70 p-4 text-sm leading-relaxed text-[#d4c6bf]">
                 <input
                   className="mt-1 h-4 w-4 accent-primary"
                   name="consent_rgpd"
@@ -259,6 +265,10 @@ function Join() {
               >
                 {status === "submitting" ? "Envoi en cours…" : "Valider ma pré-inscription"}
               </button>
+              <p className="flex items-center justify-center gap-2 text-center text-xs text-[#d8cbc4] sm:text-sm">
+                <ShieldCheck className="h-4 w-4 shrink-0 text-[#df6a5d]" />
+                Gratuit, sans engagement. Vous serez informé dès l’ouverture.
+              </p>
               {feedback && (
                 <div
                   role="status"
@@ -273,13 +283,13 @@ function Join() {
         </div>
       </section>
 
-      <section className="py-20 px-6">
+      <section className="border-t border-white/[0.03] bg-gradient-to-b from-[#241b1c] to-[#191516] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-5xl text-center">
           <Mail className="mx-auto h-8 w-8 text-primary mb-5" />
           <h2 className="font-display text-4xl md:text-5xl mb-4">
             Une première liste d'attente, avant la vraie application.
           </h2>
-          <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl mx-auto">
+          <p className="mx-auto max-w-3xl text-lg leading-relaxed text-[#cdbfba]">
             Cette étape prépare le lancement avec une collecte simple et consentie. Les comptes
             utilisateurs, profils, likes, messagerie et offres premium viendront plus tard.
           </p>
