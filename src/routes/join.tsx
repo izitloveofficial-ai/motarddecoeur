@@ -58,7 +58,7 @@ function Join() {
   return (
     <Layout>
       <section className="py-20 px-6 border-b border-border/40">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+        <div className="mx-auto grid max-w-[1440px] gap-12 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-start">
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 glass-red px-4 py-2 rounded-full text-xs uppercase tracking-widest mb-6">
               <Clock className="h-3 w-3" /> Pré-inscription gratuite
@@ -109,7 +109,7 @@ function Join() {
             </div>
           </div>
 
-          <div className="glass rounded-3xl p-6 md:p-10 space-y-6">
+          <div className="glass space-y-6 rounded-3xl p-4 sm:p-6 lg:p-8">
             <div>
               <span className="text-primary uppercase tracking-[0.35em] text-xs">
                 Gratuit · Sans engagement
@@ -132,12 +132,12 @@ function Join() {
               Me pré-inscrire gratuitement <ExternalLink className="h-4 w-4" />
             </a>
 
-            <div className="min-h-[900px] overflow-hidden rounded-2xl border border-border bg-background/60 md:min-h-[1050px]">
+            <div className="min-h-[1200px] overflow-hidden rounded-2xl border border-border bg-background/60 md:min-h-[1350px]">
               <iframe
                 src={TALLY_EMBED_URL}
                 title="Formulaire de pré-inscription Motards de Cœur"
                 loading="lazy"
-                className="h-[900px] min-h-[900px] w-full border-0 bg-transparent md:h-[1050px] md:min-h-[1050px]"
+                className="h-[1200px] min-h-[1200px] w-full border-0 bg-transparent md:h-[1350px] md:min-h-[1350px]"
               />
             </div>
 
