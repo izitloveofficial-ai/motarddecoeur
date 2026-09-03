@@ -182,9 +182,9 @@ function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { name: "Rencontres", role: "Affinités & route", img: w1, text: "Permettre à deux passionnés de se trouver autour d'un rythme, d'une région et d'une envie de rouler." },
-              { name: "Balades", role: "Sorties locales", img: m1, text: "Aider les motards à ne plus rouler seuls quand ils ont envie de partager un itinéraire." },
-              { name: "Communauté", role: "Respect & passion", img: w2, text: "Construire un espace accueillant, clair et sécurisé avant d'ouvrir les fonctionnalités sociales." },
+              { name: "Rencontres", role: "Affinités & route", img: teamA, text: "Permettre à deux passionnés de se trouver autour d'un rythme, d'une région et d'une envie de rouler." },
+              { name: "Balades", role: "Sorties locales", img: teamB, text: "Aider les motards à ne plus rouler seuls quand ils ont envie de partager un itinéraire." },
+              { name: "Communauté", role: "Respect & passion", img: teamC, text: "Construire un espace accueillant, clair et sécurisé avant d'ouvrir les fonctionnalités sociales." },
             ].map((t, i) => (
               <div key={i} className="glass rounded-2xl p-8 hover-lift">
                 <div className="flex items-center gap-4 mb-6">
@@ -221,7 +221,7 @@ function Home() {
             {[
               { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", img: communityImg },
               { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon — à venir", img: eventImg },
-              { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", img: bikeImg },
+              { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", img: solidaireImg },
             ].map((e, i) => (
               <div key={i} className="group relative overflow-hidden rounded-2xl aspect-[4/5] hover-lift">
                 <img src={e.img} alt={e.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
@@ -242,7 +242,7 @@ function Home() {
       {/* PREMIUM CTA */}
       <section className="py-32 px-6">
         <div className="mx-auto max-w-5xl glass rounded-3xl overflow-hidden relative ring-red-glow">
-          <img src={communityImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" loading="lazy" />
+          <img src={ctaRoad} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-r from-background/95 to-background/40" />
           <div className="relative z-10 p-16 md:p-20">
             <span className="text-primary uppercase tracking-[0.4em] text-xs">Premium</span>

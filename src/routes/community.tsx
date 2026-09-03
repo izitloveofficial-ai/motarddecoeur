@@ -30,17 +30,17 @@ export const Route = createFileRoute("/community")({
 });
 
 const GROUPS = [
-  { name: "Routières & Harley", img: bike, tag: "Route" },
-  { name: "Sportives & sensations", img: m1, tag: "Sport" },
-  { name: "Préparations & café racers", img: w2, tag: "Prépa" },
-  { name: "Grand tourisme & longs trajets", img: community, tag: "Voyage" },
+  { name: "Routières & Harley", img: gTouring, tag: "Route" },
+  { name: "Sportives & sensations", img: gSport, tag: "Sport" },
+  { name: "Préparations & café racers", img: gWorkshop, tag: "Prépa" },
+  { name: "Grand tourisme & longs trajets", img: gTravel, tag: "Voyage" },
 ];
 
 const POSTS = [
-  { user: "Sorties locales", img: w1, time: "à venir", text: "Un espace pour proposer une balade, trouver un itinéraire et rouler avec des personnes qui partagent le même rythme.", photo: community },
-  { user: "Conseils motards", img: m1, time: "à venir", text: "Une rubrique pour échanger sur l'équipement, la sécurité, les itinéraires et les premières sorties." },
-  { user: "Projets custom", img: w2, time: "à venir", text: "Un futur fil pour partager ses projets, ses envies de moto et ses inspirations de route.", photo: bike },
-  { user: "Rencontres respectueuses", img: m2, time: "à venir", text: "Une communauté pensée pour prendre le temps d'échanger avant de se retrouver sur la route." },
+  { user: "Sorties locales", img: c1, time: "à venir", text: "Un espace pour proposer une balade, trouver un itinéraire et rouler avec des personnes qui partagent le même rythme.", photo: postLocal },
+  { user: "Conseils motards", img: c2, time: "à venir", text: "Une rubrique pour échanger sur l'équipement, la sécurité, les itinéraires et les premières sorties." },
+  { user: "Projets custom", img: c3, time: "à venir", text: "Un futur fil pour partager ses projets, ses envies de moto et ses inspirations de route.", photo: postCustom },
+  { user: "Rencontres respectueuses", img: c4, time: "à venir", text: "Une communauté pensée pour prendre le temps d'échanger avant de se retrouver sur la route." },
 ];
 
 function Community() {
@@ -130,7 +130,7 @@ function Community() {
             </div>
 
             <div className="relative rounded-2xl overflow-hidden aspect-[4/5]">
-              <img src={community} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+              <img src={ctaCommunity} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-overlay" />
               <div className="absolute inset-x-0 bottom-0 p-6">
                 <p className="text-xs uppercase tracking-widest text-primary mb-2">Esprit du projet</p>

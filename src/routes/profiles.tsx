@@ -34,8 +34,8 @@ const PROFILES: Profile[] = [
   { name: "Marc", age: 34, bike: "Ducati Monster", city: "Marseille", style: "Sport", tags: ["Adrénaline", "Circuit", "Bricoleur"], match: 92, img: m1 },
   { name: "Camille", age: 27, bike: "Triumph Bonneville", city: "Bordeaux", style: "Vintage", tags: ["Café racer", "Photo", "Évasion"], match: 89, img: w2 },
   { name: "Antoine", age: 52, bike: "Harley Road King", city: "Paris", style: "Route", tags: ["Fraternité", "Voyage moto", "Blues"], match: 87, img: m2 },
-  { name: "Léa", age: 31, bike: "BMW R nineT", city: "Strasbourg", style: "Préparation", tags: ["Design", "Voyage", "Yoga"], match: 84, img: w1 },
-  { name: "Julien", age: 38, bike: "KTM 1290 SuperDuke", city: "Toulouse", style: "Roadster sportif", tags: ["Montagne", "En solo", "Café"], match: 81, img: m1 },
+  { name: "Léa", age: 31, bike: "BMW R nineT", city: "Strasbourg", style: "Préparation", tags: ["Design", "Voyage", "Yoga"], match: 84, img: lea },
+  { name: "Julien", age: 38, bike: "KTM 1290 SuperDuke", city: "Toulouse", style: "Roadster sportif", tags: ["Montagne", "En solo", "Café"], match: 81, img: julien },
 ];
 
 function Profiles() {
