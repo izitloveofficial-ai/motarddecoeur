@@ -152,9 +152,9 @@ function Contact() {
             </div>
 
             <div className="glass-red rounded-2xl p-8">
-              <h3 className="font-display text-2xl mb-3">Avant la collecte</h3>
+              <h3 className="font-display text-2xl mb-3">Formulaire de contact</h3>
               <p className="text-sm text-foreground/80">
-                Avant l'activation de la collecte réelle, la configuration Supabase devra être vérifiée et testée.
+                Le formulaire de contact sera activé prochainement. Pour toute demande, vous pouvez écrire directement à contact@motardsdecoeur.com.
               </p>
             </div>
           </div>
