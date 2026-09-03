@@ -49,11 +49,17 @@ export function Navbar() {
         </div>
 
         <div className="hidden xl:flex items-center gap-3">
-          <Link to="/contact" className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition">
+          <Link
+            to="/contact"
+            className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition"
+          >
             Connexion bientôt disponible
           </Link>
-          <Link to="/join" className="px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full hover:shadow-glow transition-all">
-            Rejoindre
+          <Link
+            to="/join"
+            className="px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full hover:shadow-glow transition-all"
+          >
+            Pré-inscription gratuite
           </Link>
         </div>
 
@@ -91,7 +97,7 @@ export function Navbar() {
             onClick={() => setOpen(false)}
             className="mt-2 text-center px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full"
           >
-            Rejoindre
+            Pré-inscription gratuite
           </Link>
         </div>
       )}
