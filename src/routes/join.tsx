@@ -101,12 +101,21 @@ function Join() {
 
   return (
     <Layout>
-      <section className="relative overflow-hidden border-b border-[#8d5b55]/25 bg-[#21191a] px-6 py-16 sm:py-20">
-        <div className="pointer-events-none absolute -left-24 top-12 h-80 w-80 rounded-full bg-[#7b2027]/25 blur-3xl" />
-        <div className="pointer-events-none absolute -right-28 top-1/3 h-96 w-96 rounded-full bg-[#c16b52]/15 blur-3xl" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-[#6b2528]/20 to-transparent" />
-        <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-start lg:gap-12">
-          <div className="animate-fade-up">
+      <section className="relative isolate overflow-hidden border-b border-[#8d5b55]/25 bg-[#21191a] px-6 py-16 sm:py-20 lg:py-24">
+        <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+          <img
+            src={bikeDetail}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover object-[64%_center] opacity-[0.18] saturate-[0.75] sm:opacity-[0.22] lg:object-[center_38%]"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,#21191a_0%,rgba(33,25,26,0.88)_38%,rgba(33,25,26,0.7)_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(74,24,28,0.5)_0%,rgba(33,25,26,0.1)_36%,#21191a_100%)]" />
+          <div className="absolute -left-24 top-12 h-80 w-80 rounded-full bg-[#7b2027]/30 blur-3xl" />
+          <div className="absolute -right-28 top-1/3 h-96 w-96 rounded-full bg-[#d0874d]/15 blur-3xl" />
+          <div className="absolute bottom-[-18rem] left-[8%] h-[34rem] w-24 rotate-[22deg] border-x border-[#e2b45f]/10 bg-[#d9a441]/[0.025] blur-[0.5px] sm:left-[18%] sm:w-36" />
+        </div>
+        <div className="relative mx-auto grid max-w-[1380px] gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(560px,1.1fr)] lg:items-start lg:gap-16 xl:gap-20">
+          <div className="animate-fade-up lg:pt-5">
             <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d9a441]/30 bg-[#d9a441]/8 px-4 py-2 text-xs uppercase tracking-widest text-[#efd18d]">
               <Clock className="h-3 w-3 text-[#e2b45f]" /> Pré-inscription gratuite
             </span>
@@ -120,18 +129,8 @@ function Join() {
             <p className="mb-8 max-w-2xl text-base leading-relaxed text-[#c9bbb4]">
               Quelques instants suffisent. Vous serez informé dès l'ouverture des fonctionnalités.
             </p>
-            <figure className="relative mb-8 h-36 max-w-3xl overflow-hidden rounded-2xl border border-[#d6a85c]/25 bg-[#181112] shadow-[0_16px_40px_rgba(8,3,3,0.3)] sm:h-44">
-              <img
-                src={bikeDetail}
-                alt="Détail d’une moto noire éclairée par son phare ambré"
-                className="h-full w-full object-cover object-[68%_42%] opacity-80"
-              />
-              <div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#21191a]/80 via-[#421d20]/15 to-transparent"
-                aria-hidden="true"
-              />
-            </figure>
-            <div className="grid gap-4 sm:grid-cols-3 max-w-3xl">
+            <div className="mb-8 h-px max-w-3xl bg-gradient-to-r from-[#e2b45f]/60 via-[#8d3438]/35 to-transparent" />
+            <div className="grid max-w-3xl gap-3 sm:grid-cols-3">
               {[
                 {
                   icon: MapPin,
@@ -151,7 +150,7 @@ function Join() {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-[#d6a85c]/20 bg-[#39292a]/80 p-5 shadow-[0_12px_35px_rgba(10,4,4,0.22)] backdrop-blur-xl"
+                  className="rounded-2xl border border-[#d6a85c]/20 bg-[#332627]/75 p-5 shadow-[0_12px_35px_rgba(10,4,4,0.22)] backdrop-blur-xl"
                 >
                   <item.icon className="mb-3 h-5 w-5 text-[#e2b45f]" />
                   <h2 className="font-display text-xl mb-1">{item.title}</h2>
@@ -170,7 +169,7 @@ function Join() {
             </div>
           </div>
 
-          <div className="space-y-6 rounded-3xl border border-[#d6a85c]/20 bg-[#342728]/95 p-5 shadow-[0_24px_70px_rgba(8,3,3,0.38),0_0_60px_rgba(142,40,42,0.12)] backdrop-blur-xl sm:p-7 lg:p-9">
+          <div className="space-y-6 rounded-3xl border border-[#d6a85c]/25 bg-[#302425]/95 p-5 shadow-[0_28px_80px_rgba(8,3,3,0.48),0_0_70px_rgba(142,40,42,0.14)] backdrop-blur-xl sm:p-7 lg:p-9">
             <div>
               <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
                 Gratuit · Sans engagement
