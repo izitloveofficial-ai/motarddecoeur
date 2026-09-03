@@ -1,20 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { MapPin, Users, ArrowRight } from "lucide-react";
-import hero from "@/assets/hero-sunset.jpg";
-import event from "@/assets/event-night.jpg";
-import community from "@/assets/community-ride.jpg";
-import bike from "@/assets/bike-dark.jpg";
+import evCoast from "@/assets/event-coast.jpg";
+import evFestival from "@/assets/event-festival.jpg";
+import evCharity from "@/assets/event-charity.jpg";
+import evExpo from "@/assets/event-expo.jpg";
+import evAlps from "@/assets/event-alps.jpg";
+import evHarbour from "@/assets/event-harbour.jpg";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 
 const EVENTS = [
-  { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", type: "Balade", spots: "places à définir", img: community, featured: true },
-  { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon — à venir", type: "Festival", spots: "format à préciser", img: event },
-  { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", type: "Solidaire", spots: "à organiser", img: hero },
-  { date: "À VENIR", title: "Expo moto custom", loc: "Bordeaux — à venir", type: "Rencontre", spots: "à organiser", img: bike },
-  { date: "À VENIR", title: "Balade des lacets alpins", loc: "Annecy — Chamonix", type: "Balade", spots: "à définir", img: community },
-  { date: "À VENIR", title: "Balade nocturne à Marseille", loc: "Vieux-Port — à venir", type: "Rencontre", spots: "à organiser", img: event },
+  { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", type: "Balade", spots: "places à définir", img: evCoast, featured: true },
+  { date: "À VENIR", title: "Festival Iron & Soul", loc: "Lyon — à venir", type: "Festival", spots: "format à préciser", img: evFestival },
+  { date: "À VENIR", title: "Balade solidaire des motards", loc: "Paris — à venir", type: "Solidaire", spots: "à organiser", img: evCharity },
+  { date: "À VENIR", title: "Expo moto custom", loc: "Bordeaux — à venir", type: "Rencontre", spots: "à organiser", img: evExpo },
+  { date: "À VENIR", title: "Balade des lacets alpins", loc: "Annecy — Chamonix", type: "Balade", spots: "à définir", img: evAlps },
+  { date: "À VENIR", title: "Balade nocturne à Marseille", loc: "Vieux-Port — à venir", type: "Rencontre", spots: "à organiser", img: evHarbour },
 ];
 
 export const Route = createFileRoute("/events")({

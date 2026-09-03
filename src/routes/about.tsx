@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Heart, Compass, Shield, Flame } from "lucide-react";
-import bikeImg from "@/assets/bike-dark.jpg";
-import community from "@/assets/community-ride.jpg";
+import bikeImg from "@/assets/about-hero.jpg";
+import community from "@/assets/post-ride.jpg";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 
