@@ -2,6 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import bikeDetail from "@/assets/bike-dark.jpg";
 import { Bike, CheckCircle2, Clock, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
@@ -119,6 +120,17 @@ function Join() {
             <p className="mb-8 max-w-2xl text-base leading-relaxed text-[#c9bbb4]">
               Quelques instants suffisent. Vous serez informé dès l'ouverture des fonctionnalités.
             </p>
+            <figure className="relative mb-8 h-36 max-w-3xl overflow-hidden rounded-2xl border border-[#d6a85c]/25 bg-[#181112] shadow-[0_16px_40px_rgba(8,3,3,0.3)] sm:h-44">
+              <img
+                src={bikeDetail}
+                alt="Détail d’une moto noire éclairée par son phare ambré"
+                className="h-full w-full object-cover object-[68%_42%] opacity-80"
+              />
+              <div
+                className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#21191a]/80 via-[#421d20]/15 to-transparent"
+                aria-hidden="true"
+              />
+            </figure>
             <div className="grid gap-4 sm:grid-cols-3 max-w-3xl">
               {[
                 {
