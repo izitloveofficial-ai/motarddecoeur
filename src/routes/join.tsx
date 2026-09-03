@@ -1,4 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Layout } from "@/components/Layout";
 import { Bike, Clock, ExternalLink, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
 
@@ -6,6 +7,14 @@ const SITE_URL = "https://motarddecoeur.lovable.app";
 const TALLY_FORM_URL = "https://tally.so/r/44q7ok";
 const TALLY_EMBED_URL =
   "https://tally.so/embed/44q7ok?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1";
+
+declare global {
+  interface Window {
+    Tally?: {
+      loadEmbeds: () => void;
+    };
+  }
+}
 
 export const Route = createFileRoute("/join")({
   head: () => ({
@@ -30,10 +39,26 @@ export const Route = createFileRoute("/join")({
 });
 
 function Join() {
+  useEffect(() => {
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      'script[src="https://tally.so/widgets/embed.js"]',
+    );
+
+    if (existingScript) {
+      window.Tally?.loadEmbeds();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://tally.so/widgets/embed.js";
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
+
   return (
     <Layout>
       <section className="py-20 px-6 border-b border-border/40">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 glass-red px-4 py-2 rounded-full text-xs uppercase tracking-widest mb-6">
               <Clock className="h-3 w-3" /> Pré-inscription gratuite
@@ -107,12 +132,12 @@ function Join() {
               Me pré-inscrire gratuitement <ExternalLink className="h-4 w-4" />
             </a>
 
-            <div className="overflow-hidden rounded-2xl border border-border bg-background/60">
+            <div className="min-h-[900px] overflow-hidden rounded-2xl border border-border bg-background/60 md:min-h-[1050px]">
               <iframe
                 src={TALLY_EMBED_URL}
                 title="Formulaire de pré-inscription Motards de Cœur"
                 loading="lazy"
-                className="h-[680px] w-full border-0 bg-transparent"
+                className="h-[900px] min-h-[900px] w-full border-0 bg-transparent md:h-[1050px] md:min-h-[1050px]"
               />
             </div>
 
