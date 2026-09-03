@@ -96,7 +96,7 @@ function Join() {
   }
 
   const fieldClass =
-    "mt-2 w-full rounded-xl border border-white/15 bg-[#302526]/90 px-4 py-3 text-sm text-[#fff9f0] shadow-inner shadow-black/15 outline-none transition placeholder:text-[#cdbdb5] hover:border-white/25 focus:border-[#d75a4f] focus:bg-[#38292a] focus:ring-2 focus:ring-[#d75a4f]/30";
+    "mt-2 w-full rounded-xl border border-white/15 bg-[#302526]/90 px-4 py-3 text-sm text-[#fff9f0] shadow-inner shadow-black/15 outline-none transition placeholder:text-[#cdbdb5] hover:border-[#d6a85c]/35 focus:border-[#e2b45f]/70 focus:bg-[#38292a] focus:ring-2 focus:ring-[#d9a441]/20";
 
   return (
     <Layout>
@@ -106,8 +106,8 @@ function Join() {
         <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-[#6b2528]/20 to-transparent" />
         <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-start lg:gap-12">
           <div className="animate-fade-up">
-            <span className="inline-flex items-center gap-2 glass-red px-4 py-2 rounded-full text-xs uppercase tracking-widest mb-6">
-              <Clock className="h-3 w-3" /> Pré-inscription gratuite
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d9a441]/30 bg-[#d9a441]/8 px-4 py-2 text-xs uppercase tracking-widest text-[#efd18d]">
+              <Clock className="h-3 w-3 text-[#e2b45f]" /> Pré-inscription gratuite
             </span>
             <h1 className="font-display text-5xl md:text-7xl leading-none mb-6">
               Soyez parmi les premiers motards inscrits.
@@ -139,18 +139,18 @@ function Join() {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-[#d9b7a7]/15 bg-[#39292a]/80 p-5 shadow-[0_12px_35px_rgba(10,4,4,0.22)] backdrop-blur-xl"
+                  className="rounded-2xl border border-[#d6a85c]/20 bg-[#39292a]/80 p-5 shadow-[0_12px_35px_rgba(10,4,4,0.22)] backdrop-blur-xl"
                 >
-                  <item.icon className="h-5 w-5 text-primary mb-3" />
+                  <item.icon className="mb-3 h-5 w-5 text-[#e2b45f]" />
                   <h2 className="font-display text-xl mb-1">{item.title}</h2>
                   <p className="text-sm leading-relaxed text-[#cdbfba]">{item.text}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-8 rounded-2xl border border-[#d5655b]/35 bg-[#552529]/55 p-5 text-sm leading-relaxed text-[#d8c9c2] shadow-[0_12px_35px_rgba(10,4,4,0.18)]">
-              <div className="mb-2 flex items-center gap-2 text-foreground">
-                <ShieldCheck className="h-4 w-4 text-primary" /> Données protégées
+            <div className="mt-8 rounded-2xl border border-[#d6a85c]/25 bg-[#552529]/55 p-5 text-sm leading-relaxed text-[#dfcfae] shadow-[0_12px_35px_rgba(10,4,4,0.18)]">
+              <div className="mb-2 flex items-center gap-2 text-[#f1d493]">
+                <ShieldCheck className="h-4 w-4 text-[#e2b45f]" /> Données protégées
               </div>
               Vos informations servent uniquement à gérer la pré-inscription et à vous informer du
               lancement. Aucun compte, paiement, profil public ou messagerie n'est créé à cette
@@ -158,9 +158,9 @@ function Join() {
             </div>
           </div>
 
-          <div className="space-y-6 rounded-3xl border border-[#e2b7a5]/20 bg-[#342728]/95 p-5 shadow-[0_24px_70px_rgba(8,3,3,0.38),0_0_60px_rgba(142,40,42,0.12)] backdrop-blur-xl sm:p-7 lg:p-9">
+          <div className="space-y-6 rounded-3xl border border-[#d6a85c]/20 bg-[#342728]/95 p-5 shadow-[0_24px_70px_rgba(8,3,3,0.38),0_0_60px_rgba(142,40,42,0.12)] backdrop-blur-xl sm:p-7 lg:p-9">
             <div>
-              <span className="text-primary uppercase tracking-[0.35em] text-xs">
+              <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
                 Gratuit · Sans engagement
               </span>
               <h2 className="font-display text-3xl mt-3 mb-3">
@@ -243,7 +243,7 @@ function Join() {
                   maxLength={1000}
                 />
               </label>
-              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#dfb6a5]/15 bg-[#281e1f]/70 p-4 text-sm leading-relaxed text-[#d4c6bf]">
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#d6a85c]/20 bg-[#281e1f]/70 p-4 text-sm leading-relaxed text-[#d4c6bf]">
                 <input
                   className="mt-1 h-4 w-4 accent-primary"
                   name="consent_rgpd"
@@ -265,8 +265,8 @@ function Join() {
               >
                 {status === "submitting" ? "Envoi en cours…" : "Valider ma pré-inscription"}
               </button>
-              <p className="flex items-center justify-center gap-2 text-center text-xs text-[#d8cbc4] sm:text-sm">
-                <ShieldCheck className="h-4 w-4 shrink-0 text-[#df6a5d]" />
+              <p className="flex items-center justify-center gap-2 text-center text-xs text-[#e4c986] sm:text-sm">
+                <ShieldCheck className="h-4 w-4 shrink-0 text-[#e2b45f]" />
                 Gratuit, sans engagement. Vous serez informé dès l’ouverture.
               </p>
               {feedback && (
