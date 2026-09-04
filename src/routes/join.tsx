@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
-import { Layout } from "@/components/Layout";
+import { PrelaunchLayout } from "@/components/PrelaunchLayout";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import bikeDetail from "@/assets/bike-dark.jpg";
 import { Bike, CheckCircle2, Clock, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
@@ -92,7 +92,7 @@ function Join() {
     form.reset();
     setStatus("success");
     setFeedback(
-      "Merci, votre pré-inscription est bien enregistrée. Vous serez informé dès l’ouverture de Motards de Cœur.",
+      "Merci ! Votre pré-inscription est bien enregistrée. Nous vous préviendrons dès le lancement de Motards de Cœur.",
     );
   }
 
@@ -100,7 +100,7 @@ function Join() {
     "mt-2 w-full rounded-xl border border-white/15 bg-[#302526]/90 px-4 py-3 text-sm text-[#fff9f0] shadow-inner shadow-black/15 outline-none transition placeholder:text-[#cdbdb5] hover:border-[#d6a85c]/35 focus:border-[#e2b45f]/70 focus:bg-[#38292a] focus:ring-2 focus:ring-[#d9a441]/20";
 
   return (
-    <Layout>
+    <PrelaunchLayout>
       <section className="relative isolate overflow-hidden border-b border-[#8d5b55]/25 bg-[#21191a] px-6 py-16 sm:py-20 lg:py-24">
         <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
           <img
@@ -120,14 +120,14 @@ function Join() {
               <Clock className="h-3 w-3 text-[#e2b45f]" /> Pré-inscription gratuite
             </span>
             <h1 className="font-display text-5xl md:text-7xl leading-none mb-6">
-              Soyez parmi les premiers motards inscrits.
+              Motards de Cœur arrive bientôt.
             </h1>
             <p className="mb-5 max-w-2xl text-lg leading-relaxed text-[#d8cbc4]">
-              Motards de Cœur arrive bientôt. Pré-inscrivez-vous gratuitement pour découvrir les
-              futures rencontres entre motards, balades et la communauté moto.
+              Rencontres, balades, amitié et communauté entre passionnés de moto.
             </p>
             <p className="mb-8 max-w-2xl text-base leading-relaxed text-[#c9bbb4]">
-              Quelques instants suffisent. Vous serez informé dès l'ouverture des fonctionnalités.
+              <strong className="text-[#f1d493]">Pré-inscription 100 % gratuite.</strong> Quelques
+              instants suffisent : vous serez informé dès l'ouverture.
             </p>
             <div className="mb-8 h-px max-w-3xl bg-gradient-to-r from-[#e2b45f]/60 via-[#8d3438]/35 to-transparent" />
             <div className="grid max-w-3xl gap-3 sm:grid-cols-3">
@@ -278,7 +278,11 @@ function Join() {
               </button>
               <p className="flex items-center justify-center gap-2 text-center text-xs text-[#e4c986] sm:text-sm">
                 <ShieldCheck className="h-4 w-4 shrink-0 text-[#e2b45f]" />
-                Gratuit, sans engagement. Vous serez informé dès l’ouverture.
+                Aucun paiement – gratuit et sans engagement.
+              </p>
+              <p className="text-center text-xs leading-relaxed text-[#cdbfba]">
+                Vos données restent confidentielles et servent uniquement à vous informer du
+                lancement.
               </p>
               {feedback && (
                 <div
@@ -306,6 +310,6 @@ function Join() {
           </p>
         </div>
       </section>
-    </Layout>
+    </PrelaunchLayout>
   );
 }

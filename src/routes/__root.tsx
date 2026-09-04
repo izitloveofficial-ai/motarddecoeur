@@ -4,12 +4,14 @@ import {
   Outlet,
   Link,
   createRootRouteWithContext,
+  redirect,
   useRouter,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { PRELAUNCH_MODE, isPathAllowedDuringPrelaunch } from "@/lib/prelaunch";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 const BRAND_LOGO_URL = `${SITE_URL}/favicon.png`;
@@ -73,6 +75,11 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: ({ location }) => {
+    if (PRELAUNCH_MODE && !isPathAllowedDuringPrelaunch(location.pathname)) {
+      throw redirect({ to: "/join" });
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
