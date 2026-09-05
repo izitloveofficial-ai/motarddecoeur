@@ -9,67 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ProfilesRouteImport } from './routes/profiles'
-import { Route as PremiumRouteImport } from './routes/premium'
-import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
-import { Route as JoinRouteImport } from './routes/join'
-import { Route as EventsRouteImport } from './routes/events'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
-import { Route as ConditionsUtilisationRouteImport } from './routes/conditions-utilisation'
-import { Route as CommunityRouteImport } from './routes/community'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ActivateRouteImport } from './routes/activate'
+import { Route as CommunityRouteImport } from './routes/community'
+import { Route as ConditionsUtilisationRouteImport } from './routes/conditions-utilisation'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as ProfilesRouteImport } from './routes/profiles'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfilesRoute = ProfilesRouteImport.update({
-  id: '/profiles',
-  path: '/profiles',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PremiumRoute = PremiumRouteImport.update({
-  id: '/premium',
-  path: '/premium',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
-  id: '/mentions-legales',
-  path: '/mentions-legales',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JoinRoute = JoinRouteImport.update({
-  id: '/join',
-  path: '/join',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventsRoute = EventsRouteImport.update({
-  id: '/events',
-  path: '/events',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
-  id: '/confidentialite',
-  path: '/confidentialite',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConditionsUtilisationRoute = ConditionsUtilisationRouteImport.update({
-  id: '/conditions-utilisation',
-  path: '/conditions-utilisation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CommunityRoute = CommunityRouteImport.update({
-  id: '/community',
-  path: '/community',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -77,15 +34,71 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ActivateRoute = ActivateRouteImport.update({
+  id: '/activate',
+  path: '/activate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConditionsUtilisationRoute = ConditionsUtilisationRouteImport.update({
+  id: '/conditions-utilisation',
+  path: '/conditions-utilisation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilesRoute = ProfilesRouteImport.update({
+  id: '/profiles',
+  path: '/profiles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPreinscriptionsRoute = AdminPreinscriptionsRouteImport.update({
+  id: '/admin/preinscriptions',
+  path: '/admin/preinscriptions',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/activate': typeof ActivateRoute
   '/community': typeof CommunityRoute
   '/conditions-utilisation': typeof ConditionsUtilisationRoute
   '/confidentialite': typeof ConfidentialiteRoute
@@ -96,10 +109,12 @@ export interface FileRoutesByFullPath {
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/activate': typeof ActivateRoute
   '/community': typeof CommunityRoute
   '/conditions-utilisation': typeof ConditionsUtilisationRoute
   '/confidentialite': typeof ConfidentialiteRoute
@@ -110,11 +125,13 @@ export interface FileRoutesByTo {
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/activate': typeof ActivateRoute
   '/community': typeof CommunityRoute
   '/conditions-utilisation': typeof ConditionsUtilisationRoute
   '/confidentialite': typeof ConfidentialiteRoute
@@ -125,12 +142,14 @@ export interface FileRoutesById {
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/activate'
     | '/community'
     | '/conditions-utilisation'
     | '/confidentialite'
@@ -141,10 +160,12 @@ export interface FileRouteTypes {
     | '/premium'
     | '/profiles'
     | '/sitemap.xml'
+    | '/admin/preinscriptions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/activate'
     | '/community'
     | '/conditions-utilisation'
     | '/confidentialite'
@@ -155,10 +176,12 @@ export interface FileRouteTypes {
     | '/premium'
     | '/profiles'
     | '/sitemap.xml'
+    | '/admin/preinscriptions'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/activate'
     | '/community'
     | '/conditions-utilisation'
     | '/confidentialite'
@@ -169,11 +192,13 @@ export interface FileRouteTypes {
     | '/premium'
     | '/profiles'
     | '/sitemap.xml'
+    | '/admin/preinscriptions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ActivateRoute: typeof ActivateRoute
   CommunityRoute: typeof CommunityRoute
   ConditionsUtilisationRoute: typeof ConditionsUtilisationRoute
   ConfidentialiteRoute: typeof ConfidentialiteRoute
@@ -184,78 +209,16 @@ export interface RootRouteChildren {
   PremiumRoute: typeof PremiumRoute
   ProfilesRoute: typeof ProfilesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminPreinscriptionsRoute: typeof AdminPreinscriptionsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profiles': {
-      id: '/profiles'
-      path: '/profiles'
-      fullPath: '/profiles'
-      preLoaderRoute: typeof ProfilesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/premium': {
-      id: '/premium'
-      path: '/premium'
-      fullPath: '/premium'
-      preLoaderRoute: typeof PremiumRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mentions-legales': {
-      id: '/mentions-legales'
-      path: '/mentions-legales'
-      fullPath: '/mentions-legales'
-      preLoaderRoute: typeof MentionsLegalesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/join': {
-      id: '/join'
-      path: '/join'
-      fullPath: '/join'
-      preLoaderRoute: typeof JoinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/events': {
-      id: '/events'
-      path: '/events'
-      fullPath: '/events'
-      preLoaderRoute: typeof EventsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/confidentialite': {
-      id: '/confidentialite'
-      path: '/confidentialite'
-      fullPath: '/confidentialite'
-      preLoaderRoute: typeof ConfidentialiteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/conditions-utilisation': {
-      id: '/conditions-utilisation'
-      path: '/conditions-utilisation'
-      fullPath: '/conditions-utilisation'
-      preLoaderRoute: typeof ConditionsUtilisationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/community': {
-      id: '/community'
-      path: '/community'
-      fullPath: '/community'
-      preLoaderRoute: typeof CommunityRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -265,11 +228,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/activate': {
+      id: '/activate'
+      path: '/activate'
+      fullPath: '/activate'
+      preLoaderRoute: typeof ActivateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conditions-utilisation': {
+      id: '/conditions-utilisation'
+      path: '/conditions-utilisation'
+      fullPath: '/conditions-utilisation'
+      preLoaderRoute: typeof ConditionsUtilisationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profiles': {
+      id: '/profiles'
+      path: '/profiles'
+      fullPath: '/profiles'
+      preLoaderRoute: typeof ProfilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/preinscriptions': {
+      id: '/admin/preinscriptions'
+      path: '/admin/preinscriptions'
+      fullPath: '/admin/preinscriptions'
+      preLoaderRoute: typeof AdminPreinscriptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -278,6 +318,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ActivateRoute: ActivateRoute,
   CommunityRoute: CommunityRoute,
   ConditionsUtilisationRoute: ConditionsUtilisationRoute,
   ConfidentialiteRoute: ConfidentialiteRoute,
@@ -288,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   PremiumRoute: PremiumRoute,
   ProfilesRoute: ProfilesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminPreinscriptionsRoute: AdminPreinscriptionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
