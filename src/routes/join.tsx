@@ -3,7 +3,7 @@ import { type FormEvent, useState } from "react";
 import { PrelaunchLayout } from "@/components/PrelaunchLayout";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import bikeDetail from "@/assets/bike-dark.jpg";
-import { Bike, CheckCircle2, Clock, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
+import { Bike, Check, CheckCircle2, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
 
@@ -114,22 +114,31 @@ function Join() {
           <div className="absolute -right-28 top-1/3 h-96 w-96 rounded-full bg-[#d0874d]/15 blur-3xl" />
           <div className="absolute bottom-[-18rem] left-[8%] h-[34rem] w-24 rotate-[22deg] border-x border-[#e2b45f]/10 bg-[#d9a441]/[0.025] blur-[0.5px] sm:left-[18%] sm:w-36" />
         </div>
-        <div className="relative mx-auto grid max-w-[1380px] gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(560px,1.1fr)] lg:items-start lg:gap-16 xl:gap-20">
+        <div className="relative mx-auto grid max-w-[1380px] gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(560px,1.1fr)] lg:items-start lg:gap-x-16 lg:gap-y-0 xl:gap-x-20">
           <div className="animate-fade-up lg:pt-5">
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d9a441]/30 bg-[#d9a441]/8 px-4 py-2 text-xs uppercase tracking-widest text-[#efd18d]">
-              <Clock className="h-3 w-3 text-[#e2b45f]" /> Pré-inscription gratuite
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d9a441]/45 bg-[#d9a441]/15 px-5 py-3 text-sm font-bold uppercase tracking-wider text-[#f6d98d] shadow-[0_0_30px_rgba(217,164,65,0.16)] sm:text-base">
+              Pré-inscriptions ouvertes ❤️
             </span>
             <h1 className="font-display text-5xl md:text-7xl leading-none mb-6">
               Motards de Cœur arrive bientôt.
             </h1>
             <p className="mb-5 max-w-2xl text-lg leading-relaxed text-[#d8cbc4]">
-              Rencontres, balades, amitié et communauté entre passionnés de moto.
+              Rejoins gratuitement les premiers membres de Motards de Cœur.
             </p>
-            <p className="mb-8 max-w-2xl text-base leading-relaxed text-[#c9bbb4]">
-              <strong className="text-[#f1d493]">Pré-inscription 100 % gratuite.</strong> Quelques
-              instants suffisent : vous serez informé dès l'ouverture.
-            </p>
+            <ul className="mb-8 space-y-2 text-base font-semibold text-[#f1d493] sm:text-lg">
+              {["100 % gratuit", "Sans engagement", "Informé(e) en priorité dès l'ouverture"].map(
+                (benefit) => (
+                  <li key={benefit} className="flex items-center gap-3">
+                    <Check className="h-5 w-5 shrink-0 text-[#e2b45f]" strokeWidth={3} />
+                    {benefit}
+                  </li>
+                ),
+              )}
+            </ul>
             <div className="mb-8 h-px max-w-3xl bg-gradient-to-r from-[#e2b45f]/60 via-[#8d3438]/35 to-transparent" />
+          </div>
+
+          <div className="order-3 lg:order-none">
             <div className="grid max-w-3xl gap-3 sm:grid-cols-3">
               {[
                 {
@@ -169,14 +178,12 @@ function Join() {
             </div>
           </div>
 
-          <div className="space-y-6 rounded-3xl border border-[#d6a85c]/25 bg-[#302425]/95 p-5 shadow-[0_28px_80px_rgba(8,3,3,0.48),0_0_70px_rgba(142,40,42,0.14)] backdrop-blur-xl sm:p-7 lg:p-9">
+          <div className="order-2 row-span-2 space-y-6 rounded-3xl border border-[#d6a85c]/25 bg-[#302425]/95 p-5 shadow-[0_28px_80px_rgba(8,3,3,0.48),0_0_70px_rgba(142,40,42,0.14)] backdrop-blur-xl sm:p-7 lg:order-none lg:col-start-2 lg:row-start-1 lg:p-9">
             <div>
               <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
                 Gratuit · Sans engagement
               </span>
-              <h2 className="font-display text-3xl mt-3 mb-3">
-                Je rejoins la liste de pré-inscription
-              </h2>
+              <h2 className="font-display text-3xl mt-3 mb-3">Je me pré-inscris gratuitement</h2>
               <p className="text-sm leading-relaxed text-[#d4c6bf]">
                 Dites-nous-en un peu plus sur vous. Les champs marqués d’un astérisque sont
                 obligatoires.
@@ -278,7 +285,7 @@ function Join() {
               </button>
               <p className="flex items-center justify-center gap-2 text-center text-xs text-[#e4c986] sm:text-sm">
                 <ShieldCheck className="h-4 w-4 shrink-0 text-[#e2b45f]" />
-                Aucun paiement – gratuit et sans engagement.
+                Aucun paiement — gratuit et sans engagement.
               </p>
               <p className="text-center text-xs leading-relaxed text-[#cdbfba]">
                 Vos données restent confidentielles et servent uniquement à vous informer du
