@@ -223,7 +223,10 @@ function Join() {
                   className={fieldClass}
                   name="location"
                   type="text"
-                  autoComplete="address-level2"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  inputMode="text"
                   maxLength={120}
                 />
               </label>
