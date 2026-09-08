@@ -65,13 +65,15 @@ function Join() {
     }
 
     const data = new FormData(form);
+    const location = String(data.get("location") ?? "").trim() || null;
     setStatus("submitting");
     const { error } = await supabase.from("preinscriptions").insert({
       first_name: String(data.get("first_name") ?? "").trim(),
       email: String(data.get("email") ?? "")
         .trim()
         .toLowerCase(),
-      location: String(data.get("location") ?? "").trim() || null,
+      location,
+      city: location,
       rider_profile: String(data.get("rider_profile") ?? "") || null,
       favorite_bike: String(data.get("favorite_bike") ?? "").trim() || null,
       primary_interest: String(data.get("primary_interest") ?? "") || null,
