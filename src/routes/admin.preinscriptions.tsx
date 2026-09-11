@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -84,6 +84,11 @@ function AdminPreinscriptions() {
       <div className="mx-auto max-w-7xl">
         <p className="text-xs uppercase tracking-[.3em] text-primary">Administration privée</p>
         <h1 className="mt-2 font-display text-4xl">Préinscriptions</h1>
+        <p className="mt-2 text-sm">
+          <Link to="/admin/members" className="text-primary hover:underline">
+            Voir les membres inscrits
+          </Link>
+        </p>
         <div className="my-8 grid gap-4 sm:grid-cols-4">
           {[
             ["Total", rows.length],

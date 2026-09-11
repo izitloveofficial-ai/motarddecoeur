@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { CheckCircle2, ShieldCheck, Upload } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
@@ -233,6 +233,14 @@ function ProfileSetup() {
               {status === "success" && <CheckCircle2 className="h-5 w-5 shrink-0" />}
               <span>{feedback}</span>
             </div>
+          )}
+          {status === "success" && (
+            <Link
+              to="/discover"
+              className="block w-full rounded-full border border-primary/40 px-8 py-3 text-center text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
+            >
+              Découvrir des profils
+            </Link>
           )}
         </form>
       </section>

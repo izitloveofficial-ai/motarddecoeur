@@ -14,12 +14,15 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/conditions-utilisation",
   "/admin/login",
   "/admin/preinscriptions",
+  "/admin/members",
   "/signup",
   "/login",
   "/profile/setup",
+  "/discover",
+  "/matches",
 ];
 
 export function isPathAllowedDuringPrelaunch(pathname: string) {
   const clean = pathname.replace(/\/+$/, "") || "/";
-  return PRELAUNCH_ALLOWED_PATHS.includes(clean);
+  return PRELAUNCH_ALLOWED_PATHS.includes(clean) || clean.startsWith("/messages/");
 }

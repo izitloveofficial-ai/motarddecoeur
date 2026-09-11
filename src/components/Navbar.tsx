@@ -50,10 +50,10 @@ export function Navbar() {
 
         <div className="hidden xl:flex items-center gap-3">
           <Link
-            to="/contact"
+            to="/login"
             className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition"
           >
-            Connexion bientôt disponible
+            Connexion
           </Link>
           <Link
             to="/join"
@@ -86,11 +86,11 @@ export function Navbar() {
             </Link>
           ))}
           <Link
-            to="/contact"
+            to="/login"
             onClick={() => setOpen(false)}
             className="py-2 text-sm text-neutral-700 hover:text-neutral-900"
           >
-            Connexion bientôt disponible
+            Connexion
           </Link>
           <Link
             to="/join"

@@ -16,16 +16,20 @@ import { Route as CommunityRouteImport } from './routes/community'
 import { Route as ConditionsUtilisationRouteImport } from './routes/conditions-utilisation'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfilesRouteImport } from './routes/profiles'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
+import { Route as MessagesMatchIdRouteImport } from './routes/messages.$matchId'
 import { Route as ProfileSetupRouteImport } from './routes/profile.setup'
 
 const IndexRoute = IndexRouteImport.update({
@@ -63,6 +67,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
@@ -76,6 +85,11 @@ const JoinRoute = JoinRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchesRoute = MatchesRouteImport.update({
+  id: '/matches',
+  path: '/matches',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -108,9 +122,19 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminMembersRoute = AdminMembersRouteImport.update({
+  id: '/admin/members',
+  path: '/admin/members',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPreinscriptionsRoute = AdminPreinscriptionsRouteImport.update({
   id: '/admin/preinscriptions',
   path: '/admin/preinscriptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesMatchIdRoute = MessagesMatchIdRouteImport.update({
+  id: '/messages/$matchId',
+  path: '/messages/$matchId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileSetupRoute = ProfileSetupRouteImport.update({
@@ -127,16 +151,20 @@ export interface FileRoutesByFullPath {
   '/conditions-utilisation': typeof ConditionsUtilisationRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
+  '/discover': typeof DiscoverRoute
   '/events': typeof EventsRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/matches': typeof MatchesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/messages/$matchId': typeof MessagesMatchIdRoute
   '/profile/setup': typeof ProfileSetupRoute
 }
 export interface FileRoutesByTo {
@@ -147,16 +175,20 @@ export interface FileRoutesByTo {
   '/conditions-utilisation': typeof ConditionsUtilisationRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
+  '/discover': typeof DiscoverRoute
   '/events': typeof EventsRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/matches': typeof MatchesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/messages/$matchId': typeof MessagesMatchIdRoute
   '/profile/setup': typeof ProfileSetupRoute
 }
 export interface FileRoutesById {
@@ -168,16 +200,20 @@ export interface FileRoutesById {
   '/conditions-utilisation': typeof ConditionsUtilisationRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
+  '/discover': typeof DiscoverRoute
   '/events': typeof EventsRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/matches': typeof MatchesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/messages/$matchId': typeof MessagesMatchIdRoute
   '/profile/setup': typeof ProfileSetupRoute
 }
 export interface FileRouteTypes {
@@ -190,16 +226,20 @@ export interface FileRouteTypes {
     | '/conditions-utilisation'
     | '/confidentialite'
     | '/contact'
+    | '/discover'
     | '/events'
     | '/join'
     | '/login'
+    | '/matches'
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
     | '/signup'
     | '/sitemap.xml'
     | '/admin/login'
+    | '/admin/members'
     | '/admin/preinscriptions'
+    | '/messages/$matchId'
     | '/profile/setup'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -210,16 +250,20 @@ export interface FileRouteTypes {
     | '/conditions-utilisation'
     | '/confidentialite'
     | '/contact'
+    | '/discover'
     | '/events'
     | '/join'
     | '/login'
+    | '/matches'
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
     | '/signup'
     | '/sitemap.xml'
     | '/admin/login'
+    | '/admin/members'
     | '/admin/preinscriptions'
+    | '/messages/$matchId'
     | '/profile/setup'
   id:
     | '__root__'
@@ -230,16 +274,20 @@ export interface FileRouteTypes {
     | '/conditions-utilisation'
     | '/confidentialite'
     | '/contact'
+    | '/discover'
     | '/events'
     | '/join'
     | '/login'
+    | '/matches'
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
     | '/signup'
     | '/sitemap.xml'
     | '/admin/login'
+    | '/admin/members'
     | '/admin/preinscriptions'
+    | '/messages/$matchId'
     | '/profile/setup'
   fileRoutesById: FileRoutesById
 }
@@ -251,16 +299,20 @@ export interface RootRouteChildren {
   ConditionsUtilisationRoute: typeof ConditionsUtilisationRoute
   ConfidentialiteRoute: typeof ConfidentialiteRoute
   ContactRoute: typeof ContactRoute
+  DiscoverRoute: typeof DiscoverRoute
   EventsRoute: typeof EventsRoute
   JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
+  MatchesRoute: typeof MatchesRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   PremiumRoute: typeof PremiumRoute
   ProfilesRoute: typeof ProfilesRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminMembersRoute: typeof AdminMembersRoute
   AdminPreinscriptionsRoute: typeof AdminPreinscriptionsRoute
+  MessagesMatchIdRoute: typeof MessagesMatchIdRoute
   ProfileSetupRoute: typeof ProfileSetupRoute
 }
 
@@ -315,6 +367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events': {
       id: '/events'
       path: '/events'
@@ -334,6 +393,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/matches': {
+      id: '/matches'
+      path: '/matches'
+      fullPath: '/matches'
+      preLoaderRoute: typeof MatchesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentions-legales': {
@@ -378,11 +444,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/members': {
+      id: '/admin/members'
+      path: '/admin/members'
+      fullPath: '/admin/members'
+      preLoaderRoute: typeof AdminMembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/preinscriptions': {
       id: '/admin/preinscriptions'
       path: '/admin/preinscriptions'
       fullPath: '/admin/preinscriptions'
       preLoaderRoute: typeof AdminPreinscriptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages/$matchId': {
+      id: '/messages/$matchId'
+      path: '/messages/$matchId'
+      fullPath: '/messages/$matchId'
+      preLoaderRoute: typeof MessagesMatchIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile/setup': {
@@ -403,16 +483,20 @@ const rootRouteChildren: RootRouteChildren = {
   ConditionsUtilisationRoute: ConditionsUtilisationRoute,
   ConfidentialiteRoute: ConfidentialiteRoute,
   ContactRoute: ContactRoute,
+  DiscoverRoute: DiscoverRoute,
   EventsRoute: EventsRoute,
   JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
+  MatchesRoute: MatchesRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   PremiumRoute: PremiumRoute,
   ProfilesRoute: ProfilesRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminMembersRoute: AdminMembersRoute,
   AdminPreinscriptionsRoute: AdminPreinscriptionsRoute,
+  MessagesMatchIdRoute: MessagesMatchIdRoute,
   ProfileSetupRoute: ProfileSetupRoute,
 }
 export const routeTree = rootRouteImport
