@@ -53,7 +53,11 @@ function Signup() {
     }
 
     setStatus("submitting");
-    const { data: signUpData, error } = await supabase.auth.signUp({ email, password });
+    const { data: signUpData, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/profile/setup` },
+    });
     if (error) {
       const knownAccount = /already (registered|exists)/i.test(error.message);
       setStatus("error");
@@ -161,6 +165,12 @@ function Signup() {
               {feedback}
             </div>
           )}
+          <p className="text-center text-sm text-[#d4c6bf]">
+            Déjà un compte ?{" "}
+            <Link to="/login" className="text-primary hover:underline">
+              Se connecter
+            </Link>
+          </p>
         </form>
       </section>
     </Layout>

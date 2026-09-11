@@ -15,6 +15,7 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/admin/login",
   "/admin/preinscriptions",
   "/signup",
+  "/login",
   "/profile/setup",
 ];
 
