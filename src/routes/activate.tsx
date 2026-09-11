@@ -30,7 +30,8 @@ function Activate() {
       setMessage("Cette invitation est incomplète ou invalide.");
       return;
     }
-    supabase.auth.getSession().then(async ({ data }) => {
+    const client = supabase;
+    client.auth.getSession().then(async ({ data }) => {
       if (!data.session) {
         setMessage("Ouvrez le lien complet reçu par e-mail pour continuer.");
         return;
