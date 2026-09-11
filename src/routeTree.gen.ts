@@ -24,11 +24,13 @@ import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfilesRouteImport } from './routes/profiles'
+import { Route as RidesRouteImport } from './routes/rides'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
+import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as MessagesMatchIdRouteImport } from './routes/messages.$matchId'
 import { Route as ProfileSetupRouteImport } from './routes/profile.setup'
 
@@ -107,6 +109,11 @@ const ProfilesRoute = ProfilesRouteImport.update({
   path: '/profiles',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RidesRoute = RidesRouteImport.update({
+  id: '/rides',
+  path: '/rides',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -130,6 +137,11 @@ const AdminMembersRoute = AdminMembersRouteImport.update({
 const AdminPreinscriptionsRoute = AdminPreinscriptionsRouteImport.update({
   id: '/admin/preinscriptions',
   path: '/admin/preinscriptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/admin/reports',
+  path: '/admin/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesMatchIdRoute = MessagesMatchIdRouteImport.update({
@@ -159,11 +171,13 @@ export interface FileRoutesByFullPath {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/messages/$matchId': typeof MessagesMatchIdRoute
   '/profile/setup': typeof ProfileSetupRoute
 }
@@ -183,11 +197,13 @@ export interface FileRoutesByTo {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/messages/$matchId': typeof MessagesMatchIdRoute
   '/profile/setup': typeof ProfileSetupRoute
 }
@@ -208,11 +224,13 @@ export interface FileRoutesById {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/messages/$matchId': typeof MessagesMatchIdRoute
   '/profile/setup': typeof ProfileSetupRoute
 }
@@ -234,11 +252,13 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/rides'
     | '/signup'
     | '/sitemap.xml'
     | '/admin/login'
     | '/admin/members'
     | '/admin/preinscriptions'
+    | '/admin/reports'
     | '/messages/$matchId'
     | '/profile/setup'
   fileRoutesByTo: FileRoutesByTo
@@ -258,11 +278,13 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/rides'
     | '/signup'
     | '/sitemap.xml'
     | '/admin/login'
     | '/admin/members'
     | '/admin/preinscriptions'
+    | '/admin/reports'
     | '/messages/$matchId'
     | '/profile/setup'
   id:
@@ -282,11 +304,13 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/rides'
     | '/signup'
     | '/sitemap.xml'
     | '/admin/login'
     | '/admin/members'
     | '/admin/preinscriptions'
+    | '/admin/reports'
     | '/messages/$matchId'
     | '/profile/setup'
   fileRoutesById: FileRoutesById
@@ -307,11 +331,13 @@ export interface RootRouteChildren {
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   PremiumRoute: typeof PremiumRoute
   ProfilesRoute: typeof ProfilesRoute
+  RidesRoute: typeof RidesRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMembersRoute: typeof AdminMembersRoute
   AdminPreinscriptionsRoute: typeof AdminPreinscriptionsRoute
+  AdminReportsRoute: typeof AdminReportsRoute
   MessagesMatchIdRoute: typeof MessagesMatchIdRoute
   ProfileSetupRoute: typeof ProfileSetupRoute
 }
@@ -423,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfilesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rides': {
+      id: '/rides'
+      path: '/rides'
+      fullPath: '/rides'
+      preLoaderRoute: typeof RidesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -458,6 +491,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPreinscriptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/admin/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/messages/$matchId': {
       id: '/messages/$matchId'
       path: '/messages/$matchId'
@@ -491,11 +531,13 @@ const rootRouteChildren: RootRouteChildren = {
   MentionsLegalesRoute: MentionsLegalesRoute,
   PremiumRoute: PremiumRoute,
   ProfilesRoute: ProfilesRoute,
+  RidesRoute: RidesRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminPreinscriptionsRoute: AdminPreinscriptionsRoute,
+  AdminReportsRoute: AdminReportsRoute,
   MessagesMatchIdRoute: MessagesMatchIdRoute,
   ProfileSetupRoute: ProfileSetupRoute,
 }

@@ -169,6 +169,10 @@ function AdminMembers() {
           <Link to="/admin/preinscriptions" className="text-primary hover:underline">
             Voir les pré-inscriptions
           </Link>
+          {" · "}
+          <Link to="/admin/reports" className="text-primary hover:underline">
+            Voir les signalements
+          </Link>
         </p>
       </div>
     </main>
