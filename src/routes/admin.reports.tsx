@@ -82,9 +82,31 @@ function AdminReports() {
 
   async function suspend(profileId: string) {
     if (!supabase) return;
-    if (!window.confirm("Suspendre ce profil ? Il ne sera plus visible ni utilisable.")) return;
+    if (
+      !window.confirm("Suspendre ce profil ? Il ne sera plus visible ni utilisable (réversible).")
+    )
+      return;
     await supabase.from("profiles").update({ is_active: false }).eq("id", profileId);
     setNotice("Profil suspendu.");
+  }
+
+  async function ban(profileId: string) {
+    if (!supabase) return;
+    if (
+      !window.confirm(
+        "Bannir définitivement ce compte ? Le compte et toutes ses données seront supprimés. Cette action est irréversible.",
+      )
+    )
+      return;
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const { error } = await supabase.functions.invoke("admin-ban-user", {
+      body: { profile_id: profileId },
+      headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
+    });
+    setNotice(error ? "Le bannissement a échoué." : "Compte banni et supprimé définitivement.");
+    await load();
   }
 
   const shown = filter === "all" ? reports : reports.filter((report) => report.status === filter);
@@ -174,6 +196,12 @@ function AdminReports() {
                       onClick={() => void suspend(report.reportedId)}
                     >
                       Suspendre
+                    </button>
+                    <button
+                      className="text-destructive font-semibold underline"
+                      onClick={() => void ban(report.reportedId)}
+                    >
+                      Bannir
                     </button>
                   </td>
                 </tr>

@@ -33,82 +33,115 @@ function Confidentialite() {
       <LegalPage
         eyebrow="Confidentialité"
         title="Politique de confidentialité"
-        intro="Cette page explique comment Motards de Cœur traite les données transmises lors de la pré-inscription au lancement."
+        intro="Cette page explique quelles données Motards de Cœur collecte, pourquoi, et comment tu peux les contrôler."
       >
-        <LegalSection title="Finalité de la collecte">
+        <LegalSection title="Qui traite tes données">
           <p>
-            Les informations envoyées via la page de pré-inscription servent uniquement à constituer
-            une liste d'attente, à mesurer l'intérêt pour Motards de Cœur et à vous informer du
-            lancement du service.
-          </p>
-        </LegalSection>
-
-        <LegalSection title="Données collectées">
-          <p>Le formulaire de pré-inscription peut collecter les données suivantes :</p>
-          <ul>
-            <li>prénom ;</li>
-            <li>adresse email ;</li>
-            <li>ville ou région ;</li>
-            <li>profil motard ;</li>
-            <li>type de moto ou moto préférée ;</li>
-            <li>recherche principale ;</li>
-            <li>message facultatif ;</li>
-            <li>consentement à être recontacté au sujet du lancement.</li>
-          </ul>
-        </LegalSection>
-
-        <LegalSection title="Utilisation des données">
-          <p>
-            Ces données ne sont pas utilisées pour créer un compte, activer une messagerie,
-            déclencher un paiement ou publier un profil. Elles servent uniquement à gérer la
-            pré-inscription et les informations liées au lancement.
-          </p>
-        </LegalSection>
-
-        <LegalSection title="Outil de collecte">
-          <p>
-            La pré-inscription est collectée depuis le formulaire interne de Motards de Cœur. Les
-            informations transmises sont utilisées uniquement pour vous recontacter au sujet du
-            lancement.
-          </p>
-        </LegalSection>
-
-        <LegalSection title="Vente ou partage commercial">
-          <p>
-            Motards de Cœur ne vend pas les données de pré-inscription. Les informations transmises
-            ne sont pas revendues à des tiers.
-          </p>
-        </LegalSection>
-
-        <LegalSection title="Conservation et suppression">
-          <p>
-            Les données sont conservées le temps nécessaire à la préparation du lancement. Vous
-            pouvez demander l'accès, la rectification ou la suppression de vos données à tout moment
-            via la page{" "}
-            <Link to="/contact" className="text-primary hover:underline">
-              contact
-            </Link>{" "}
-            ou par email à{" "}
+            Motards de Cœur est l'éditeur et responsable du traitement de tes données. Nos serveurs
+            et bases de données sont hébergés par Supabase (Union européenne). Pour toute question,
+            contacte-nous à{" "}
             <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">
               {CONTACT_EMAIL}
             </a>
             .
           </p>
         </LegalSection>
-
+        <LegalSection title="Données collectées lors de l'inscription">
+          <ul>
+            <li>adresse email et mot de passe (chiffré, jamais stocké en clair) ;</li>
+            <li>confirmation que tu as 18 ans ou plus ;</li>
+            <li>acceptation des CGU et de la présente politique.</li>
+          </ul>
+        </LegalSection>
+        <LegalSection title="Données de ton profil">
+          <ul>
+            <li>prénom, date de naissance, genre, ce que tu recherches ;</li>
+            <li>informations sur ta moto (type, marque, modèle) ;</li>
+            <li>présentation libre ;</li>
+            <li>jusqu'à 3 photos ;</li>
+            <li>
+              position géographique approximative, uniquement si tu actives volontairement cette
+              option. Ta position exacte n'est jamais stockée de façon lisible ni partagée : seule
+              une distance arrondie avec les autres membres est calculée, via un mécanisme technique
+              dédié.
+            </li>
+          </ul>
+        </LegalSection>
+        <LegalSection title="Données liées à l'utilisation de l'app">
+          <ul>
+            <li>tes likes (&quot;j'aime&quot;/&quot;passer&quot;) et tes matchs ;</li>
+            <li>les messages que tu envoies à tes matchs ;</li>
+            <li>les balades que tu crées ou rejoins ;</li>
+            <li>les signalements que tu effectues et les comptes que tu bloques ;</li>
+            <li>
+              si tu utilises l'application mobile et acceptes les notifications, un identifiant
+              technique de ton appareil (jeton de notification), partagé avec Firebase (Google)
+              uniquement pour te délivrer les notifications.
+            </li>
+          </ul>
+        </LegalSection>
+        <LegalSection title="Ce que nous ne faisons jamais">
+          <ul>
+            <li>Nous ne vendons aucune donnée à des tiers ;</li>
+            <li>Nous n'affichons jamais ta position exacte ni ton adresse ;</li>
+            <li>
+              Nous ne partageons tes données qu'avec les prestataires techniques strictement
+              nécessaires au fonctionnement du service (hébergement, envoi de notifications).
+            </li>
+          </ul>
+        </LegalSection>
         <LegalSection title="Sécurité">
           <p>
-            L’accès public permet uniquement l’envoi d’une pré-inscription consentie. La
-            consultation, la modification et la suppression des données ne sont pas ouvertes aux
-            visiteurs.
+            L'accès à tes données est protégé par des règles de sécurité au niveau de chaque ligne
+            de données (Row Level Security) : un autre membre ne peut voir que ce que tu choisis de
+            rendre visible (profil actif), et jamais tes coordonnées exactes, ton email, ou les
+            données d'un compte que tu as bloqué ou qui t'a bloqué.
           </p>
         </LegalSection>
-
+        <LegalSection title="Tes droits et comment les exercer">
+          <p>
+            Conformément au RGPD, tu disposes à tout moment des droits suivants, exerçables
+            directement depuis l'application :
+          </p>
+          <ul>
+            <li>
+              <strong>Accès et export</strong> : depuis la page de ton profil, tu peux télécharger
+              une copie complète de tes données (profil, photos, matchs, messages envoyés,
+              participations aux balades) ;
+            </li>
+            <li>
+              <strong>Rectification</strong> : modifie ton profil à tout moment depuis la même page
+              ;
+            </li>
+            <li>
+              <strong>Suppression</strong> : supprime définitivement ton compte et toutes tes
+              données associées en un clic, depuis la page de ton profil ;
+            </li>
+            <li>
+              <strong>Opposition et limitation</strong> : contacte-nous à{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">
+                {CONTACT_EMAIL}
+              </a>{" "}
+              ou via la{" "}
+              <Link to="/contact" className="text-primary hover:underline">
+                page contact
+              </Link>
+              .
+            </li>
+          </ul>
+        </LegalSection>
+        <LegalSection title="Conservation des données">
+          <p>
+            Tes données sont conservées tant que ton compte est actif. En cas de suppression de
+            compte, elles sont effacées immédiatement et définitivement, à l'exception des données
+            que nous devons conserver pour répondre à une obligation légale (ex. traitement d'un
+            signalement en cours).
+          </p>
+        </LegalSection>
         <LegalSection title="Évolution de cette politique">
           <p>
-            Cette politique pourra être mise à jour lorsque Motards de Cœur proposera de nouvelles
-            fonctionnalités comme les comptes, les profils, les événements, la messagerie ou les
-            offres premium.
+            Cette politique peut évoluer avec le développement du service. En cas de modification
+            substantielle, tu en seras informé(e) via l'application.
           </p>
         </LegalSection>
       </LegalPage>
