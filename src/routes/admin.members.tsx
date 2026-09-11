@@ -83,6 +83,26 @@ function AdminMembers() {
     await load();
     setPendingId(null);
   }
+  async function ban(member: Member) {
+    if (!supabase) return;
+    if (
+      !window.confirm(
+        `Bannir définitivement le compte de ${member.first_name} ? Toutes ses données seront supprimées. Cette action est irréversible.`,
+      )
+    )
+      return;
+    setPendingId(member.id);
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const { error } = await supabase.functions.invoke("admin-ban-user", {
+      body: { profile_id: member.id },
+      headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
+    });
+    setNotice(error ? "Le bannissement a échoué." : "Compte banni et supprimé définitivement.");
+    await load();
+    setPendingId(null);
+  }
   const shown = useMemo(
     () => rows.filter((row) => row.first_name.toLowerCase().includes(query.trim().toLowerCase())),
     [rows, query],
@@ -145,7 +165,7 @@ function AdminMembers() {
                   <td className="p-3">{age(member.birth_date)}</td>
                   <td className="p-3">{member.gender ?? "—"}</td>
                   <td className="p-3">{member.looking_for ?? "—"}</td>
-                  <td className="p-3">
+                  <td className="p-3 space-x-2 whitespace-nowrap">
                     {[member.moto_brand, member.moto_model].filter(Boolean).join(" ") || "—"}
                   </td>
                   <td className="p-3">{member.photoCount}</td>
@@ -158,6 +178,13 @@ function AdminMembers() {
                       onClick={() => void toggle(member)}
                     >
                       {member.is_active ? "Désactiver" : "Réactiver"}
+                    </button>
+                    <button
+                      disabled={pendingId === member.id}
+                      className="text-destructive font-semibold underline disabled:opacity-50"
+                      onClick={() => void ban(member)}
+                    >
+                      Bannir
                     </button>
                   </td>
                 </tr>
