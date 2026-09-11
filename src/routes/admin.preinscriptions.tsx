@@ -88,6 +88,10 @@ function AdminPreinscriptions() {
           <Link to="/admin/members" className="text-primary hover:underline">
             Voir les membres inscrits
           </Link>
+          {" · "}
+          <Link to="/admin/reports" className="text-primary hover:underline">
+            Voir les signalements
+          </Link>
         </p>
         <div className="my-8 grid gap-4 sm:grid-cols-4">
           {[
