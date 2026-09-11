@@ -12,6 +12,8 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/mentions-legales",
   "/confidentialite",
   "/conditions-utilisation",
+  "/admin/login",
+  "/admin/preinscriptions",
 ];
 
 export function isPathAllowedDuringPrelaunch(pathname: string) {
