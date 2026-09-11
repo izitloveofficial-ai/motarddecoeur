@@ -20,6 +20,7 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [unreadTotal, setUnreadTotal] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +31,33 @@ export function Navbar() {
     });
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!supabase || !loggedIn) {
+      setUnreadTotal(0);
+      return;
+    }
+    const client = supabase;
+    let cancelled = false;
+    async function refreshUnread() {
+      const {
+        data: { user },
+      } = await client.auth.getUser();
+      if (!user || cancelled) return;
+      const { count } = await client
+        .from("messages")
+        .select("id", { count: "exact", head: true })
+        .neq("sender_id", user.id)
+        .is("read_at", null);
+      if (!cancelled) setUnreadTotal(count ?? 0);
+    }
+    void refreshUnread();
+    const interval = window.setInterval(refreshUnread, 30_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, [loggedIn]);
 
   async function handleLogout() {
     if (!supabase) return;
@@ -62,6 +90,11 @@ export function Navbar() {
               {({ isActive }) => (
                 <>
                   {l.label}
+                  {l.to === "/matches" && unreadTotal > 0 && (
+                    <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
+                      {unreadTotal}
+                    </span>
+                  )}
                   {isActive && (
                     <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-red" />
                   )}
@@ -115,6 +148,11 @@ export function Navbar() {
               className="py-2 text-sm uppercase tracking-wider text-neutral-700 hover:text-neutral-900"
             >
               {l.label}
+              {l.to === "/matches" && unreadTotal > 0 && (
+                <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
+                  {unreadTotal}
+                </span>
+              )}
             </Link>
           ))}
           {loggedIn ? (
