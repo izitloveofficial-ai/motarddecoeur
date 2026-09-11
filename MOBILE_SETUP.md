@@ -51,7 +51,31 @@ npx cap open ios       # ouvre Xcode (Mac uniquement)
 Depuis Android Studio ou Xcode, tu peux lancer l'app sur un émulateur ou un téléphone
 branché en USB pour la tester réellement.
 
-### 5. Icônes et écran de démarrage
+### 5. Permissions caméra (important, sinon l'app plante à l'usage)
+
+La prise de photo native (`@capacitor/camera`) est déjà intégrée au formulaire de profil.
+Avant de tester sur un vrai appareil, il faut déclarer les permissions :
+
+**Android** (`android/app/src/main/AndroidManifest.xml`) — généralement ajouté
+automatiquement par `npx cap sync`, à vérifier quand même :
+
+```xml
+<uses-permission android:name="android.permission.CAMERA" />
+```
+
+**iOS** (`ios/App/App/Info.plist`) — à ajouter **manuellement**, Capacitor ne le fait pas
+automatiquement :
+
+```xml
+<key>NSCameraUsageDescription</key>
+<string>Motards de Cœur a besoin d'accéder à l'appareil photo pour ta photo de profil.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Motards de Cœur a besoin d'accéder à tes photos pour choisir une photo de profil.</string>
+```
+
+Sans ces lignes côté iOS, l'app plante immédiatement dès qu'on essaie de prendre une photo.
+
+### 6. Icônes et écran de démarrage
 
 Une fois le logo officiel définitif disponible (fichier carré haute résolution,
 1024×1024 px minimum, fond plein) :
@@ -64,7 +88,7 @@ npx capacitor-assets generate
 Génère automatiquement toutes les tailles d'icônes et écrans de démarrage requis par
 Android et iOS.
 
-### 6. À chaque modification du site web
+### 7. À chaque modification du site web
 
 Il faut reconstruire et resynchroniser avant de retester sur mobile :
 
@@ -76,17 +100,14 @@ npx cap sync
 ## ⚠️ Point d'attention pour la soumission aux stores
 
 Cette première version charge l'interface entièrement en local (rapide, fonctionne même
-avec une connexion instable), mais reste **fonctionnellement identique au site web** —
-aucune fonctionnalité native (notifications push, appareil photo natif, etc.) n'est
-encore intégrée.
+avec une connexion instable). **L'accès à l'appareil photo natif est déjà intégré**
+(formulaire de profil), ce qui aide à ne pas ressembler à un simple site encapsulé.
 
-Apple, en particulier, peut refuser une application qui ressemble trop à un site web
-"encapsulé" sans valeur ajoutée native. Avant de soumettre à l'App Store, il est
-recommandé d'ajouter au moins :
+Apple, en particulier, peut encore refuser une application sans autre valeur ajoutée
+native. Avant de soumettre à l'App Store, il est recommandé d'ajouter aussi :
 
 - Les notifications push (nouveaux matchs, nouveaux messages) — plugin
-  `@capacitor/push-notifications`
-- L'accès à l'appareil photo natif pour les photos de profil — plugin
-  `@capacitor/camera`
+  `@capacitor/push-notifications` (nécessite un projet Firebase pour Android et un
+  certificat APNs pour iOS, à configurer avec un compte développeur).
 
-Ces deux ajouts peuvent être faits progressivement une fois l'app testée sur émulateur.
+Cet ajout peut être fait une fois l'app testée sur émulateur.
