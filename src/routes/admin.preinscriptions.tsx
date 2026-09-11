@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -14,7 +14,21 @@ type Registration = {
   user_id: string | null;
 };
 
-export const Route = createFileRoute("/admin/preinscriptions")({ component: AdminPreinscriptions });
+export const Route = createFileRoute("/admin/preinscriptions")({
+  component: AdminPreinscriptions,
+  beforeLoad: async () => {
+    if (!supabase) return;
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) throw redirect({ to: "/admin/login" });
+    const { data: isAdmin } = await supabase.rpc("is_admin");
+    if (!isAdmin) {
+      await supabase.auth.signOut();
+      throw redirect({ to: "/admin/login" });
+    }
+  },
+});
 
 function AdminPreinscriptions() {
   const [rows, setRows] = useState<Registration[]>([]);

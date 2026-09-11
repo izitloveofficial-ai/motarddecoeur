@@ -22,6 +22,7 @@ import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfilesRouteImport } from './routes/profiles'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
 
 const IndexRoute = IndexRouteImport.update({
@@ -89,6 +90,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPreinscriptionsRoute = AdminPreinscriptionsRouteImport.update({
   id: '/admin/preinscriptions',
   path: '/admin/preinscriptions',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
 }
 export interface FileRoutesByTo {
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
 }
 export interface FileRoutesById {
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
 }
 export interface FileRouteTypes {
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/premium'
     | '/profiles'
     | '/sitemap.xml'
+    | '/admin/login'
     | '/admin/preinscriptions'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/premium'
     | '/profiles'
     | '/sitemap.xml'
+    | '/admin/login'
     | '/admin/preinscriptions'
   id:
     | '__root__'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/premium'
     | '/profiles'
     | '/sitemap.xml'
+    | '/admin/login'
     | '/admin/preinscriptions'
   fileRoutesById: FileRoutesById
 }
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   PremiumRoute: typeof PremiumRoute
   ProfilesRoute: typeof ProfilesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   AdminPreinscriptionsRoute: typeof AdminPreinscriptionsRoute
 }
 
@@ -305,6 +318,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/preinscriptions': {
       id: '/admin/preinscriptions'
       path: '/admin/preinscriptions'
@@ -329,6 +349,7 @@ const rootRouteChildren: RootRouteChildren = {
   PremiumRoute: PremiumRoute,
   ProfilesRoute: ProfilesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminLoginRoute: AdminLoginRoute,
   AdminPreinscriptionsRoute: AdminPreinscriptionsRoute,
 }
 export const routeTree = rootRouteImport
