@@ -23,13 +23,6 @@ Deno.serve(async (request) => {
     .eq("user_id", user.id)
     .maybeSingle();
   if (!adminRow) return json({ error: "admin_required" }, 403);
-  const { data: campaign } = await admin
-    .from("invitation_campaign")
-    .select("enabled")
-    .eq("id", true)
-    .single();
-  if (!campaign?.enabled) return json({ error: "campaign_suspended" }, 409);
-
   const body = (await request.json()) as { ids?: string[] };
   const ids = [...new Set(body.ids ?? [])].slice(0, 100);
   if (!ids.length) return json({ error: "no_registration_selected" }, 400);
@@ -49,13 +42,12 @@ Deno.serve(async (request) => {
       results.push({ id: row.id, ok: true, reason: "already_invited" });
       continue;
     }
-    const redirectTo = `${Deno.env.get("SITE_URL") ?? "https://motarddecoeur.lovable.app"}/activate?registration=${encodeURIComponent(row.id)}`;
+    const redirectTo = `${Deno.env.get("SITE_URL") ?? "https://motardsdecoeur-com.lovable.app"}/profile/setup`;
     const { data, error: inviteError } = await admin.auth.admin.inviteUserByEmail(row.email, {
       redirectTo,
     });
     if (inviteError) {
-      // An existing Auth identity must be linked, never duplicated. It can sign in
-      // normally and visit the same activation URL.
+      // Une identité Auth existante doit être liée, jamais dupliquée.
       results.push({ id: row.id, ok: false, reason: inviteError.message });
       continue;
     }
