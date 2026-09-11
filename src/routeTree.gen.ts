@@ -21,9 +21,11 @@ import { Route as JoinRouteImport } from './routes/join'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfilesRouteImport } from './routes/profiles'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
+import { Route as ProfileSetupRouteImport } from './routes/profile.setup'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -85,6 +87,11 @@ const ProfilesRoute = ProfilesRouteImport.update({
   path: '/profiles',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -98,6 +105,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
 const AdminPreinscriptionsRoute = AdminPreinscriptionsRouteImport.update({
   id: '/admin/preinscriptions',
   path: '/admin/preinscriptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileSetupRoute = ProfileSetupRouteImport.update({
+  id: '/profile/setup',
+  path: '/profile/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -114,9 +126,11 @@ export interface FileRoutesByFullPath {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/profile/setup': typeof ProfileSetupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -131,9 +145,11 @@ export interface FileRoutesByTo {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/profile/setup': typeof ProfileSetupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,9 +165,11 @@ export interface FileRoutesById {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/profile/setup': typeof ProfileSetupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -168,9 +186,11 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/signup'
     | '/sitemap.xml'
     | '/admin/login'
     | '/admin/preinscriptions'
+    | '/profile/setup'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -185,9 +205,11 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/signup'
     | '/sitemap.xml'
     | '/admin/login'
     | '/admin/preinscriptions'
+    | '/profile/setup'
   id:
     | '__root__'
     | '/'
@@ -202,9 +224,11 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/signup'
     | '/sitemap.xml'
     | '/admin/login'
     | '/admin/preinscriptions'
+    | '/profile/setup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -220,9 +244,11 @@ export interface RootRouteChildren {
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   PremiumRoute: typeof PremiumRoute
   ProfilesRoute: typeof ProfilesRoute
+  SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPreinscriptionsRoute: typeof AdminPreinscriptionsRoute
+  ProfileSetupRoute: typeof ProfileSetupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -311,6 +337,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfilesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -332,6 +365,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPreinscriptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile/setup': {
+      id: '/profile/setup'
+      path: '/profile/setup'
+      fullPath: '/profile/setup'
+      preLoaderRoute: typeof ProfileSetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -348,9 +388,11 @@ const rootRouteChildren: RootRouteChildren = {
   MentionsLegalesRoute: MentionsLegalesRoute,
   PremiumRoute: PremiumRoute,
   ProfilesRoute: ProfilesRoute,
+  SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPreinscriptionsRoute: AdminPreinscriptionsRoute,
+  ProfileSetupRoute: ProfileSetupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
