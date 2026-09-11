@@ -94,7 +94,7 @@ function Discover() {
       setCandidates([]);
       return;
     }
-    const filtered = profiles ?? [];
+    const filtered = (profiles ?? []) as Omit<Candidate, "photoUrl">[];
     const photosByProfile = new Map<string, string>();
     if (filtered.length) {
       const { data: photos } = await supabase

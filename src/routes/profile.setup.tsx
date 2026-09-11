@@ -100,6 +100,7 @@ function ProfileSetup() {
 
   async function exportData() {
     if (!supabase) return;
+    const client = supabase;
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -121,7 +122,7 @@ function ProfileSetup() {
       ]);
     const photosWithUrl = (photoRows.data ?? []).map((photo) => ({
       ...photo,
-      download_url: supabase.storage.from("profile-photos").getPublicUrl(photo.storage_path).data
+      download_url: client.storage.from("profile-photos").getPublicUrl(photo.storage_path).data
         .publicUrl,
     }));
     const payload = {
