@@ -36,7 +36,7 @@ function Activate() {
         setMessage("Ouvrez le lien complet reçu par e-mail pour continuer.");
         return;
       }
-      const { data: initial, error } = await supabase.rpc("get_invited_preinscription", {
+      const { data: initial, error } = await client.rpc("get_invited_preinscription", {
         p_preinscription_id: registration,
       });
       if (error) {

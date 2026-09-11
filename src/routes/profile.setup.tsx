@@ -100,6 +100,7 @@ function ProfileSetup() {
 
   async function exportData() {
     if (!supabase) return;
+    const client = supabase;
     const {
       data: { user },
     } = await supabase.auth.getUser();
