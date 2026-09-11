@@ -5,6 +5,8 @@ import { BrandLogo } from "./BrandLogo";
 
 const links = [
   { to: "/", label: "Accueil" },
+  { to: "/discover", label: "Découverte" },
+  { to: "/matches", label: "Mes matchs" },
   { to: "/profiles", label: "Membres" },
   { to: "/events", label: "Événements" },
   { to: "/community", label: "Communauté" },
