@@ -15,11 +15,15 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/admin/login",
   "/admin/preinscriptions",
   "/admin/members",
+  "/admin/reports",
   "/signup",
   "/login",
+  "/forgot-password",
+  "/reset-password",
   "/profile/setup",
   "/discover",
   "/matches",
+  "/rides",
 ];
 
 export function isPathAllowedDuringPrelaunch(pathname: string) {

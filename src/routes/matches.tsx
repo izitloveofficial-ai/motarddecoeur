@@ -1,4 +1,5 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
+import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/lib/supabase";
@@ -70,6 +71,13 @@ function Matches() {
       }),
     );
   }
+  async function removeMatch(id: string) {
+    if (!supabase) return;
+    if (!window.confirm("Supprimer cette conversation et ce match ?")) return;
+    await supabase.from("matches").delete().eq("id", id);
+    await load();
+  }
+
   return (
     <Layout>
       <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
@@ -118,6 +126,13 @@ function Matches() {
               >
                 Discuter
               </Link>
+              <button
+                onClick={() => void removeMatch(match.id)}
+                aria-label="Supprimer ce match"
+                className="text-[#a99b95] hover:text-[#e8be6c]"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
             </li>
           ))}
         </ul>

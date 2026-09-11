@@ -1,5 +1,5 @@
-import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { ArrowLeft, Send } from "lucide-react";
+import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Send, ShieldOff, Trash2 } from "lucide-react";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/lib/supabase";
@@ -17,10 +17,12 @@ export const Route = createFileRoute("/messages/$matchId")({
 });
 function Conversation() {
   const { matchId } = Route.useParams();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [otherName, setOtherName] = useState("");
   const [content, setContent] = useState("");
   const [myId, setMyId] = useState<string | null>(null);
+  const [otherId, setOtherId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -66,6 +68,7 @@ function Conversation() {
         return;
       }
       const otherId = match.profile_a_id === user.id ? match.profile_b_id : match.profile_a_id;
+      setOtherId(otherId);
       const [{ data: profile }, { data: existing, error: messagesError }] = await Promise.all([
         client.from("profiles").select("first_name").eq("id", otherId).maybeSingle(),
         client
@@ -103,18 +106,64 @@ function Conversation() {
       setError("Le message n'a pas pu être envoyé.");
     }
   }
+  async function blockOther() {
+    if (!supabase || !myId || !otherId) return;
+    if (
+      !window.confirm(
+        `Bloquer ${otherName || "cette personne"} ? Vous ne pourrez plus vous écrire.`,
+      )
+    )
+      return;
+    const { error: blockError } = await supabase
+      .from("blocks")
+      .insert({ blocker_id: myId, blocked_id: otherId });
+    if (blockError) {
+      setError("Le blocage n'a pas pu être enregistré.");
+      return;
+    }
+    void navigate({ to: "/matches" });
+  }
+
+  async function deleteConversation() {
+    if (!supabase) return;
+    if (
+      !window.confirm(
+        "Supprimer cette conversation ? Tous les messages seront définitivement effacés pour les deux personnes.",
+      )
+    )
+      return;
+    await supabase.from("matches").delete().eq("id", matchId);
+    void navigate({ to: "/matches" });
+  }
+
   return (
     <Layout>
       <section className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col px-6 py-8">
-        <div className="mb-4 flex items-center gap-3">
-          <Link
-            to="/matches"
-            aria-label="Retour aux matchs"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-[#d4c6bf]"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-          <h1 className="font-display text-2xl">{otherName || "Conversation"}</h1>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/matches"
+              aria-label="Retour aux matchs"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-[#d4c6bf]"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <h1 className="font-display text-2xl">{otherName || "Conversation"}</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => void deleteConversation()}
+              className="flex items-center gap-1.5 text-xs text-[#a99b95] hover:text-[#e8be6c]"
+            >
+              <Trash2 className="h-3.5 w-3.5" /> Supprimer
+            </button>
+            <button
+              onClick={() => void blockOther()}
+              className="flex items-center gap-1.5 text-xs text-[#a99b95] hover:text-[#e8be6c]"
+            >
+              <ShieldOff className="h-3.5 w-3.5" /> Bloquer
+            </button>
+          </div>
         </div>
         {error && (
           <div
