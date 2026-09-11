@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/lib/supabase";
 
-type MatchRow = { id: string; matched_at: string; otherName: string; photoUrl: string | null };
+type MatchRow = {
+  id: string;
+  matched_at: string;
+  otherName: string;
+  photoUrl: string | null;
+  unreadCount: number;
+};
 export const Route = createFileRoute("/matches")({
   component: Matches,
   beforeLoad: async () => {
@@ -59,6 +65,19 @@ function Matches() {
             supabase.storage.from("profile-photos").getPublicUrl(photo.storage_path).data.publicUrl,
           );
     }
+    const matchIds = (rows ?? []).map((row) => row.id);
+    const unreadByMatch = new Map<string, number>();
+    if (matchIds.length) {
+      const { data: unreadRows } = await supabase
+        .from("messages")
+        .select("match_id")
+        .in("match_id", matchIds)
+        .neq("sender_id", user.id)
+        .is("read_at", null);
+      for (const row of unreadRows ?? []) {
+        unreadByMatch.set(row.match_id, (unreadByMatch.get(row.match_id) ?? 0) + 1);
+      }
+    }
     setMatches(
       (rows ?? []).map((row) => {
         const otherId = row.profile_a_id === user.id ? row.profile_b_id : row.profile_a_id;
@@ -67,6 +86,7 @@ function Matches() {
           matched_at: row.matched_at,
           otherName: names.get(otherId) ?? "Motard(e)",
           photoUrl: photos.get(otherId) ?? null,
+          unreadCount: unreadByMatch.get(row.id) ?? 0,
         };
       }),
     );
@@ -114,7 +134,14 @@ function Matches() {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="font-medium">{match.otherName}</p>
+                <p className="flex items-center gap-2 font-medium">
+                  {match.otherName}
+                  {match.unreadCount > 0 && (
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                      {match.unreadCount}
+                    </span>
+                  )}
+                </p>
                 <p className="text-xs text-[#a99b95]">
                   Match le {new Date(match.matched_at).toLocaleDateString("fr-FR")}
                 </p>

@@ -1,7 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Flag, Heart, ShieldOff, X } from "lucide-react";
+import { Flag, Heart, RotateCcw, ShieldOff, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
 
 const reportReasons = [
@@ -19,9 +20,24 @@ const lookingForOptions = [
   ["communaute_motards", "Une communauté de motards"],
   ["indecis", "Je ne sais pas encore"],
 ] as const;
+const motoTypeOptions = [
+  ["routiere", "Routière"],
+  ["sportive", "Sportive"],
+  ["roadster", "Roadster"],
+  ["trail", "Trail / Adventure"],
+  ["custom", "Custom"],
+  ["scooter", "Scooter"],
+  ["autre", "Autre"],
+] as const;
 
-type Filters = { minAge: string; maxAge: string; lookingFor: string; maxKm: string };
-const defaultFilters: Filters = { minAge: "", maxAge: "", lookingFor: "", maxKm: "" };
+type Filters = {
+  minAge: string;
+  maxAge: string;
+  lookingFor: string;
+  maxKm: string;
+  motoType: string;
+};
+const defaultFilters: Filters = { minAge: "", maxAge: "", lookingFor: "", maxKm: "", motoType: "" };
 
 type Candidate = {
   id: string;
@@ -69,6 +85,7 @@ function Discover() {
   const [reportReason, setReportReason] = useState("");
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [lastPassed, setLastPassed] = useState<Candidate | null>(null);
 
   useEffect(() => {
     void loadCandidates();
@@ -82,12 +99,14 @@ function Discover() {
     if (!user) return;
     setCandidates(null);
     setIndex(0);
+    setLastPassed(null);
     const { data: profiles, error: profilesError } = await supabase.rpc("nearby_profiles", {
       max_km: filters.maxKm ? Number(filters.maxKm) : null,
       p_looking_for: filters.lookingFor || null,
       p_min_age: filters.minAge ? Number(filters.minAge) : null,
       p_max_age: filters.maxAge ? Number(filters.maxAge) : null,
       p_limit: 20,
+      p_moto_type: filters.motoType || null,
     });
     if (profilesError) {
       setError("Impossible de charger les profils pour le moment.");
@@ -143,9 +162,39 @@ function Discover() {
           `and(profile_a_id.eq.${user.id},profile_b_id.eq.${current.id}),and(profile_a_id.eq.${current.id},profile_b_id.eq.${user.id})`,
         )
         .maybeSingle();
-      if (match) setNotice(`C'est un match avec ${current.first_name} ! 🎉`);
+      if (match) {
+        setNotice(`C'est un match avec ${current.first_name} ! 🎉`);
+        void sendPushNotification(
+          current.id,
+          "Nouveau match sur Motards de Cœur ! 🎉",
+          "Quelqu'un vient de matcher avec toi. Va y jeter un œil !",
+        );
+      }
+      setLastPassed(null);
+    } else {
+      setLastPassed(current);
     }
     setIndex((value) => value + 1);
+  }
+
+  async function undoLastPass() {
+    if (!supabase || !lastPassed || index === 0) return;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    const { error: undoError } = await supabase
+      .from("swipes")
+      .delete()
+      .eq("swiper_id", user.id)
+      .eq("swiped_id", lastPassed.id)
+      .eq("liked", false);
+    if (undoError) {
+      setError("Impossible d'annuler ce choix.");
+      return;
+    }
+    setIndex((value) => value - 1);
+    setLastPassed(null);
   }
 
   async function blockCurrent() {
@@ -260,7 +309,26 @@ function Discover() {
                 onChange={(e) => setFilters((f) => ({ ...f, maxKm: e.target.value }))}
               />
             </label>
-            {(filters.minAge || filters.maxAge || filters.lookingFor || filters.maxKm) && (
+            <label className="text-sm font-medium">
+              Type de moto
+              <select
+                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
+                value={filters.motoType}
+                onChange={(e) => setFilters((f) => ({ ...f, motoType: e.target.value }))}
+              >
+                <option value="">Tous</option>
+                {motoTypeOptions.map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {(filters.minAge ||
+              filters.maxAge ||
+              filters.lookingFor ||
+              filters.maxKm ||
+              filters.motoType) && (
               <button
                 onClick={() => setFilters(defaultFilters)}
                 className="text-left text-xs text-[#a99b95] hover:text-[#e8be6c] sm:col-span-3"
@@ -338,6 +406,14 @@ function Discover() {
                 </button>
               </div>
               <div className="mt-5 flex items-center justify-center gap-5 text-xs text-[#a99b95]">
+                {lastPassed && (
+                  <button
+                    onClick={() => void undoLastPass()}
+                    className="flex items-center gap-1.5 text-primary hover:underline"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" /> Annuler
+                  </button>
+                )}
                 <button
                   onClick={() => setReportOpen((v) => !v)}
                   className="flex items-center gap-1.5 hover:text-[#e8be6c]"

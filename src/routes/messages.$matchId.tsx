@@ -2,6 +2,7 @@ import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-ro
 import { ArrowLeft, Send, ShieldOff, Trash2 } from "lucide-react";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
 
 type Message = { id: string; sender_id: string; content: string; created_at: string };
@@ -25,6 +26,7 @@ function Conversation() {
   const [otherId, setOtherId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const myIdRef = useRef<string | null>(null);
   useEffect(() => {
     if (!supabase) {
       setError("Supabase n'est pas configuré.");
@@ -44,6 +46,12 @@ function Conversation() {
               ? previous
               : [...previous, incoming],
           );
+          if (myIdRef.current && incoming.sender_id !== myIdRef.current) {
+            void client
+              .from("messages")
+              .update({ read_at: new Date().toISOString() })
+              .eq("id", incoming.id);
+          }
         },
       )
       .subscribe();
@@ -53,6 +61,7 @@ function Conversation() {
       } = await client.auth.getUser();
       if (!user || cancelled) return;
       setMyId(user.id);
+      myIdRef.current = user.id;
       const { data: match, error: matchError } = await client
         .from("matches")
         .select("profile_a_id, profile_b_id")
@@ -81,6 +90,12 @@ function Conversation() {
         setOtherName(profile?.first_name ?? "Motard(e)");
         setMessages(existing ?? []);
         if (messagesError) setError("Impossible de charger les messages.");
+        await client
+          .from("messages")
+          .update({ read_at: new Date().toISOString() })
+          .eq("match_id", matchId)
+          .eq("sender_id", otherId)
+          .is("read_at", null);
       }
     }
     void init();
@@ -103,7 +118,19 @@ function Conversation() {
       .insert({ match_id: matchId, sender_id: myId, content: text });
     if (sendError) {
       setContent(text);
-      setError("Le message n'a pas pu être envoyé.");
+      setError(
+        sendError.message?.includes("rate_limit_exceeded")
+          ? "Tu envoies des messages trop vite, patiente un instant."
+          : "Le message n'a pas pu être envoyé.",
+      );
+      return;
+    }
+    if (otherId) {
+      void sendPushNotification(
+        otherId,
+        "Nouveau message sur Motards de Cœur",
+        text.length > 80 ? `${text.slice(0, 80)}…` : text,
+      );
     }
   }
   async function blockOther() {

@@ -104,10 +104,14 @@ avec une connexion instable). **L'accès à l'appareil photo natif est déjà in
 (formulaire de profil), ce qui aide à ne pas ressembler à un simple site encapsulé.
 
 Apple, en particulier, peut encore refuser une application sans autre valeur ajoutée
-native. Avant de soumettre à l'App Store, il est recommandé d'ajouter aussi :
+native. Les notifications push (nouveaux matchs et messages) sont intégrées avec
+`@capacitor/push-notifications`. Pour les activer :
 
-- Les notifications push (nouveaux matchs, nouveaux messages) — plugin
-  `@capacitor/push-notifications` (nécessite un projet Firebase pour Android et un
-  certificat APNs pour iOS, à configurer avec un compte développeur).
+1. Crée un projet Firebase et active Firebase Cloud Messaging.
+2. Configure Android (`google-services.json`) et iOS (clé APNs) dans les projets natifs.
+3. Ajoute le compte de service Firebase complet dans le secret Edge Function
+   `FIREBASE_SERVICE_ACCOUNT_JSON` depuis le tableau de bord Supabase.
+4. Exécute `npx cap sync`, puis teste l'autorisation et la réception sur un appareil réel.
 
-Cet ajout peut être fait une fois l'app testée sur émulateur.
+Sans ce secret, la fonction `send-push` renvoie volontairement
+`firebase_not_configured` et les messages/matchs continuent de fonctionner normalement.
