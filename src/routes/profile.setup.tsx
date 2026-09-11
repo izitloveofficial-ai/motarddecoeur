@@ -1,4 +1,6 @@
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Capacitor } from "@capacitor/core";
 import { CheckCircle2, MapPin, ShieldCheck, Upload } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
@@ -56,6 +58,25 @@ function ProfileSetup() {
   const [deleting, setDeleting] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+
+  async function takeNativePhoto() {
+    try {
+      const photo = await Camera.getPhoto({
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Prompt, // laisse le choix entre appareil photo et galerie
+        quality: 80,
+        width: 1600,
+      });
+      if (!photo.dataUrl) return;
+      const response = await fetch(photo.dataUrl);
+      const blob = await response.blob();
+      const extension = photo.format || "jpeg";
+      const file = new File([blob], `photo-${Date.now()}.${extension}`, { type: blob.type });
+      setPhotos((prev) => [...prev, file].slice(0, 3));
+    } catch {
+      // L'utilisateur a annulé (ex. refus de permission) : pas d'erreur à afficher.
+    }
+  }
   const [locationStatus, setLocationStatus] = useState<
     "idle" | "requesting" | "captured" | "error"
   >("idle");
@@ -313,16 +334,50 @@ function ProfileSetup() {
           </label>
           <label className="block text-sm font-medium">
             Photos (jusqu'à 3)
-            <div className="mt-2 flex items-center gap-3 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f]/70 p-4 text-sm text-[#d4c6bf]">
-              <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                multiple
-                onChange={(event) => setPhotos(Array.from(event.target.files ?? []).slice(0, 3))}
-                className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2"
-              />
-            </div>
+            {Capacitor.isNativePlatform() ? (
+              <div className="mt-2 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f]/70 p-4 text-sm text-[#d4c6bf]">
+                <button
+                  type="button"
+                  onClick={() => void takeNativePhoto()}
+                  disabled={photos.length >= 3}
+                  className="flex items-center gap-2 text-primary disabled:opacity-40"
+                >
+                  <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
+                  Ajouter une photo (appareil photo ou galerie)
+                </button>
+                {photos.length > 0 && (
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {photos.map((file, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center gap-2 rounded-full border border-white/15 bg-[#302526] px-3 py-1 text-xs"
+                      >
+                        Photo {i + 1}
+                        <button
+                          type="button"
+                          onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
+                          className="text-[#a99b95] hover:text-primary"
+                          aria-label={`Retirer la photo ${i + 1}`}
+                        >
+                          ×
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : (
+              <div className="mt-2 flex items-center gap-3 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f]/70 p-4 text-sm text-[#d4c6bf]">
+                <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  multiple
+                  onChange={(event) => setPhotos(Array.from(event.target.files ?? []).slice(0, 3))}
+                  className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2"
+                />
+              </div>
+            )}
             {photos.length > 0 && (
               <p className="mt-2 text-xs text-[#cdbfba]">
                 {photos.length} photo(s) sélectionnée(s)
