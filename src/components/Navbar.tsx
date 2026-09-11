@@ -1,12 +1,14 @@
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
+import { supabase } from "@/lib/supabase";
 
 const links = [
   { to: "/", label: "Accueil" },
   { to: "/discover", label: "Découverte" },
   { to: "/matches", label: "Mes matchs" },
+  { to: "/rides", label: "Balades" },
   { to: "/profiles", label: "Membres" },
   { to: "/events", label: "Événements" },
   { to: "/community", label: "Communauté" },
@@ -17,6 +19,25 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.auth.getSession().then(({ data }) => setLoggedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setLoggedIn(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  async function handleLogout() {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setOpen(false);
+    void navigate({ to: "/" });
+  }
+
   return (
     <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
@@ -51,12 +72,21 @@ export function Navbar() {
         </div>
 
         <div className="hidden xl:flex items-center gap-3">
-          <Link
-            to="/login"
-            className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition"
-          >
-            Connexion
-          </Link>
+          {loggedIn ? (
+            <button
+              onClick={() => void handleLogout()}
+              className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition"
+            >
+              Déconnexion
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition"
+            >
+              Connexion
+            </Link>
+          )}
           <Link
             to="/join"
             className="px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full hover:shadow-glow transition-all"
@@ -87,13 +117,22 @@ export function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link
-            to="/login"
-            onClick={() => setOpen(false)}
-            className="py-2 text-sm text-neutral-700 hover:text-neutral-900"
-          >
-            Connexion
-          </Link>
+          {loggedIn ? (
+            <button
+              onClick={() => void handleLogout()}
+              className="py-2 text-left text-sm text-neutral-700 hover:text-neutral-900"
+            >
+              Déconnexion
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setOpen(false)}
+              className="py-2 text-sm text-neutral-700 hover:text-neutral-900"
+            >
+              Connexion
+            </Link>
+          )}
           <Link
             to="/join"
             onClick={() => setOpen(false)}
