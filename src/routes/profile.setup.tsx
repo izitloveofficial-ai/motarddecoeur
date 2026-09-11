@@ -1,5 +1,5 @@
-import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { CheckCircle2, ShieldCheck, Upload } from "lucide-react";
+import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { CheckCircle2, MapPin, ShieldCheck, Upload } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/lib/supabase";
@@ -49,9 +49,117 @@ const fieldClass =
   "mt-2 w-full rounded-xl border border-white/15 bg-[#302526]/90 px-4 py-3 text-sm text-[#fff9f0] outline-none transition placeholder:text-[#cdbdb5] hover:border-[#d6a85c]/35 focus:border-[#e2b45f]/70 focus:ring-2 focus:ring-[#d9a441]/20";
 
 function ProfileSetup() {
+  const navigate = useNavigate();
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [feedback, setFeedback] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
+  const [deleting, setDeleting] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<
+    "idle" | "requesting" | "captured" | "error"
+  >("idle");
+
+  function captureLocation() {
+    if (!navigator.geolocation) return setLocationStatus("error");
+    setLocationStatus("requesting");
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: position }) => {
+        setCoords({ lat: position.latitude, lng: position.longitude });
+        setLocationStatus("captured");
+      },
+      () => setLocationStatus("error"),
+      { enableHighAccuracy: false, timeout: 10000 },
+    );
+  }
+
+  async function deleteAccount() {
+    if (
+      !supabase ||
+      !window.confirm(
+        "Supprimer définitivement ton compte ? Ton profil, tes photos, tes matchs et tes messages seront effacés. Cette action est irréversible.",
+      )
+    )
+      return;
+    setDeleting(true);
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const { error } = await supabase.functions.invoke("delete-account", {
+      headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
+    });
+    setDeleting(false);
+    if (error) {
+      setFeedback("La suppression du compte a échoué. Réessaie dans quelques instants.");
+      setStatus("error");
+      return;
+    }
+    await supabase.auth.signOut();
+    void navigate({ to: "/" });
+  }
+
+  async function exportData() {
+    if (!supabase) return;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    setExporting(true);
+    const [profile, photoRows, swipes, matches, messages, rides, blocks, reports] =
+      await Promise.all([
+        supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
+        supabase.from("profile_photos").select("*").eq("profile_id", user.id),
+        supabase.from("swipes").select("*").eq("swiper_id", user.id),
+        supabase
+          .from("matches")
+          .select("*")
+          .or(`profile_a_id.eq.${user.id},profile_b_id.eq.${user.id}`),
+        supabase.from("messages").select("*").eq("sender_id", user.id),
+        supabase.from("event_attendees").select("*").eq("profile_id", user.id),
+        supabase.from("blocks").select("*").eq("blocker_id", user.id),
+        supabase.from("reports").select("*").eq("reporter_id", user.id),
+      ]);
+    const photosWithUrl = (photoRows.data ?? []).map((photo) => ({
+      ...photo,
+      download_url: supabase.storage.from("profile-photos").getPublicUrl(photo.storage_path).data
+        .publicUrl,
+    }));
+    const payload = {
+      exported_at: new Date().toISOString(),
+      compte: { id: user.id, email: user.email, cree_le: user.created_at },
+      profil: profile.data,
+      photos: photosWithUrl,
+      likes_envoyes: swipes.data,
+      matchs: matches.data,
+      messages_envoyes: messages.data,
+      participations_balades: rides.data,
+      blocages: blocks.data,
+      signalements_envoyes: reports.data,
+    };
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }),
+    );
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "motards-de-coeur-mes-donnees.json";
+    anchor.click();
+    URL.revokeObjectURL(url);
+    for (const [index, photo] of photosWithUrl.entries()) {
+      try {
+        const response = await fetch(photo.download_url);
+        const fileUrl = URL.createObjectURL(await response.blob());
+        const link = document.createElement("a");
+        link.href = fileUrl;
+        link.download = `photo-${index + 1}.${photo.storage_path.split(".").pop() || "jpg"}`;
+        link.click();
+        URL.revokeObjectURL(fileUrl);
+        await new Promise((resolve) => setTimeout(resolve, 400));
+      } catch {
+        /* L'URL reste dans le JSON si le téléchargement échoue. */
+      }
+    }
+    setExporting(false);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -85,7 +193,13 @@ function ProfileSetup() {
       moto_brand: optional("moto_brand"),
       moto_model: optional("moto_model"),
       bio: optional("bio"),
-      is_active: true,
+      is_active: data.get("is_active") === "on",
+      ...(coords
+        ? {
+            location: `SRID=4326;POINT(${coords.lng} ${coords.lat})`,
+            location_updated_at: new Date().toISOString(),
+          }
+        : {}),
     });
     if (profileError) {
       setStatus("error");
@@ -214,6 +328,43 @@ function ProfileSetup() {
               </p>
             )}
           </label>
+          <div className="rounded-xl border border-[#d6a85c]/20 bg-[#281e1f]/70 p-4 text-sm text-[#d4c6bf]">
+            <button
+              type="button"
+              onClick={captureLocation}
+              className="flex items-center gap-2 text-primary hover:underline"
+            >
+              <MapPin className="h-4 w-4" />
+              {locationStatus === "captured"
+                ? "Position enregistrée ✓"
+                : locationStatus === "requesting"
+                  ? "Localisation en cours…"
+                  : "Activer ma position (recommandé)"}
+            </button>
+            <p className="mt-2 text-xs leading-relaxed text-[#a99b95]">
+              Utilisée uniquement pour te proposer des motards proches et calculer une distance
+              approximative. Ta position exacte n'est jamais visible par les autres, seulement une
+              distance arrondie.
+            </p>
+            {locationStatus === "error" && (
+              <p className="mt-2 text-xs text-primary">
+                Localisation refusée ou indisponible — tu peux continuer sans, mais le tri par
+                distance ne fonctionnera pas.
+              </p>
+            )}
+          </div>
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#d6a85c]/20 bg-[#281e1f]/70 p-4 text-sm leading-relaxed text-[#d4c6bf]">
+            <input
+              type="checkbox"
+              name="is_active"
+              defaultChecked
+              className="mt-1 h-4 w-4 accent-primary"
+            />
+            <span>
+              Rendre mon profil visible dans la découverte. Décoche pour masquer temporairement ton
+              profil sans le supprimer.
+            </span>
+          </label>
           <button
             disabled={status === "submitting"}
             className="w-full rounded-full bg-gradient-red px-8 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow disabled:opacity-60"
@@ -243,6 +394,35 @@ function ProfileSetup() {
             </Link>
           )}
         </form>
+        <div className="mt-12 border-t border-white/10 pt-6">
+          <h2 className="mb-2 text-sm font-medium text-[#d4c6bf]">Mes données</h2>
+          <p className="mb-3 text-xs leading-relaxed text-[#a99b95]">
+            Télécharge une copie de toutes les données associées à ton compte, ainsi que tes photos
+            en fichiers séparés.
+          </p>
+          <button
+            onClick={() => void exportData()}
+            disabled={exporting}
+            className="rounded-full border border-primary/40 px-5 py-2 text-xs uppercase tracking-wider text-primary hover:bg-primary/10 disabled:opacity-50"
+          >
+            {exporting ? "Préparation du téléchargement…" : "Télécharger mes données et photos"}
+          </button>
+        </div>
+        <div className="mt-8 border-t border-white/10 pt-6">
+          <h2 className="mb-2 text-sm font-medium text-[#d4c6bf]">Zone sensible</h2>
+          <p className="mb-3 text-xs leading-relaxed text-[#a99b95]">
+            La suppression de ton compte efface définitivement ton profil, tes photos, tes matchs et
+            tes messages. Cette action est irréversible et conforme à ton droit à l'effacement
+            (RGPD).
+          </p>
+          <button
+            onClick={() => void deleteAccount()}
+            disabled={deleting}
+            className="rounded-full border border-destructive/40 px-5 py-2 text-xs uppercase tracking-wider text-destructive hover:bg-destructive/10 disabled:opacity-50"
+          >
+            {deleting ? "Suppression…" : "Supprimer mon compte"}
+          </button>
+        </div>
       </section>
     </Layout>
   );

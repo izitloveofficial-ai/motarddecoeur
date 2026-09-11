@@ -18,12 +18,14 @@ import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfilesRouteImport } from './routes/profiles'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RidesRouteImport } from './routes/rides'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -79,6 +81,11 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
   path: '/join',
@@ -107,6 +114,11 @@ const PremiumRoute = PremiumRouteImport.update({
 const ProfilesRoute = ProfilesRouteImport.update({
   id: '/profiles',
   path: '/profiles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RidesRoute = RidesRouteImport.update({
@@ -165,12 +177,14 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/discover': typeof DiscoverRoute
   '/events': typeof EventsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/matches': typeof MatchesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -191,12 +205,14 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/discover': typeof DiscoverRoute
   '/events': typeof EventsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/matches': typeof MatchesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -218,12 +234,14 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/discover': typeof DiscoverRoute
   '/events': typeof EventsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/matches': typeof MatchesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -246,12 +264,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/discover'
     | '/events'
+    | '/forgot-password'
     | '/join'
     | '/login'
     | '/matches'
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/reset-password'
     | '/rides'
     | '/signup'
     | '/sitemap.xml'
@@ -272,12 +292,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/discover'
     | '/events'
+    | '/forgot-password'
     | '/join'
     | '/login'
     | '/matches'
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/reset-password'
     | '/rides'
     | '/signup'
     | '/sitemap.xml'
@@ -298,12 +320,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/discover'
     | '/events'
+    | '/forgot-password'
     | '/join'
     | '/login'
     | '/matches'
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/reset-password'
     | '/rides'
     | '/signup'
     | '/sitemap.xml'
@@ -325,12 +349,14 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DiscoverRoute: typeof DiscoverRoute
   EventsRoute: typeof EventsRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
   MatchesRoute: typeof MatchesRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   PremiumRoute: typeof PremiumRoute
   ProfilesRoute: typeof ProfilesRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RidesRoute: typeof RidesRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -407,6 +433,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/join': {
       id: '/join'
       path: '/join'
@@ -447,6 +480,13 @@ declare module '@tanstack/react-router' {
       path: '/profiles'
       fullPath: '/profiles'
       preLoaderRoute: typeof ProfilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rides': {
@@ -525,12 +565,14 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DiscoverRoute: DiscoverRoute,
   EventsRoute: EventsRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
   MatchesRoute: MatchesRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   PremiumRoute: PremiumRoute,
   ProfilesRoute: ProfilesRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RidesRoute: RidesRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
