@@ -122,7 +122,7 @@ function ProfileSetup() {
       ]);
     const photosWithUrl = (photoRows.data ?? []).map((photo) => ({
       ...photo,
-      download_url: supabase.storage.from("profile-photos").getPublicUrl(photo.storage_path).data
+      download_url: client.storage.from("profile-photos").getPublicUrl(photo.storage_path).data
         .publicUrl,
     }));
     const payload = {
