@@ -29,6 +29,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RidesRouteImport } from './routes/rides'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
@@ -136,6 +137,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
+  id: '/admin/announcements',
+  path: '/admin/announcements',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/rides'
     | '/signup'
     | '/sitemap.xml'
+    | '/admin/announcements'
     | '/admin/login'
     | '/admin/members'
     | '/admin/preinscriptions'
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/rides'
     | '/signup'
     | '/sitemap.xml'
+    | '/admin/announcements'
     | '/admin/login'
     | '/admin/members'
     | '/admin/preinscriptions'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/rides'
     | '/signup'
     | '/sitemap.xml'
+    | '/admin/announcements'
     | '/admin/login'
     | '/admin/members'
     | '/admin/preinscriptions'
@@ -360,6 +372,7 @@ export interface RootRouteChildren {
   RidesRoute: typeof RidesRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMembersRoute: typeof AdminMembersRoute
   AdminPreinscriptionsRoute: typeof AdminPreinscriptionsRoute
@@ -510,6 +523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/announcements': {
+      id: '/admin/announcements'
+      path: '/admin/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AdminAnnouncementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -576,6 +596,7 @@ const rootRouteChildren: RootRouteChildren = {
   RidesRoute: RidesRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminAnnouncementsRoute: AdminAnnouncementsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminPreinscriptionsRoute: AdminPreinscriptionsRoute,

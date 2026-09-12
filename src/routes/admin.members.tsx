@@ -1,5 +1,5 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 type Member = {
@@ -14,6 +14,11 @@ type Member = {
   is_verified: boolean;
   created_at: string;
   photoCount: number;
+};
+type Photo = {
+  id: string;
+  storage_path: string;
+  url: string;
 };
 export const Route = createFileRoute("/admin/members")({
   component: AdminMembers,
@@ -42,9 +47,57 @@ function AdminMembers() {
   const [query, setQuery] = useState("");
   const [notice, setNotice] = useState("Chargement…");
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [photosLoading, setPhotosLoading] = useState(false);
+  const [pendingPhotoId, setPendingPhotoId] = useState<string | null>(null);
   useEffect(() => {
     void load();
   }, []);
+  async function togglePhotos(memberId: string) {
+    if (expandedId === memberId) {
+      setExpandedId(null);
+      setPhotos([]);
+      return;
+    }
+    setExpandedId(memberId);
+    setPhotos([]);
+    if (!supabase) return;
+    const client = supabase;
+    setPhotosLoading(true);
+    const { data } = await client
+      .from("profile_photos")
+      .select("id, storage_path")
+      .eq("profile_id", memberId)
+      .order("position", { ascending: true });
+    setPhotos(
+      (data ?? []).map((photo) => ({
+        ...photo,
+        url: client.storage.from("profile-photos").getPublicUrl(photo.storage_path).data.publicUrl,
+      })),
+    );
+    setPhotosLoading(false);
+  }
+  async function deletePhoto(photo: Photo, memberId: string) {
+    if (!supabase) return;
+    if (!window.confirm("Supprimer définitivement cette photo ?")) return;
+    setPendingPhotoId(photo.id);
+    const { error: storageError } = await supabase.storage
+      .from("profile-photos")
+      .remove([photo.storage_path]);
+    const { error: rowError } = await supabase.from("profile_photos").delete().eq("id", photo.id);
+    setPendingPhotoId(null);
+    if (storageError || rowError) {
+      setNotice("La photo n'a pas pu être supprimée.");
+      return;
+    }
+    setPhotos((current) => current.filter((item) => item.id !== photo.id));
+    setRows((current) =>
+      current.map((row) =>
+        row.id === memberId ? { ...row, photoCount: Math.max(0, row.photoCount - 1) } : row,
+      ),
+    );
+  }
   async function load() {
     if (!supabase) return setNotice("Supabase n'est pas configuré.");
     const { data: profiles, error } = await supabase
@@ -160,34 +213,77 @@ function AdminMembers() {
             </thead>
             <tbody>
               {shown.map((member) => (
-                <tr className="border-t" key={member.id}>
-                  <td className="p-3">{member.first_name}</td>
-                  <td className="p-3">{age(member.birth_date)}</td>
-                  <td className="p-3">{member.gender ?? "—"}</td>
-                  <td className="p-3">{member.looking_for ?? "—"}</td>
-                  <td className="p-3 space-x-2 whitespace-nowrap">
-                    {[member.moto_brand, member.moto_model].filter(Boolean).join(" ") || "—"}
-                  </td>
-                  <td className="p-3">{member.photoCount}</td>
-                  <td className="p-3">{new Date(member.created_at).toLocaleDateString("fr-FR")}</td>
-                  <td className="p-3">{member.is_active ? "Actif" : "Désactivé"}</td>
-                  <td className="p-3">
-                    <button
-                      disabled={pendingId === member.id}
-                      className="text-primary disabled:opacity-50"
-                      onClick={() => void toggle(member)}
-                    >
-                      {member.is_active ? "Désactiver" : "Réactiver"}
-                    </button>
-                    <button
-                      disabled={pendingId === member.id}
-                      className="text-destructive font-semibold underline disabled:opacity-50"
-                      onClick={() => void ban(member)}
-                    >
-                      Bannir
-                    </button>
-                  </td>
-                </tr>
+                <Fragment key={member.id}>
+                  <tr className="border-t">
+                    <td className="p-3">{member.first_name}</td>
+                    <td className="p-3">{age(member.birth_date)}</td>
+                    <td className="p-3">{member.gender ?? "—"}</td>
+                    <td className="p-3">{member.looking_for ?? "—"}</td>
+                    <td className="p-3 space-x-2 whitespace-nowrap">
+                      {[member.moto_brand, member.moto_model].filter(Boolean).join(" ") || "—"}
+                    </td>
+                    <td className="p-3">
+                      <button
+                        className="text-primary underline disabled:opacity-50"
+                        disabled={member.photoCount === 0}
+                        onClick={() => void togglePhotos(member.id)}
+                      >
+                        {member.photoCount}
+                        {expandedId === member.id ? " ▲" : member.photoCount ? " ▾" : ""}
+                      </button>
+                    </td>
+                    <td className="p-3">
+                      {new Date(member.created_at).toLocaleDateString("fr-FR")}
+                    </td>
+                    <td className="p-3">{member.is_active ? "Actif" : "Désactivé"}</td>
+                    <td className="p-3">
+                      <button
+                        disabled={pendingId === member.id}
+                        className="text-primary disabled:opacity-50"
+                        onClick={() => void toggle(member)}
+                      >
+                        {member.is_active ? "Désactiver" : "Réactiver"}
+                      </button>
+                      <button
+                        disabled={pendingId === member.id}
+                        className="text-destructive font-semibold underline disabled:opacity-50"
+                        onClick={() => void ban(member)}
+                      >
+                        Bannir
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedId === member.id && (
+                    <tr className="border-t bg-card/50">
+                      <td className="p-4" colSpan={9}>
+                        {photosLoading ? (
+                          <p className="text-sm text-muted-foreground">Chargement des photos…</p>
+                        ) : photos.length === 0 ? (
+                          <p className="text-sm text-muted-foreground">Aucune photo.</p>
+                        ) : (
+                          <div className="flex flex-wrap gap-4">
+                            {photos.map((photo) => (
+                              <div className="w-32 text-center" key={photo.id}>
+                                <img
+                                  src={photo.url}
+                                  alt="Photo de profil"
+                                  className="h-32 w-32 rounded-xl object-cover"
+                                />
+                                <button
+                                  disabled={pendingPhotoId === photo.id}
+                                  className="mt-2 text-xs text-destructive underline disabled:opacity-50"
+                                  onClick={() => void deletePhoto(photo, member.id)}
+                                >
+                                  Supprimer
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               ))}
             </tbody>
           </table>
@@ -199,6 +295,10 @@ function AdminMembers() {
           {" · "}
           <Link to="/admin/reports" className="text-primary hover:underline">
             Voir les signalements
+          </Link>
+          {" · "}
+          <Link to="/admin/announcements" className="text-primary hover:underline">
+            Gérer les annonces
           </Link>
         </p>
       </div>
