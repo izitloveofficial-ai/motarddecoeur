@@ -121,7 +121,9 @@ function Conversation() {
       setError(
         sendError.message?.includes("rate_limit_exceeded")
           ? "Tu envoies des messages trop vite, patiente un instant."
-          : "Le message n'a pas pu être envoyé.",
+          : sendError.message?.includes("contenu_interdit")
+            ? "Ce message contient un terme non autorisé, merci de le reformuler."
+            : "Le message n'a pas pu être envoyé.",
       );
       return;
     }

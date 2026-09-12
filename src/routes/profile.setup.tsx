@@ -226,7 +226,9 @@ function ProfileSetup() {
     if (profileError) {
       setStatus("error");
       setFeedback(
-        "Une erreur empêche l'enregistrement du profil. Réessaie dans quelques instants.",
+        profileError.message?.includes("contenu_interdit")
+          ? "Ta présentation contient un terme non autorisé, merci de la reformuler."
+          : "Une erreur empêche l'enregistrement du profil. Réessaie dans quelques instants.",
       );
       return;
     }
