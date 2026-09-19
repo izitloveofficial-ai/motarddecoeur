@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Ban, Bike, Flag, Heart, KeyRound, RotateCcw, ShieldOff } from "lucide-react";
+import { BadgeCheck, Ban, Bike, Flag, Heart, KeyRound, RotateCcw, ShieldOff } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
@@ -49,6 +49,7 @@ type Candidate = {
   moto_model: string | null;
   looking_for: string | null;
   distance_km: number | null;
+  is_premium: boolean;
   photoUrl: string | null;
 };
 
@@ -90,6 +91,7 @@ function Discover() {
   const [reportReason, setReportReason] = useState("");
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
   const [lastPassed, setLastPassed] = useState<Candidate | null>(null);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -102,6 +104,24 @@ function Discover() {
   useEffect(() => {
     void loadCandidates();
   }, [filters]);
+
+  useEffect(() => {
+    async function loadPremiumStatus() {
+      if (!supabase) return;
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("is_premium")
+        .eq("id", user.id)
+        .maybeSingle();
+      setIsPremium(profile?.is_premium === true);
+    }
+
+    void loadPremiumStatus();
+  }, []);
 
   async function loadCandidates() {
     if (!supabase) return setError("Supabase n'est pas configuré.");
@@ -360,7 +380,9 @@ function Discover() {
         {filtersOpen && (
           <div className="mb-6 grid gap-4 rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-5 sm:grid-cols-3">
             <label className="text-sm font-medium">
-              Âge min.
+              <span className="flex items-center gap-2">
+                Âge min. {!isPremium && <PremiumLabel />}
+              </span>
               <input
                 type="number"
                 min={18}
@@ -368,10 +390,13 @@ function Discover() {
                 className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
                 value={filters.minAge}
                 onChange={(e) => setFilters((f) => ({ ...f, minAge: e.target.value }))}
+                disabled={!isPremium}
               />
             </label>
             <label className="text-sm font-medium">
-              Âge max.
+              <span className="flex items-center gap-2">
+                Âge max. {!isPremium && <PremiumLabel />}
+              </span>
               <input
                 type="number"
                 min={18}
@@ -379,6 +404,7 @@ function Discover() {
                 className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
                 value={filters.maxAge}
                 onChange={(e) => setFilters((f) => ({ ...f, maxAge: e.target.value }))}
+                disabled={!isPremium}
               />
             </label>
             <label className="text-sm font-medium">
@@ -397,7 +423,9 @@ function Discover() {
               </select>
             </label>
             <label className="text-sm font-medium">
-              Distance max. (km)
+              <span className="flex items-center gap-2">
+                Distance max. (km) {!isPremium && <PremiumLabel />}
+              </span>
               <input
                 type="number"
                 min={1}
@@ -406,14 +434,18 @@ function Discover() {
                 className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
                 value={filters.maxKm}
                 onChange={(e) => setFilters((f) => ({ ...f, maxKm: e.target.value }))}
+                disabled={!isPremium}
               />
             </label>
             <label className="text-sm font-medium">
-              Type de moto
+              <span className="flex items-center gap-2">
+                Type de moto {!isPremium && <PremiumLabel />}
+              </span>
               <select
                 className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
                 value={filters.motoType}
                 onChange={(e) => setFilters((f) => ({ ...f, motoType: e.target.value }))}
+                disabled={!isPremium}
               >
                 <option value="">Tous</option>
                 {motoTypeOptions.map(([value, label]) => (
@@ -434,6 +466,11 @@ function Discover() {
               >
                 Réinitialiser les filtres
               </button>
+            )}
+            {!isPremium && (
+              <p className="text-xs text-[#a99b95] sm:col-span-3">
+                Filtres avancés réservés aux comptes Premium.
+              </p>
             )}
           </div>
         )}
@@ -497,8 +534,14 @@ function Discover() {
               )}
             </div>
             <div className="p-6">
-              <h2 className="font-display text-2xl">
+              <h2 className="flex items-center gap-2 font-display text-2xl">
                 {current.first_name}, {age(current.birth_date)} ans
+                {current.is_premium && (
+                  <BadgeCheck
+                    aria-label="Profil Premium vérifié"
+                    className="h-5 w-5 shrink-0 text-[#e8be6c]"
+                  />
+                )}
               </h2>
               {current.distance_km !== null && current.distance_km !== undefined && (
                 <p className="mt-1 text-xs text-[#a99b95]">à environ {current.distance_km} km</p>
@@ -579,5 +622,13 @@ function Discover() {
         )}
       </section>
     </Layout>
+  );
+}
+
+function PremiumLabel() {
+  return (
+    <span className="rounded-full border border-[#e2b45f]/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#e8be6c]">
+      Premium
+    </span>
   );
 }
