@@ -56,37 +56,56 @@ function Join() {
     if (!form.reportValidity()) return;
 
     const data = new FormData(form);
-    setStatus("submitting");
-    try {
-      const response = await fetch("/api/preinscriptions", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          first_name: data.get("first_name"),
-          email: data.get("email"),
-          location: data.get("location"),
-          rider_profile: data.get("rider_profile"),
-          favorite_bike: data.get("favorite_bike"),
-          primary_interest: data.get("primary_interest"),
-          message: data.get("message"),
-          consent_rgpd: data.get("consent_rgpd") === "on",
-          website: data.get("website"),
-        }),
-      });
-      const result = (await response.json()) as { message?: string };
-      if (!response.ok) throw new Error("submission_failed");
+    // Honeypot: silently accept without storing anything.
+    if (String(data.get("website") ?? "").trim() !== "") {
       form.reset();
       setStatus("success");
-      setFeedback(
-        result.message ??
-          "Votre préinscription est confirmée. Merci ! Vous serez informé(e) en priorité lors du lancement de Motards de Cœur.",
-      );
-    } catch {
-      setStatus("error");
-      setFeedback(
-        "Nous n’avons pas pu enregistrer votre préinscription. Veuillez réessayer dans quelques instants.",
-      );
+      setFeedback(PREINSCRIPTION_MESSAGES.success);
+      return;
     }
+
+    const text = (name: string) => {
+      const value = String(data.get(name) ?? "").trim();
+      return value === "" ? null : value;
+    };
+
+    setStatus("submitting");
+    if (!supabase) {
+      setStatus("error");
+      setFeedback(PREINSCRIPTION_MESSAGES.error);
+      return;
+    }
+
+    const { error } = await supabase.from("preinscriptions").insert({
+      first_name: String(data.get("first_name") ?? "").trim(),
+      email: String(data.get("email") ?? "")
+        .trim()
+        .toLowerCase(),
+      location: text("location"),
+      rider_profile: text("rider_profile"),
+      favorite_bike: text("favorite_bike"),
+      primary_interest: text("primary_interest"),
+      message: text("message"),
+      consent_rgpd: data.get("consent_rgpd") === "on",
+    });
+
+    if (error) {
+      // 23505 = unique violation → l'adresse est déjà préinscrite.
+      if (error.code === "23505" || /duplicate key|unique/i.test(error.message)) {
+        form.reset();
+        setStatus("success");
+        setFeedback(PREINSCRIPTION_MESSAGES.duplicate);
+        return;
+      }
+      console.error("preinscription insert failed", error);
+      setStatus("error");
+      setFeedback(PREINSCRIPTION_MESSAGES.error);
+      return;
+    }
+
+    form.reset();
+    setStatus("success");
+    setFeedback(PREINSCRIPTION_MESSAGES.success);
   }
 
   const fieldClass =
