@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 const links = [
   { to: "/", label: "Accueil" },
   { to: "/about", label: "À propos" },
-  { to: "/contact", label: "Contact" },
+  { to: "/profile/setup", label: "Mon espace" },
 ] as const;
 
 const appLinks = [
@@ -21,7 +21,6 @@ const appLinks = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     if (!supabase) return;
@@ -29,19 +28,12 @@ export function Navbar() {
     function loadAccountStatus(session: { user: { id: string } } | null) {
       if (!session || !supabase) {
         setIsAdmin(false);
-        setIsPremium(false);
         return;
       }
 
       void supabase
         .rpc("is_admin")
         .then(({ data: adminResult }) => setIsAdmin(adminResult === true));
-      void supabase
-        .from("profiles")
-        .select("is_premium")
-        .eq("id", session.user.id)
-        .maybeSingle()
-        .then(({ data: profile }) => setIsPremium(profile?.is_premium === true));
     }
 
     supabase.auth.getSession().then(({ data }) => {
@@ -114,20 +106,6 @@ export function Navbar() {
                     )}
                   </Link>
                 ))}
-                <Link
-                  to="/premium"
-                  className="relative whitespace-nowrap text-xs uppercase tracking-wider text-neutral-600 no-underline transition-colors hover:text-neutral-900"
-                  activeProps={{ className: "text-neutral-900" }}
-                >
-                  {({ isActive }) => (
-                    <>
-                      Mon forfait · {isPremium ? "Premium" : "Basique"}
-                      {isActive && (
-                        <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-red" />
-                      )}
-                    </>
-                  )}
-                </Link>
               </div>
             </div>
           )}
@@ -179,13 +157,6 @@ export function Navbar() {
                   {l.label}
                 </Link>
               ))}
-              <Link
-                to="/premium"
-                onClick={() => setOpen(false)}
-                className="py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
-              >
-                Mon forfait · {isPremium ? "Premium" : "Basique"}
-              </Link>
             </div>
           )}
           <Link
