@@ -25,6 +25,7 @@ function Conversation() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [otherName, setOtherName] = useState("");
+  const [otherPhotoUrl, setOtherPhotoUrl] = useState<string | null>(null);
   const [content, setContent] = useState("");
   const [myId, setMyId] = useState<string | null>(null);
   const [otherId, setOtherId] = useState<string | null>(null);
@@ -82,16 +83,29 @@ function Conversation() {
       }
       const otherId = match.profile_a_id === user.id ? match.profile_b_id : match.profile_a_id;
       setOtherId(otherId);
-      const [{ data: profile }, { data: existing, error: messagesError }] = await Promise.all([
-        client.from("profiles").select("first_name").eq("id", otherId).maybeSingle(),
-        client
-          .from("messages")
-          .select("id, sender_id, content, created_at")
-          .eq("match_id", matchId)
-          .order("created_at", { ascending: true }),
-      ]);
+      const [{ data: profile }, { data: photo }, { data: existing, error: messagesError }] =
+        await Promise.all([
+          client.from("profiles").select("first_name").eq("id", otherId).maybeSingle(),
+          client
+            .from("profile_photos")
+            .select("storage_path")
+            .eq("profile_id", otherId)
+            .order("position", { ascending: true })
+            .limit(1)
+            .maybeSingle(),
+          client
+            .from("messages")
+            .select("id, sender_id, content, created_at")
+            .eq("match_id", matchId)
+            .order("created_at", { ascending: true }),
+        ]);
       if (!cancelled) {
         setOtherName(profile?.first_name ?? "Motard(e)");
+        setOtherPhotoUrl(
+          photo
+            ? client.storage.from("profile-photos").getPublicUrl(photo.storage_path).data.publicUrl
+            : null,
+        );
         setMessages(existing ?? []);
         if (messagesError) setError("Impossible de charger les messages.");
         await client
@@ -181,6 +195,17 @@ function Conversation() {
             >
               <ArrowLeft className="h-4 w-4" />
             </Link>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/15 bg-[#302526] text-sm font-medium text-[#d4c6bf]">
+              {otherPhotoUrl ? (
+                <img
+                  src={otherPhotoUrl}
+                  alt={otherName || "Photo de l'interlocuteur"}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span aria-hidden="true">{otherName ? otherName.charAt(0).toUpperCase() : ""}</span>
+              )}
+            </div>
             <h1 className="font-display text-2xl">{otherName || "Conversation"}</h1>
           </div>
           <div className="flex items-center gap-4">
