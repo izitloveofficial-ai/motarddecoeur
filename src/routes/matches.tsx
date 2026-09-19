@@ -110,88 +110,84 @@ function Matches() {
 
   return (
     <Layout>
-      <div className="min-h-[calc(100vh-7rem)] bg-[#faf6f0] text-neutral-900">
-        <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
-          <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
-            Motards de Cœur
-          </span>
-          <div className="mt-3 mb-6 flex items-end justify-between gap-4">
-            <h1 className="font-display text-4xl">Mes coups de cœur</h1>
-            <Link
-              to="/profile/blocked"
-              className="text-xs text-neutral-400 hover:text-[#e8be6c] hover:underline"
-            >
-              Voir les personnes bloquées
-            </Link>
+      <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
+        <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
+        <div className="mt-3 mb-6 flex items-end justify-between gap-4">
+          <h1 className="font-display text-4xl">Mes coups de cœur</h1>
+          <Link
+            to="/profile/blocked"
+            className="text-xs text-[#a99b95] hover:text-[#e8be6c] hover:underline"
+          >
+            Voir les personnes bloquées
+          </Link>
+        </div>
+        {error && (
+          <p role="alert" className="mb-4 rounded-xl border border-primary/40 p-4 text-sm">
+            {error}
+          </p>
+        )}
+        {matches === null && !error && <p className="text-sm text-[#d4c6bf]">Chargement…</p>}
+        {matches?.length === 0 && (
+          <div className="rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-8 text-center text-sm text-[#d4c6bf]">
+            Pas encore de coup de cœur. Va faire un tour du côté de la{" "}
+            <Link to="/discover" className="text-primary hover:underline">
+              découverte
+            </Link>{" "}
+            !
           </div>
-          {error && (
-            <p role="alert" className="mb-4 rounded-xl border border-primary/40 p-4 text-sm">
-              {error}
-            </p>
-          )}
-          {matches === null && !error && <p className="text-sm text-neutral-600">Chargement…</p>}
-          {matches?.length === 0 && (
-            <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-sm text-neutral-600">
-              Pas encore de coup de cœur. Va faire un tour du côté de la{" "}
-              <Link to="/discover" className="text-primary hover:underline">
-                découverte
-              </Link>{" "}
-              !
-            </div>
-          )}
-          <ul className="space-y-3">
-            {matches?.map((match) => (
-              <li
-                key={match.id}
-                className="flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4"
-              >
-                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-neutral-100">
-                  {match.photoUrl && (
-                    <img
-                      src={match.photoUrl}
-                      alt={match.otherName}
-                      className="h-full w-full object-cover"
+        )}
+        <ul className="space-y-3">
+          {matches?.map((match) => (
+            <li
+              key={match.id}
+              className="flex items-center gap-4 rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 p-4"
+            >
+              <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-[#211819]">
+                {match.photoUrl && (
+                  <img
+                    src={match.photoUrl}
+                    alt={match.otherName}
+                    className="h-full w-full object-cover"
+                  />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="flex items-center gap-2 font-medium">
+                  {match.otherName}
+                  {match.isPremium && (
+                    <BadgeCheck
+                      aria-label="Profil Premium vérifié"
+                      className="h-4 w-4 shrink-0 text-[#e8be6c]"
                     />
                   )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="flex items-center gap-2 font-medium">
-                    {match.otherName}
-                    {match.isPremium && (
-                      <BadgeCheck
-                        aria-label="Profil Premium vérifié"
-                        className="h-4 w-4 shrink-0 text-[#e8be6c]"
-                      />
-                    )}
-                    {match.unreadCount > 0 && (
-                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
-                        {match.unreadCount}
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-xs text-neutral-400">
-                    Coup de cœur le {new Date(match.matched_at).toLocaleDateString("fr-FR")}
-                  </p>
-                </div>
-                <Link
-                  to="/messages/$matchId"
-                  params={{ matchId: match.id }}
-                  className="rounded-full bg-gradient-red px-4 py-2 text-xs font-medium uppercase tracking-wider text-primary-foreground"
-                >
-                  Discuter
-                </Link>
-                <button
-                  onClick={() => void removeMatch(match.id)}
-                  aria-label="Supprimer ce coup de cœur"
-                  className="text-neutral-400 hover:text-[#e8be6c]"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
+                  {match.unreadCount > 0 && (
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                      {match.unreadCount}
+                    </span>
+                  )}
+                </p>
+                <p className="text-xs text-[#a99b95]">
+                  Coup de cœur le {new Date(match.matched_at).toLocaleDateString("fr-FR")}
+                </p>
+              </div>
+              <Link
+                to="/messages/$matchId"
+                params={{ matchId: match.id }}
+                className="rounded-full bg-gradient-red px-4 py-2 text-xs font-medium uppercase tracking-wider text-primary-foreground"
+              >
+                Discuter
+              </Link>
+              <button
+                onClick={() => void removeMatch(match.id)}
+                aria-label="Supprimer ce coup de cœur"
+                className="text-[#a99b95] hover:text-[#e8be6c]"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
     </Layout>
   );
 }

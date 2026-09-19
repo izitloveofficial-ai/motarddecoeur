@@ -200,14 +200,14 @@ function Conversation() {
 
   return (
     <Layout>
-      <div className="min-h-[calc(100vh-7rem)] bg-[#faf6f0] text-neutral-900">
+      <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
         <section className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col px-6 py-8">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <Link
                 to="/matches"
                 aria-label="Retour aux coups de cœur"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-300 text-neutral-600"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-[#d4c6bf]"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Link>
@@ -215,7 +215,7 @@ function Conversation() {
                 type="button"
                 onClick={() => setGalleryOpen(true)}
                 aria-label={`Voir le profil et les photos de ${otherName || "cette personne"}`}
-                className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white text-sm font-medium text-neutral-600 shadow-md ring-1 ring-neutral-300 transition hover:ring-[#d6a85c]"
+                className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#d6a85c]/25 bg-[#302526] text-sm font-medium text-[#d4c6bf] shadow-md ring-1 ring-white/10 transition hover:ring-[#d6a85c]"
               >
                 {otherPhotoUrl ? (
                   <img
@@ -231,19 +231,19 @@ function Conversation() {
               </button>
               <button type="button" onClick={() => setGalleryOpen(true)} className="text-left">
                 <h1 className="font-display text-xl sm:text-2xl">{otherName || "Conversation"}</h1>
-                <span className="text-xs text-neutral-500">Voir le profil</span>
+                <span className="text-xs text-[#a99b95]">Voir le profil</span>
               </button>
             </div>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => void deleteConversation()}
-                className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-[#e8be6c]"
+                className="flex items-center gap-1.5 text-xs text-[#a99b95] hover:text-[#e8be6c]"
               >
                 <Trash2 className="h-3.5 w-3.5" /> Supprimer
               </button>
               <button
                 onClick={() => void blockOther()}
-                className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-[#e8be6c]"
+                className="flex items-center gap-1.5 text-xs text-[#a99b95] hover:text-[#e8be6c]"
               >
                 <ShieldOff className="h-3.5 w-3.5" /> Bloquer
               </button>
@@ -257,7 +257,7 @@ function Conversation() {
               {error}
             </div>
           )}
-          <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl border border-neutral-200 bg-white p-4">
+          <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-4">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -275,7 +275,7 @@ function Conversation() {
           <form onSubmit={send} className="mt-4 flex gap-2">
             <input
               aria-label="Message"
-              className="flex-1 rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm outline-none focus:border-[#e2b45f]/70"
+              className="flex-1 rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-[#e2b45f]/70"
               value={content}
               onChange={(event) => setContent(event.target.value)}
               placeholder="Écris un message…"

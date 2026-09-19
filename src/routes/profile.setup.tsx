@@ -52,7 +52,7 @@ function eighteenYearsAgo() {
 }
 
 const fieldClass =
-  "mt-2 w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 hover:border-[#e2b45f]/60 focus:border-[#e2b45f]/70 focus:ring-2 focus:ring-[#d9a441]/20";
+  "mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition placeholder:text-[#a99b95] hover:border-[#d6a85c]/35 focus:border-[#e2b45f]/70 focus:ring-2 focus:ring-[#d9a441]/20";
 
 function ProfileSetup() {
   const navigate = useNavigate();
@@ -287,11 +287,11 @@ function ProfileSetup() {
 
   return (
     <Layout>
-      <div className="min-h-[calc(100vh-7rem)] bg-[#faf6f0] text-neutral-900">
+      <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
         <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
           <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Dernière étape</span>
           <h1 className="mt-3 mb-3 font-display text-4xl">Complète ton profil</h1>
-          <p className="mb-8 text-sm text-neutral-600">
+          <p className="mb-8 text-sm text-[#d4c6bf]">
             Ces informations aident les autres motards à te trouver et à savoir ce que tu cherches.
           </p>
           <form className="space-y-5" onSubmit={handleSubmit}>
@@ -348,7 +348,7 @@ function ProfileSetup() {
             <label className="block text-sm font-medium">
               Photos (jusqu'à 6)
               {Capacitor.isNativePlatform() ? (
-                <div className="mt-2 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#f5f0e8] p-4 text-sm text-neutral-600">
+                <div className="mt-2 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
                   <button
                     type="button"
                     onClick={() => void takeNativePhoto()}
@@ -363,13 +363,13 @@ function ProfileSetup() {
                       {photos.map((file, i) => (
                         <li
                           key={i}
-                          className="flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-3 py-1 text-xs"
+                          className="flex items-center gap-2 rounded-full border border-white/15 bg-[#302526] px-3 py-1 text-xs"
                         >
                           Photo {i + 1}
                           <button
                             type="button"
                             onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
-                            className="text-neutral-400 hover:text-primary"
+                            className="text-[#a99b95] hover:text-primary"
                             aria-label={`Retirer la photo ${i + 1}`}
                           >
                             ×
@@ -380,7 +380,7 @@ function ProfileSetup() {
                   )}
                 </div>
               ) : (
-                <div className="mt-2 flex items-center gap-3 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#f5f0e8] p-4 text-sm text-neutral-600">
+                <div className="mt-2 flex items-center gap-3 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
                   <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
                   <input
                     type="file"
@@ -394,12 +394,12 @@ function ProfileSetup() {
                 </div>
               )}
               {photos.length > 0 && (
-                <p className="mt-2 text-xs text-neutral-600">
+                <p className="mt-2 text-xs text-[#d4c6bf]">
                   {photos.length} photo(s) sélectionnée(s)
                 </p>
               )}
             </label>
-            <div className="rounded-xl border border-neutral-200 bg-[#f5f0e8] p-4 text-sm text-neutral-600">
+            <div className="rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
               <button
                 type="button"
                 onClick={captureLocation}
@@ -412,7 +412,7 @@ function ProfileSetup() {
                     ? "Localisation en cours…"
                     : "Activer ma position (recommandé)"}
               </button>
-              <p className="mt-2 text-xs leading-relaxed text-neutral-400">
+              <p className="mt-2 text-xs leading-relaxed text-[#a99b95]">
                 Utilisée uniquement pour te proposer des motards proches et calculer une distance
                 approximative. Ta position exacte n'est jamais visible par les autres, seulement une
                 distance arrondie.
@@ -424,7 +424,7 @@ function ProfileSetup() {
                 </p>
               )}
             </div>
-            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-neutral-200 bg-[#f5f0e8] p-4 text-sm leading-relaxed text-neutral-600">
+            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm leading-relaxed text-[#d4c6bf]">
               <input
                 type="checkbox"
                 name="is_active"
@@ -450,7 +450,7 @@ function ProfileSetup() {
             {feedback && (
               <div
                 role="status"
-                className={`flex gap-3 rounded-xl border p-4 text-sm ${status === "success" ? "border-green-500/40 bg-green-500/10 text-green-700" : "border-primary/40 bg-primary/10"}`}
+                className={`flex gap-3 rounded-xl border p-4 text-sm ${status === "success" ? "border-green-500/40 bg-green-500/10 text-green-200" : "border-primary/40 bg-primary/10"}`}
               >
                 {status === "success" && <CheckCircle2 className="h-5 w-5 shrink-0" />}
                 <span>{feedback}</span>
@@ -465,9 +465,9 @@ function ProfileSetup() {
               </Link>
             )}
           </form>
-          <div className="mt-12 border-t border-neutral-200 pt-6">
-            <h2 className="mb-2 text-sm font-medium text-neutral-600">Mes données</h2>
-            <p className="mb-3 text-xs leading-relaxed text-neutral-400">
+          <div className="mt-12 border-t border-white/10 pt-6">
+            <h2 className="mb-2 text-sm font-medium text-[#d4c6bf]">Mes données</h2>
+            <p className="mb-3 text-xs leading-relaxed text-[#a99b95]">
               Télécharge une copie de toutes les données associées à ton compte, ainsi que tes
               photos en fichiers séparés.
             </p>
@@ -479,17 +479,17 @@ function ProfileSetup() {
               {exporting ? "Préparation du téléchargement…" : "Télécharger mes données et photos"}
             </button>
           </div>
-          <div className="mt-8 border-t border-neutral-200 pt-6">
-            <h2 className="mb-2 text-sm font-medium text-neutral-600">Zone sensible</h2>
+          <div className="mt-8 border-t border-white/10 pt-6">
+            <h2 className="mb-2 text-sm font-medium text-[#d4c6bf]">Zone sensible</h2>
             <button
               type="button"
               onClick={() => void handleLogout()}
-              className="mb-6 flex items-center gap-2 rounded-full border border-neutral-300 px-5 py-2 text-xs uppercase tracking-wider text-neutral-600 transition-colors hover:border-neutral-400 hover:text-neutral-900"
+              className="mb-6 flex items-center gap-2 rounded-full border border-white/15 px-5 py-2 text-xs uppercase tracking-wider text-[#d4c6bf] transition-colors hover:border-[#d6a85c]/35 hover:text-[#fff9f0]"
             >
               <LogOut className="h-4 w-4" />
               Se déconnecter
             </button>
-            <p className="mb-3 text-xs leading-relaxed text-neutral-400">
+            <p className="mb-3 text-xs leading-relaxed text-[#a99b95]">
               La suppression de ton compte efface définitivement ton profil, tes photos, tes coups
               de cœur et tes messages. Cette action est irréversible et conforme à ton droit à
               l'effacement (RGPD).

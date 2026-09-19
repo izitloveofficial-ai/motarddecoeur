@@ -116,64 +116,60 @@ function BlockedProfiles() {
 
   return (
     <Layout>
-      <div className="min-h-[calc(100vh-7rem)] bg-[#faf6f0] text-neutral-900">
-        <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
-          <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
-            Motards de Cœur
-          </span>
-          <h1 className="mt-3 mb-2 font-display text-4xl">Personnes bloquées</h1>
-          <p className="mb-8 text-sm text-neutral-400">
-            Gérez les personnes que vous ne souhaitez plus voir ni contacter.
-          </p>
+      <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
+        <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
+        <h1 className="mt-3 mb-2 font-display text-4xl">Personnes bloquées</h1>
+        <p className="mb-8 text-sm text-[#a99b95]">
+          Gérez les personnes que vous ne souhaitez plus voir ni contacter.
+        </p>
 
-          {error && (
-            <p
-              role="alert"
-              className="mb-4 rounded-xl border border-primary/40 bg-primary/10 p-4 text-sm"
+        {error && (
+          <p
+            role="alert"
+            className="mb-4 rounded-xl border border-primary/40 bg-primary/10 p-4 text-sm"
+          >
+            {error}
+          </p>
+        )}
+        {profiles === null && !error && <p className="text-sm text-[#d4c6bf]">Chargement…</p>}
+        {profiles?.length === 0 && (
+          <div className="rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-8 text-center text-sm text-[#d4c6bf]">
+            <ShieldCheck className="mx-auto mb-3 h-8 w-8 text-[#e2b45f]" aria-hidden="true" />
+            Vous n'avez bloqué personne pour le moment.
+          </div>
+        )}
+        <ul className="space-y-3">
+          {profiles?.map((profile) => (
+            <li
+              key={profile.id}
+              className="flex items-center gap-4 rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 p-4"
             >
-              {error}
-            </p>
-          )}
-          {profiles === null && !error && <p className="text-sm text-neutral-600">Chargement…</p>}
-          {profiles?.length === 0 && (
-            <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-sm text-neutral-600">
-              <ShieldCheck className="mx-auto mb-3 h-8 w-8 text-[#e2b45f]" aria-hidden="true" />
-              Vous n'avez bloqué personne pour le moment.
-            </div>
-          )}
-          <ul className="space-y-3">
-            {profiles?.map((profile) => (
-              <li
-                key={profile.id}
-                className="flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4"
+              <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-[#211819]">
+                {profile.photoUrl ? (
+                  <img
+                    src={profile.photoUrl}
+                    alt={`Photo de ${profile.firstName}`}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-lg text-[#8c7a75]">
+                    {profile.firstName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <p className="min-w-0 flex-1 truncate font-medium">{profile.firstName}</p>
+              <button
+                type="button"
+                disabled={unblockingId === profile.id}
+                onClick={() => void unblock(profile.id)}
+                className="rounded-full border border-[#e2b45f]/50 px-4 py-2 text-xs font-medium uppercase tracking-wider text-[#e8be6c] transition hover:bg-[#e2b45f]/10 disabled:cursor-wait disabled:opacity-50"
               >
-                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-neutral-100">
-                  {profile.photoUrl ? (
-                    <img
-                      src={profile.photoUrl}
-                      alt={`Photo de ${profile.firstName}`}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-lg text-neutral-400">
-                      {profile.firstName.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                </div>
-                <p className="min-w-0 flex-1 truncate font-medium">{profile.firstName}</p>
-                <button
-                  type="button"
-                  disabled={unblockingId === profile.id}
-                  onClick={() => void unblock(profile.id)}
-                  className="rounded-full border border-[#e2b45f]/50 px-4 py-2 text-xs font-medium uppercase tracking-wider text-[#e8be6c] transition hover:bg-[#e2b45f]/10 disabled:cursor-wait disabled:opacity-50"
-                >
-                  {unblockingId === profile.id ? "Déblocage…" : "Débloquer"}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
+                {unblockingId === profile.id ? "Déblocage…" : "Débloquer"}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
     </Layout>
   );
 }
