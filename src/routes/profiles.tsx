@@ -12,6 +12,8 @@ import julien from "@/assets/profile-julien.jpg";
 const SITE_URL = "https://motarddecoeur.lovable.app";
 
 export const Route = createFileRoute("/profiles")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Membres — Motards de Cœur" },

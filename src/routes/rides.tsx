@@ -17,6 +17,8 @@ type Ride = {
 };
 
 export const Route = createFileRoute("/rides")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   component: Rides,
   beforeLoad: async () => {
     await requireAdmin();

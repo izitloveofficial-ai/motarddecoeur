@@ -6,6 +6,8 @@ import { Check, X, Crown, Zap, Star } from "lucide-react";
 const SITE_URL = "https://motarddecoeur.lovable.app";
 
 export const Route = createFileRoute("/premium")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Premium — Motards de Cœur" },

@@ -53,6 +53,8 @@ type Candidate = {
 };
 
 export const Route = createFileRoute("/discover")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   component: Discover,
   beforeLoad: async () => {
     await requireAdmin();

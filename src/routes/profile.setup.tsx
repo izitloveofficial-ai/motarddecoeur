@@ -32,6 +32,8 @@ const motoTypeOptions = [
 ] as const;
 
 export const Route = createFileRoute("/profile/setup")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   component: ProfileSetup,
   beforeLoad: async () => {
     await requireAdmin();

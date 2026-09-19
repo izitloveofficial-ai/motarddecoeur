@@ -8,6 +8,8 @@ import { supabase } from "@/lib/supabase";
 
 type Message = { id: string; sender_id: string; content: string; created_at: string };
 export const Route = createFileRoute("/messages/$matchId")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   component: Conversation,
   beforeLoad: async () => {
     await requireAdmin();
