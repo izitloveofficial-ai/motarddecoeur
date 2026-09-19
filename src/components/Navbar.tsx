@@ -20,6 +20,7 @@ const appLinks = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [matchCount, setMatchCount] = useState(0);
 
   useEffect(() => {
     if (!supabase) return;
@@ -27,12 +28,20 @@ export function Navbar() {
     function loadAccountStatus(session: { user: { id: string } } | null) {
       if (!session || !supabase) {
         setIsAdmin(false);
+        setMatchCount(0);
         return;
       }
 
-      void supabase
-        .rpc("is_admin")
-        .then(({ data: adminResult }) => setIsAdmin(adminResult === true));
+      void Promise.all([
+        supabase.rpc("is_admin"),
+        supabase
+          .from("matches")
+          .select("id", { count: "exact", head: true })
+          .or(`profile_a_id.eq.${session.user.id},profile_b_id.eq.${session.user.id}`),
+      ]).then(([{ data: adminResult }, { count }]) => {
+        setIsAdmin(adminResult === true);
+        setMatchCount(count ?? 0);
+      });
     }
 
     supabase.auth.getSession().then(({ data }) => {
@@ -93,7 +102,14 @@ export function Navbar() {
                 >
                   {({ isActive }) => (
                     <>
-                      {l.label}
+                      <span className="inline-flex items-center gap-1.5">
+                        {l.label}
+                        {l.to === "/matches" && matchCount > 0 && (
+                          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                            {matchCount}
+                          </span>
+                        )}
+                      </span>
                       {isActive && (
                         <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-red" />
                       )}
@@ -145,7 +161,14 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className="py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
                 >
-                  {l.label}
+                  <span className="inline-flex items-center gap-2">
+                    {l.label}
+                    {l.to === "/matches" && matchCount > 0 && (
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                        {matchCount}
+                      </span>
+                    )}
+                  </span>
                 </Link>
               ))}
             </div>
