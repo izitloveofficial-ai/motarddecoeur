@@ -1,5 +1,5 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { Trash2 } from "lucide-react";
+import { BadgeCheck, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
@@ -9,6 +9,7 @@ type MatchRow = {
   id: string;
   matched_at: string;
   otherName: string;
+  isPremium: boolean;
   photoUrl: string | null;
   unreadCount: number;
 };
@@ -50,13 +51,17 @@ function Matches() {
       row.profile_a_id === user.id ? row.profile_b_id : row.profile_a_id,
     );
     const names = new Map<string, string>();
+    const premiumStatuses = new Map<string, boolean>();
     const photos = new Map<string, string>();
     if (otherIds.length) {
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id, first_name")
+        .select("id, first_name, is_premium")
         .in("id", otherIds);
-      for (const profile of profiles ?? []) names.set(profile.id, profile.first_name);
+      for (const profile of profiles ?? []) {
+        names.set(profile.id, profile.first_name);
+        premiumStatuses.set(profile.id, profile.is_premium === true);
+      }
       const { data: photoRows } = await supabase
         .from("profile_photos")
         .select("profile_id, storage_path, position")
@@ -89,6 +94,7 @@ function Matches() {
           id: row.id,
           matched_at: row.matched_at,
           otherName: names.get(otherId) ?? "Motard(e)",
+          isPremium: premiumStatuses.get(otherId) ?? false,
           photoUrl: photos.get(otherId) ?? null,
           unreadCount: unreadByMatch.get(row.id) ?? 0,
         };
@@ -148,6 +154,12 @@ function Matches() {
               <div className="min-w-0 flex-1">
                 <p className="flex items-center gap-2 font-medium">
                   {match.otherName}
+                  {match.isPremium && (
+                    <BadgeCheck
+                      aria-label="Profil Premium vérifié"
+                      className="h-4 w-4 shrink-0 text-[#e8be6c]"
+                    />
+                  )}
                   {match.unreadCount > 0 && (
                     <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
                       {match.unreadCount}
