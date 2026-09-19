@@ -69,8 +69,8 @@ function Confidentialite() {
         </LegalSection>
         <LegalSection title="Données liées à l'utilisation de l'app">
           <ul>
-            <li>tes likes (&quot;j'aime&quot;/&quot;passer&quot;) et tes matchs ;</li>
-            <li>les messages que tu envoies à tes matchs ;</li>
+            <li>tes likes (&quot;j'aime&quot;/&quot;passer&quot;) et tes coups de cœur ;</li>
+            <li>les messages que tu envoies à tes coups de cœur ;</li>
             <li>les balades que tu crées ou rejoins ;</li>
             <li>les signalements que tu effectues et les comptes que tu bloques ;</li>
             <li>
@@ -106,7 +106,7 @@ function Confidentialite() {
           <ul>
             <li>
               <strong>Accès et export</strong> : depuis la page de ton profil, tu peux télécharger
-              une copie complète de tes données (profil, photos, matchs, messages envoyés,
+              une copie complète de tes données (profil, photos, coups de cœur, messages envoyés,
               participations aux balades) ;
             </li>
             <li>

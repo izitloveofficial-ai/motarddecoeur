@@ -49,8 +49,8 @@ function ConditionsUtilisation() {
               <p>
                 Motards de Cœur est une application de rencontre et de communauté réservée aux
                 personnes passionnées de moto. Elle permet notamment de créer un profil, de
-                découvrir d'autres profils, de matcher, d'échanger par messagerie, et d'organiser ou
-                rejoindre des balades moto.
+                découvrir d'autres profils, d'avoir des coups de cœur mutuels, d'échanger par
+                messagerie, et d'organiser ou rejoindre des balades moto.
               </p>
             </LegalSection>
             <LegalSection title="2. Âge minimum et un compte par personne">

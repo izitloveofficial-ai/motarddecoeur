@@ -198,8 +198,8 @@ function Discover() {
         setMatchName(current.first_name);
         void sendPushNotification(
           current.id,
-          "Nouveau match sur Motards de Cœur ! 🎉",
-          "Quelqu'un vient de matcher avec toi. Va y jeter un œil !",
+          "Nouveau coup de cœur sur Motards de Cœur ! 🎉",
+          "Quelqu'un a eu un coup de cœur pour toi. Va y jeter un œil !",
         );
       }
       setLastPassed(null);
@@ -353,7 +353,7 @@ function Discover() {
               La route vous réunit
             </span>
             <h2 id="match-title" className="mt-3 font-display text-3xl sm:text-4xl">
-              C'est un match avec {matchName} !
+              C'est un coup de cœur avec {matchName} !
             </h2>
             <button
               type="button"
@@ -369,7 +369,7 @@ function Discover() {
       <section className="mx-auto max-w-md px-6 py-12 sm:py-16">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <div className="mt-3 mb-6 flex items-center justify-between">
-          <h1 className="font-display text-4xl">Découverte</h1>
+          <h1 className="font-display text-4xl">Rencontres</h1>
           <button
             onClick={() => setFiltersOpen((v) => !v)}
             className="rounded-full border border-white/15 px-4 py-2 text-xs uppercase tracking-wider text-[#d4c6bf] hover:border-[#e2b45f]/60"

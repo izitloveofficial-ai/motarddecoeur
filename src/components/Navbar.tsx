@@ -11,8 +11,8 @@ const links = [
 ] as const;
 
 const appLinks = [
-  { to: "/discover", label: "Découvrir" },
-  { to: "/matches", label: "Matchs" },
+  { to: "/discover", label: "Rencontres" },
+  { to: "/matches", label: "Coups de cœur" },
   { to: "/rides", label: "Balades" },
   { to: "/events", label: "Événements" },
   { to: "/community", label: "Communauté" },
