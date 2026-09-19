@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
@@ -16,50 +16,52 @@ const appLinks = [
   { to: "/rides", label: "Balades" },
   { to: "/events", label: "Événements" },
   { to: "/community", label: "Communauté" },
-  { to: "/premium", label: "Premium" },
 ] as const;
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const navigate = useNavigate();
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     if (!supabase) return;
-    supabase.auth.getSession().then(({ data }) => {
-      setLoggedIn(!!data.session);
-      if (data.session) {
-        void supabase
-          .rpc("is_admin")
-          .then(({ data: adminResult }) => setIsAdmin(adminResult === true));
+
+    function loadAccountStatus(session: { user: { id: string } } | null) {
+      if (!session || !supabase) {
+        setIsAdmin(false);
+        setIsPremium(false);
+        return;
       }
+
+      void supabase
+        .rpc("is_admin")
+        .then(({ data: adminResult }) => setIsAdmin(adminResult === true));
+      void supabase
+        .from("profiles")
+        .select("is_premium")
+        .eq("id", session.user.id)
+        .maybeSingle()
+        .then(({ data: profile }) => setIsPremium(profile?.is_premium === true));
+    }
+
+    supabase.auth.getSession().then(({ data }) => {
+      loadAccountStatus(data.session);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setLoggedIn(!!session);
-      if (session) {
-        void supabase
-          .rpc("is_admin")
-          .then(({ data: adminResult }) => setIsAdmin(adminResult === true));
-      } else {
-        setIsAdmin(false);
-      }
+      loadAccountStatus(session);
     });
     return () => sub.subscription.unsubscribe();
   }, []);
-
-  async function handleLogout() {
-    if (!supabase) return;
-    await supabase.auth.signOut();
-    setOpen(false);
-    void navigate({ to: "/" });
-  }
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 xl:py-2">
-        <Link to="/" aria-label="Motards de Cœur - Accueil" className="group shrink-0">
+        <Link
+          to="/"
+          aria-label="Motards de Cœur - Accueil"
+          className="group shrink-0 text-inherit no-underline"
+        >
           <BrandLogo
             className="transition-transform group-hover:scale-[1.02]"
             markClassName="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 xl:h-[72px] xl:w-[72px]"
@@ -73,7 +75,7 @@ export function Navbar() {
               <Link
                 key={l.to}
                 to={l.to}
-                className="relative text-xs uppercase tracking-wider text-neutral-600 transition-colors hover:text-neutral-900 2xl:text-sm"
+                className="relative text-xs uppercase tracking-wider text-neutral-600 no-underline transition-colors hover:text-neutral-900 2xl:text-sm"
                 activeProps={{ className: "text-neutral-900" }}
                 activeOptions={{ exact: l.to === "/" }}
               >
@@ -99,7 +101,7 @@ export function Navbar() {
                   <Link
                     key={l.to}
                     to={l.to}
-                    className="relative whitespace-nowrap text-xs uppercase tracking-wider text-neutral-600 transition-colors hover:text-neutral-900"
+                    className="relative whitespace-nowrap text-xs uppercase tracking-wider text-neutral-600 no-underline transition-colors hover:text-neutral-900"
                     activeProps={{ className: "text-neutral-900" }}
                   >
                     {({ isActive }) => (
@@ -112,23 +114,29 @@ export function Navbar() {
                     )}
                   </Link>
                 ))}
+                <Link
+                  to="/premium"
+                  className="relative whitespace-nowrap text-xs uppercase tracking-wider text-neutral-600 no-underline transition-colors hover:text-neutral-900"
+                  activeProps={{ className: "text-neutral-900" }}
+                >
+                  {({ isActive }) => (
+                    <>
+                      Mon forfait · {isPremium ? "Premium" : "Basique"}
+                      {isActive && (
+                        <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-red" />
+                      )}
+                    </>
+                  )}
+                </Link>
               </div>
             </div>
           )}
         </div>
 
         <div className="hidden xl:flex items-center gap-3">
-          {loggedIn ? (
-            <button
-              onClick={() => void handleLogout()}
-              className="px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 transition"
-            >
-              Déconnexion
-            </button>
-          ) : null}
           <Link
             to="/join"
-            className="px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full hover:shadow-glow transition-all"
+            className="px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground no-underline rounded-full hover:shadow-glow transition-all"
           >
             Pré-inscription gratuite
           </Link>
@@ -151,7 +159,7 @@ export function Navbar() {
               key={l.to}
               to={l.to}
               onClick={() => setOpen(false)}
-              className="py-2 text-sm uppercase tracking-wider text-neutral-700 hover:text-neutral-900"
+              className="py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
             >
               {l.label}
             </Link>
@@ -166,25 +174,24 @@ export function Navbar() {
                   key={l.to}
                   to={l.to}
                   onClick={() => setOpen(false)}
-                  className="py-2 text-sm uppercase tracking-wider text-neutral-700 hover:text-neutral-900"
+                  className="py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
                 >
                   {l.label}
                 </Link>
               ))}
+              <Link
+                to="/premium"
+                onClick={() => setOpen(false)}
+                className="py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
+              >
+                Mon forfait · {isPremium ? "Premium" : "Basique"}
+              </Link>
             </div>
           )}
-          {loggedIn ? (
-            <button
-              onClick={() => void handleLogout()}
-              className="py-2 text-left text-sm text-neutral-700 hover:text-neutral-900"
-            >
-              Déconnexion
-            </button>
-          ) : null}
           <Link
             to="/join"
             onClick={() => setOpen(false)}
-            className="mt-2 text-center px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground rounded-full"
+            className="mt-2 text-center px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground no-underline rounded-full"
           >
             Pré-inscription gratuite
           </Link>
