@@ -35,7 +35,6 @@ function Conversation() {
   const [otherId, setOtherId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
-  const myIdRef = useRef<string | null>(null);
   const closeGallery = useCallback(() => setGalleryOpen(false), []);
   useEffect(() => {
     if (!supabase) {
@@ -51,9 +50,6 @@ function Conversation() {
       } = await client.auth.getUser();
       if (!user || cancelled) return;
 
-      // Establish the identity before accepting realtime messages. The callback can then use
-      // this immutable value instead of closing over React state from the first render.
-      myIdRef.current = user.id;
       setMyId(user.id);
       const { data: match, error: matchError } = await client
         .from("matches")
@@ -155,7 +151,6 @@ function Conversation() {
     void init();
     return () => {
       cancelled = true;
-      myIdRef.current = null;
       if (channel) void client.removeChannel(channel);
     };
   }, [matchId]);
@@ -168,9 +163,11 @@ function Conversation() {
     const text = content.trim();
     setContent("");
     setError("");
-    const { error: sendError } = await supabase
+    const { data: sentMessage, error: sendError } = await supabase
       .from("messages")
-      .insert({ match_id: matchId, sender_id: myId, content: text });
+      .insert({ match_id: matchId, sender_id: myId, content: text })
+      .select("id, sender_id, content, created_at")
+      .single();
     if (sendError) {
       setContent(text);
       setError(
@@ -182,6 +179,13 @@ function Conversation() {
       );
       return;
     }
+    // Do not depend on the realtime round trip to show a message just sent. The subscription
+    // uses the same id and will therefore be ignored when it arrives a moment later.
+    setMessages((previous) =>
+      previous.some((message) => message.id === sentMessage.id)
+        ? previous
+        : [...previous, sentMessage],
+    );
     if (otherId) {
       void sendPushNotification(
         otherId,
@@ -280,20 +284,24 @@ function Conversation() {
             </div>
           )}
           <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-4">
-            {messages.map((message) => (
-              // Use the synchronously populated ref as the single identity source for every
-              // message, regardless of whether it came from the query, realtime, or this form.
-              <div
-                key={message.id}
-                className={`flex ${message.sender_id === myIdRef.current ? "justify-end" : "justify-start"}`}
-              >
+            {messages.map((message) => {
+              // Derive both alignment and colors from the same reactive identity. Unlike a ref,
+              // myId triggers a render as soon as authentication resolves and stays authoritative
+              // for historical, realtime, and newly inserted messages alike.
+              const isMine = message.sender_id === myId;
+              return (
                 <div
-                  className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${message.sender_id === myIdRef.current ? "bg-neutral-900 text-white" : "bg-[var(--ember)] text-neutral-900"}`}
+                  key={message.id}
+                  className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                 >
-                  {message.content}
+                  <div
+                    className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${isMine ? "bg-neutral-900 text-white" : "bg-[var(--ember)] text-white"}`}
+                  >
+                    {message.content}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <div ref={bottomRef} />
           </div>
           <form onSubmit={send} className="mt-4 flex gap-2">
