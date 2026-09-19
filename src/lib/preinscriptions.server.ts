@@ -47,10 +47,28 @@ async function isRateLimited(db: AppDatabase, ip: string) {
 
 type AdminAuthorization = { authorized: true } | { authorized: false; status: 401 | 403 };
 
+// Supabase is the source of truth for preinscriptions. The D1 helpers above are kept
+// for history but are no longer on the critical path of this flow.
+function readEnv(env: RuntimeEnv, ...names: string[]) {
+  for (const name of names) {
+    const value =
+      (env?.[name] as string | undefined) ??
+      (typeof process !== "undefined" ? process.env?.[name] : undefined);
+    if (value) return String(value);
+  }
+  return "";
+}
+
+const supabaseUrl = (env: RuntimeEnv) =>
+  readEnv(env, "SUPABASE_URL", "VITE_SUPABASE_URL").replace(/\/$/, "");
+const supabaseAnonKey = (env: RuntimeEnv) =>
+  readEnv(env, "SUPABASE_ANON_KEY", "SUPABASE_PUBLISHABLE_KEY", "VITE_SUPABASE_PUBLISHABLE_KEY");
+const supabaseServiceKey = (env: RuntimeEnv) => readEnv(env, "SUPABASE_SERVICE_ROLE_KEY");
+
 export async function requireAdmin(request: Request, env: RuntimeEnv): Promise<AdminAuthorization> {
   const authorization = request.headers.get("authorization");
-  const url = String(env.SUPABASE_URL ?? "").replace(/\/$/, "");
-  const anonKey = String(env.SUPABASE_ANON_KEY ?? "");
+  const url = supabaseUrl(env);
+  const anonKey = supabaseAnonKey(env);
   if (!authorization?.startsWith("Bearer ") || !url || !anonKey)
     return { authorized: false, status: 401 };
   const response = await fetch(`${url}/rest/v1/rpc/is_admin`, {
