@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Flag, Heart, RotateCcw, ShieldOff, X } from "lucide-react";
+import { Bike, Flag, Heart, RotateCcw, ShieldOff, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
@@ -84,6 +84,7 @@ function Discover() {
   const [candidates, setCandidates] = useState<Candidate[] | null>(null);
   const [index, setIndex] = useState(0);
   const [notice, setNotice] = useState("");
+  const [matchName, setMatchName] = useState("");
   const [error, setError] = useState("");
   const [reportOpen, setReportOpen] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -167,7 +168,7 @@ function Discover() {
         )
         .maybeSingle();
       if (match) {
-        setNotice(`C'est un match avec ${current.first_name} ! 🎉`);
+        setMatchName(current.first_name);
         void sendPushNotification(
           current.id,
           "Nouveau match sur Motards de Cœur ! 🎉",
@@ -251,6 +252,40 @@ function Discover() {
   const current = candidates?.[index];
   return (
     <Layout>
+      {matchName && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="match-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-6 backdrop-blur-sm animate-in fade-in-0"
+        >
+          <div className="w-full max-w-md rounded-3xl border border-[#e2b45f]/40 bg-[#302425] p-8 text-center shadow-[0_0_80px_rgba(226,180,95,0.22)] animate-in zoom-in-95 fade-in-0">
+            <div className="mb-6 flex items-center justify-center gap-5 text-[#e2b45f]">
+              <Heart fill="currentColor" aria-hidden="true" className="h-11 w-11 animate-pulse" />
+              <Bike aria-hidden="true" className="h-16 w-16 text-[#fff9f0]" strokeWidth={1.6} />
+              <Heart
+                fill="currentColor"
+                aria-hidden="true"
+                className="h-11 w-11 animate-pulse [animation-delay:200ms]"
+              />
+            </div>
+            <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
+              La route vous réunit
+            </span>
+            <h2 id="match-title" className="mt-3 font-display text-3xl sm:text-4xl">
+              C'est un match avec {matchName} !
+            </h2>
+            <button
+              type="button"
+              autoFocus
+              onClick={() => setMatchName("")}
+              className="mt-8 rounded-full bg-gradient-red px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition hover:scale-105"
+            >
+              Continuer à swiper
+            </button>
+          </div>
+        </div>
+      )}
       <section className="mx-auto max-w-md px-6 py-12 sm:py-16">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <div className="mt-3 mb-6 flex items-center justify-between">
