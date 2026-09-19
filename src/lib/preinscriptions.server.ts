@@ -1,4 +1,8 @@
-import { submitPreinscription, type PreinscriptionInput } from "./preinscriptions";
+import {
+  preinscriptionSchema,
+  submitPreinscription,
+  type PreinscriptionInput,
+} from "./preinscriptions";
 
 type D1Result<T = unknown> = { success: boolean; results?: T[]; meta?: { changes?: number } };
 type D1Statement = {
@@ -56,11 +60,23 @@ async function requireAdmin(request: Request, env: RuntimeEnv) {
 
 export async function handlePreinscriptionRequest(request: Request, env: unknown) {
   if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
+
+  // Validation must not depend on infrastructure. In particular, a bad request must
+  // remain a 400 even when the database binding is missing or temporarily unavailable.
+  let raw: unknown;
+  try {
+    raw = await request.json();
+  } catch {
+    return json({ ok: false, message: "Requête invalide." }, 400);
+  }
+  if (!preinscriptionSchema.safeParse(raw).success) {
+    return json({ ok: false, message: "Requête invalide." }, 400);
+  }
+
   try {
     const db = database(env);
     if (await isRateLimited(db, clientIp(request)))
       return json({ error: "too_many_requests" }, 429);
-    const raw = await request.json();
     const result = await submitPreinscription(raw, {
       async create(input: Omit<PreinscriptionInput, "website">) {
         const existing = await db
@@ -95,7 +111,8 @@ export async function handlePreinscriptionRequest(request: Request, env: unknown
       },
     });
     return json(result.body, result.status);
-  } catch {
+  } catch (error) {
+    console.error("POST /api/preinscriptions failed", error);
     return json(
       {
         ok: false,

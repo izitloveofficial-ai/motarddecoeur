@@ -2,21 +2,34 @@
 
 ## Cause du problème
 
-Le navigateur écrivait directement dans la table Supabase historique. Cette écriture dépendait de
-la configuration publique et l'administration lisait également cette ancienne table. Le formulaire
-appelle désormais `POST /api/preinscriptions`; le serveur valide les données et écrit avec des
-requêtes paramétrées dans la liaison Cloudflare D1 `DB`. L'administration utilise la même liaison.
-Supabase ne sert plus au stockage des préinscriptions (il reste le fournisseur d'identité).
+L'erreur serveur exacte est `Error: The DB binding is not configured`. La version précédente
+appelait `database(env)` et la table de limitation de débit **avant** de lire et valider le JSON.
+Une liaison `DB` absente produisait donc systématiquement un 500, y compris pour `{}`. Le serveur
+valide maintenant le corps avant le premier accès à `DB` et journalise l'exception d'infrastructure
+avec le préfixe `POST /api/preinscriptions failed`.
+
+Le formulaire appelle `POST /api/preinscriptions`; le serveur écrit avec des requêtes paramétrées
+dans la liaison Cloudflare D1 `DB`, et l'administration lit cette même liaison. Supabase n'est pas
+utilisé comme base de données pour ce flux.
 
 ## Configuration et déploiement
 
-1. Créer/lier la base D1 à l'application sous le nom exact `DB`.
-2. Appliquer `migrations/0001_preinscriptions.sql` avec l'outil de migration de l'hébergeur.
-3. Définir **uniquement côté serveur** `SUPABASE_URL`, `SUPABASE_ANON_KEY` (contrôle du rôle
-   administrateur) et `SUPABASE_SERVICE_ROLE_KEY` (envoi d'invitations). Ne jamais utiliser le
-   préfixe `VITE_` pour ces valeurs.
-4. Déployer l'application, soumettre une adresse de recette sur `/join`, puis vérifier immédiatement
+1. Dans Lovable/Cloudflare, créer puis lier la nouvelle base D1 sous le nom de liaison exact `DB`.
+   **`DB` est une liaison de ressource, pas une variable texte ni un secret.** Aucune variable
+   `DATABASE_URL` n'est lue par l'application.
+2. Appliquer `migrations/0001_preinscriptions.sql` à cette base D1 avant le déploiement. Vérifier
+   ensuite `preinscriptions` et `preinscription_attempts` dans la liste des tables.
+3. Configurer côté serveur les variables d'identité déjà utilisées par l'administration :
+   `SUPABASE_URL`, `SUPABASE_ANON_KEY` et `SUPABASE_SERVICE_ROLE_KEY`. Elles ne servent jamais à
+   lire ou écrire les préinscriptions. Ne jamais les préfixer par `VITE_`.
+4. Conserver côté navigateur `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY` uniquement pour
+   la session d'administration existante. Elles ne sont pas des identifiants de la base D1.
+5. Déployer l'application, soumettre une adresse de recette sur `/join`, puis vérifier immédiatement
    le compteur et la ligne dans `/admin/preinscriptions`.
+
+Le test d'intégration `src/lib/preinscriptions.integration.test.ts` applique cette même migration à
+une base SQLite éphémère exposée par la même interface D1. Il contrôle les trois réponses 400 sans
+base, puis le trajet API 201 → ligne en base → lecture immédiate par l'API d'administration.
 
 ## Import des cinq lignes historiques
 
