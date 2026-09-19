@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
 import { Heart, MessageCircle, MapPin, Search, SlidersHorizontal } from "lucide-react";
 import w1 from "@/assets/profile-woman.jpg";
 import w2 from "@/assets/profile-woman2.jpg";
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/profiles")({
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/profiles` }],
   }),
+  beforeLoad: requireAdmin,
   component: Profiles,
 });
 

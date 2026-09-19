@@ -41,26 +41,6 @@ export function Footer() {
                 Pré-inscription
               </Link>
             </li>
-            <li>
-              <Link to="/profiles" className="hover:text-primary transition">
-                Aperçu membres
-              </Link>
-            </li>
-            <li>
-              <Link to="/events" className="hover:text-primary transition">
-                Événements à venir
-              </Link>
-            </li>
-            <li>
-              <Link to="/community" className="hover:text-primary transition">
-                Communauté à venir
-              </Link>
-            </li>
-            <li>
-              <Link to="/premium" className="hover:text-primary transition">
-                Premium à venir
-              </Link>
-            </li>
           </ul>
         </div>
 

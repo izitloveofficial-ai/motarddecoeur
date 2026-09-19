@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { CalendarPlus, MapPin, Users } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 type Ride = {
@@ -18,6 +19,7 @@ type Ride = {
 export const Route = createFileRoute("/rides")({
   component: Rides,
   beforeLoad: async () => {
+    await requireAdmin();
     if (!supabase) return;
     const {
       data: { session },

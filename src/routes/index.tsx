@@ -87,10 +87,10 @@ function Home() {
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
-                to="/profiles"
+                to="/join"
                 className="inline-flex items-center gap-2 px-8 py-4 glass text-foreground rounded-full uppercase tracking-wider text-sm font-medium hover:bg-foreground/10 transition-all"
               >
-                Découvrir la vision
+                Rejoindre la liste d'attente
               </Link>
             </div>
 
@@ -300,10 +300,10 @@ function Home() {
               <h2 className="font-display text-5xl md:text-6xl mt-4">Idées d'événements</h2>
             </div>
             <Link
-              to="/events"
+              to="/join"
               className="inline-flex items-center gap-2 text-foreground hover:text-primary transition"
             >
-              Tout voir <ArrowRight className="h-4 w-4" />
+              Être informé du lancement <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
