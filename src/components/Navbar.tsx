@@ -5,7 +5,6 @@ import { BrandLogo } from "./BrandLogo";
 import { supabase } from "@/lib/supabase";
 
 const links = [
-  { to: "/", label: "Accueil" },
   { to: "/about", label: "À propos" },
   { to: "/profile/setup", label: "Mon espace" },
 ] as const;
@@ -84,29 +83,24 @@ export function Navbar() {
           </div>
 
           {isAdmin && (
-            <div className="flex flex-col gap-1 border-l border-neutral-200 pl-4 2xl:pl-6">
-              <span className="text-[10px] uppercase tracking-widest text-neutral-400">
-                Application
-              </span>
-              <div className="flex items-center gap-3 2xl:gap-4">
-                {appLinks.map((l) => (
-                  <Link
-                    key={l.to}
-                    to={l.to}
-                    className="relative whitespace-nowrap text-xs uppercase tracking-wider text-neutral-600 no-underline transition-colors hover:text-neutral-900"
-                    activeProps={{ className: "text-neutral-900" }}
-                  >
-                    {({ isActive }) => (
-                      <>
-                        {l.label}
-                        {isActive && (
-                          <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-red" />
-                        )}
-                      </>
-                    )}
-                  </Link>
-                ))}
-              </div>
+            <div className="flex items-center gap-3 border-l border-neutral-200 pl-4 2xl:gap-4 2xl:pl-6">
+              {appLinks.map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  className="relative whitespace-nowrap text-xs uppercase tracking-wider text-neutral-600 no-underline transition-colors hover:text-neutral-900"
+                  activeProps={{ className: "text-neutral-900" }}
+                >
+                  {({ isActive }) => (
+                    <>
+                      {l.label}
+                      {isActive && (
+                        <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-red" />
+                      )}
+                    </>
+                  )}
+                </Link>
+              ))}
             </div>
           )}
         </div>
@@ -143,10 +137,7 @@ export function Navbar() {
             </Link>
           ))}
           {isAdmin && (
-            <div className="mt-1 flex flex-col gap-1 border-t border-neutral-200 pt-3">
-              <span className="pb-1 text-xs uppercase tracking-widest text-neutral-400">
-                Application
-              </span>
+            <div className="mt-1 flex flex-col border-t border-neutral-200 pt-3">
               {appLinks.map((l) => (
                 <Link
                   key={l.to}
