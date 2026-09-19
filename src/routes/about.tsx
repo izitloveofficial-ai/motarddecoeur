@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Layout } from "@/components/Layout";
 import { Heart, Compass, Shield, Flame } from "lucide-react";
 import bikeImg from "@/assets/about-hero.jpg";
@@ -21,6 +22,19 @@ export const Route = createFileRoute("/about")({
 });
 
 function About() {
+  useEffect(() => {
+    const scriptSrc = "https://www.tiktok.com/embed.js";
+
+    if (document.querySelector(`script[src="${scriptSrc}"]`)) {
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = scriptSrc;
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
+
   return (
     <Layout>
       <section className="relative -mt-20 h-[70vh] flex items-end overflow-hidden">
@@ -73,6 +87,20 @@ function About() {
           <p className="text-xl text-foreground font-display italic">
             Parce qu'au fond, <em>la route rapproche les cœurs</em>.
           </p>
+          <div className="flex justify-center py-4">
+            <blockquote
+              className="tiktok-embed"
+              cite="https://www.tiktok.com/@motardsdecoeur/video/7685061245497642272"
+              data-video-id="7685061245497642272"
+              style={{ maxWidth: "605px", minWidth: "325px" }}
+            >
+              <section>
+                <a href="https://www.tiktok.com/@motardsdecoeur/video/7685061245497642272">
+                  Voir la vidéo sur TikTok
+                </a>
+              </section>
+            </blockquote>
+          </div>
         </div>
       </section>
 
