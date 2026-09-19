@@ -44,7 +44,7 @@ const valid = {
   website: "",
 };
 
-describe("POST /api/preinscriptions → base D1 → administration", () => {
+describe("flux de préinscription et administration", () => {
   let sqlite: Database;
   let originalFetch: typeof globalThis.fetch;
 
@@ -76,7 +76,7 @@ describe("POST /api/preinscriptions → base D1 → administration", () => {
     expect(response.status).toBe(400);
   });
 
-  test("enregistre puis expose immédiatement la ligne à l'administration", async () => {
+  test("enregistre dans le flux historique et lit l'administration depuis Supabase", async () => {
     const DB = d1Database(sqlite);
     const createResponse = await handlePreinscriptionRequest(
       new Request("https://app.test/api/preinscriptions", {
@@ -98,16 +98,37 @@ describe("POST /api/preinscriptions → base D1 → administration", () => {
       consent_rgpd: 1,
     });
 
-    globalThis.fetch = (async () => Response.json(true)) as typeof fetch;
+    const requests: Request[] = [];
+    globalThis.fetch = (async (input, init) => {
+      const request = new Request(input, init);
+      requests.push(request);
+      if (request.url.endsWith("/rest/v1/rpc/is_admin")) return Response.json(true);
+      return Response.json([
+        {
+          email: "integration@example.test",
+          status: "pending",
+          consent_rgpd: true,
+        },
+      ]);
+    }) as typeof fetch;
     const adminResponse = await handleAdminPreinscriptionsRequest(
       new Request("https://app.test/api/admin/preinscriptions", {
         headers: { authorization: "Bearer integration-admin" },
       }),
-      { DB, SUPABASE_URL: "https://identity.test", SUPABASE_ANON_KEY: "identity-key" },
+      {
+        DB,
+        SUPABASE_URL: "https://identity.test",
+        SUPABASE_ANON_KEY: "identity-key",
+        SUPABASE_SERVICE_ROLE_KEY: "service-key",
+      },
     );
     expect(adminResponse.status).toBe(200);
     const adminBody = (await adminResponse.json()) as { rows: Array<{ email: string }> };
     expect(adminBody.rows.map((row) => row.email)).toContain("integration@example.test");
+    expect(requests[1]?.url).toBe(
+      "https://identity.test/rest/v1/preinscriptions?select=*&order=created_at.desc",
+    );
+    expect(requests[1]?.headers.get("authorization")).toBe("Bearer service-key");
   });
 
   test("refuse sans jeton (401) et avec un compte non administrateur (403)", async () => {
@@ -136,7 +157,7 @@ describe("POST /api/preinscriptions → base D1 → administration", () => {
     expect(await forbidden.json()).toEqual({ error: "forbidden" });
   });
 
-  test("conserve cinq historiques puis affiche immédiatement la sixième", async () => {
+  test("retourne les préinscriptions Supabase dans l'ordre fourni par l'API", async () => {
     const DB = d1Database(sqlite);
     const insert = sqlite.prepare(`INSERT INTO preinscriptions
       (id,first_name,email,location,city,age,sex,bike_type,rider_profile,favorite_bike,
@@ -164,42 +185,43 @@ describe("POST /api/preinscriptions → base D1 → administration", () => {
         `2026-08-0${index}T09:00:00Z`,
       );
     }
-    globalThis.fetch = (async () => Response.json(true)) as typeof fetch;
+    const supabaseRows = Array.from({ length: 5 }, (_, index) => ({
+      email: `historique${index + 1}@example.test`,
+      city: `Ville ${index + 1}`,
+      age: 31 + index,
+      bike_type: `Moto ${index + 1}`,
+      consent_rgpd: true,
+      status: index === 0 ? "invited" : "pending",
+      invitation_sent_at: index === 0 ? "2026-08-02T10:00:00Z" : null,
+      created_at: `2026-08-0${5 - index}T09:00:00Z`,
+    }));
+    globalThis.fetch = (async (input) =>
+      String(input).endsWith("/rest/v1/rpc/is_admin")
+        ? Response.json(true)
+        : Response.json(supabaseRows)) as typeof fetch;
     const firstAdminRead = await handleAdminPreinscriptionsRequest(
       new Request("https://app.test/api/admin/preinscriptions", {
         headers: { authorization: "Bearer integration-admin" },
       }),
-      { DB, SUPABASE_URL: "https://identity.test", SUPABASE_ANON_KEY: "identity-key" },
+      {
+        DB,
+        SUPABASE_URL: "https://identity.test",
+        SUPABASE_ANON_KEY: "identity-key",
+        SUPABASE_SERVICE_ROLE_KEY: "service-key",
+      },
     );
     const firstRows = (await firstAdminRead.json()).rows;
     expect(firstRows).toHaveLength(5);
-    expect(firstRows[4]).toEqual(
+    expect(firstRows[0]).toEqual(
       expect.objectContaining({
         city: "Ville 1",
         age: 31,
         bike_type: "Moto 1",
-        consent_rgpd: 1,
+        consent_rgpd: true,
         status: "invited",
         invitation_sent_at: "2026-08-02T10:00:00Z",
-        created_at: "2026-08-01T09:00:00Z",
+        created_at: "2026-08-05T09:00:00Z",
       }),
     );
-
-    const createResponse = await handlePreinscriptionRequest(
-      new Request("https://app.test/api/preinscriptions", {
-        method: "POST",
-        headers: { "content-type": "application/json", "cf-connecting-ip": "192.0.2.6" },
-        body: JSON.stringify(valid),
-      }),
-      { DB },
-    );
-    expect(createResponse.status).toBe(201);
-    const secondAdminRead = await handleAdminPreinscriptionsRequest(
-      new Request("https://app.test/api/admin/preinscriptions", {
-        headers: { authorization: "Bearer integration-admin" },
-      }),
-      { DB, SUPABASE_URL: "https://identity.test", SUPABASE_ANON_KEY: "identity-key" },
-    );
-    expect((await secondAdminRead.json()).rows).toHaveLength(6);
   });
 });

@@ -167,10 +167,9 @@ export async function handleAdminPreinscriptionsRequest(request: Request, rawEnv
   };
 
   if (request.method === "GET") {
-    const response = await fetch(
-      `${url}/rest/v1/preinscriptions?select=*&order=created_at.desc`,
-      { headers: restHeaders },
-    );
+    const response = await fetch(`${url}/rest/v1/preinscriptions?select=*&order=created_at.desc`, {
+      headers: restHeaders,
+    });
     if (!response.ok) return json({ error: "read_failed" }, 502);
     return json({ rows: await response.json() });
   }
