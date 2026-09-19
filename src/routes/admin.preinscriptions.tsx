@@ -35,25 +35,25 @@ function AdminPreinscriptions() {
   const [notice, setNotice] = useState("Chargement…");
   const [authenticationRequired, setAuthenticationRequired] = useState(false);
   async function load() {
-    const session = supabase ? (await supabase.auth.getSession()).data.session : null;
-    if (!session) {
+    const client = supabase;
+    const session = client ? (await client.auth.getSession()).data.session : null;
+    if (!client || !session) {
       setAuthenticationRequired(true);
       return setNotice("Connexion administrateur requise");
     }
-    const response = await fetch("/api/admin/preinscriptions", {
-      headers: { authorization: `Bearer ${session.access_token}` },
-    });
-    if (response.status === 401 || response.status === 403) {
-      setAuthenticationRequired(true);
-      setNotice("Connexion administrateur requise");
+    // La policy RLS is_admin() est l'autorité : lecture directe depuis Supabase.
+    const { data, error } = await client
+      .from("preinscriptions")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("admin preinscriptions read failed", error);
+      setNotice("Impossible de charger les préinscriptions.");
       return;
     }
-    const data = (await response.json()) as { rows?: Registration[] };
-    if (response.ok) {
-      setRows(data.rows ?? []);
-      setAuthenticationRequired(false);
-      setNotice("");
-    } else setNotice("Impossible de charger les préinscriptions.");
+    setRows((data ?? []) as Registration[]);
+    setAuthenticationRequired(false);
+    setNotice("");
   }
   useEffect(() => {
     void load();

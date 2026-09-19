@@ -47,10 +47,28 @@ async function isRateLimited(db: AppDatabase, ip: string) {
 
 type AdminAuthorization = { authorized: true } | { authorized: false; status: 401 | 403 };
 
+// Supabase is the source of truth for preinscriptions. The D1 helpers above are kept
+// for history but are no longer on the critical path of this flow.
+function readEnv(env: RuntimeEnv, ...names: string[]) {
+  for (const name of names) {
+    const value =
+      (env?.[name] as string | undefined) ??
+      (typeof process !== "undefined" ? process.env?.[name] : undefined);
+    if (value) return String(value);
+  }
+  return "";
+}
+
+const supabaseUrl = (env: RuntimeEnv) =>
+  readEnv(env, "SUPABASE_URL", "VITE_SUPABASE_URL").replace(/\/$/, "");
+const supabaseAnonKey = (env: RuntimeEnv) =>
+  readEnv(env, "SUPABASE_ANON_KEY", "SUPABASE_PUBLISHABLE_KEY", "VITE_SUPABASE_PUBLISHABLE_KEY");
+const supabaseServiceKey = (env: RuntimeEnv) => readEnv(env, "SUPABASE_SERVICE_ROLE_KEY");
+
 export async function requireAdmin(request: Request, env: RuntimeEnv): Promise<AdminAuthorization> {
   const authorization = request.headers.get("authorization");
-  const url = String(env.SUPABASE_URL ?? "").replace(/\/$/, "");
-  const anonKey = String(env.SUPABASE_ANON_KEY ?? "");
+  const url = supabaseUrl(env);
+  const anonKey = supabaseAnonKey(env);
   if (!authorization?.startsWith("Bearer ") || !url || !anonKey)
     return { authorized: false, status: 401 };
   const response = await fetch(`${url}/rest/v1/rpc/is_admin`, {
@@ -139,11 +157,24 @@ export async function handleAdminPreinscriptionsRequest(request: Request, rawEnv
       { error: authorization.status === 401 ? "unauthenticated" : "forbidden" },
       authorization.status,
     );
-  const db = database(env);
+  const url = supabaseUrl(env);
+  const serviceKey = supabaseServiceKey(env);
+  if (!url || !serviceKey) return json({ error: "invitation_not_configured" }, 503);
+  const restHeaders = {
+    authorization: `Bearer ${serviceKey}`,
+    apikey: serviceKey,
+    "content-type": "application/json",
+  };
+
   if (request.method === "GET") {
-    const result = await db.prepare("SELECT * FROM preinscriptions ORDER BY created_at DESC").all();
-    return json({ rows: result.results ?? [] });
+    const response = await fetch(
+      `${url}/rest/v1/preinscriptions?select=*&order=created_at.desc`,
+      { headers: restHeaders },
+    );
+    if (!response.ok) return json({ error: "read_failed" }, 502);
+    return json({ rows: await response.json() });
   }
+
   if (request.method === "POST") {
     const body = (await request.json()) as { ids?: unknown };
     if (!Array.isArray(body.ids) || body.ids.length < 1 || body.ids.length > 100)
@@ -152,35 +183,29 @@ export async function handleAdminPreinscriptionsRequest(request: Request, rawEnv
       (id): id is string => typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id),
     );
     if (ids.length !== body.ids.length) return json({ error: "invalid_request" }, 400);
-    const serviceKey = String(env.SUPABASE_SERVICE_ROLE_KEY ?? "");
-    const url = String(env.SUPABASE_URL ?? "").replace(/\/$/, "");
-    if (!serviceKey || !url) return json({ error: "invitation_not_configured" }, 503);
     const results = [];
     for (const id of ids) {
-      const row = await db
-        .prepare("SELECT email, status FROM preinscriptions WHERE id = ?")
-        .bind(id)
-        .first<{ email: string; status: string }>();
+      const lookup = await fetch(
+        `${url}/rest/v1/preinscriptions?select=email,status&id=eq.${id}&limit=1`,
+        { headers: restHeaders },
+      );
+      const rows = lookup.ok ? ((await lookup.json()) as { email: string; status: string }[]) : [];
+      const row = rows[0];
       if (!row || row.status !== "pending") {
         results.push({ id, ok: false });
         continue;
       }
       const invited = await fetch(`${url}/auth/v1/invite`, {
         method: "POST",
-        headers: {
-          authorization: `Bearer ${serviceKey}`,
-          apikey: serviceKey,
-          "content-type": "application/json",
-        },
+        headers: restHeaders,
         body: JSON.stringify({ email: row.email, data: { preinscription_id: id } }),
       });
       if (invited.ok)
-        await db
-          .prepare(
-            "UPDATE preinscriptions SET status = 'invited', invitation_sent_at = datetime('now') WHERE id = ?",
-          )
-          .bind(id)
-          .run();
+        await fetch(`${url}/rest/v1/preinscriptions?id=eq.${id}`, {
+          method: "PATCH",
+          headers: { ...restHeaders, prefer: "return=minimal" },
+          body: JSON.stringify({ status: "invited", invitation_sent_at: new Date().toISOString() }),
+        });
       results.push({ id, ok: invited.ok });
     }
     return json({ results });
