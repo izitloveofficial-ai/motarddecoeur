@@ -10,16 +10,40 @@ const links = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
+const appLinks = [
+  { to: "/discover", label: "Découvrir" },
+  { to: "/matches", label: "Matchs" },
+  { to: "/rides", label: "Balades" },
+  { to: "/events", label: "Événements" },
+  { to: "/community", label: "Communauté" },
+  { to: "/premium", label: "Premium" },
+] as const;
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!supabase) return;
-    supabase.auth.getSession().then(({ data }) => setLoggedIn(!!data.session));
+    supabase.auth.getSession().then(({ data }) => {
+      setLoggedIn(!!data.session);
+      if (data.session) {
+        void supabase
+          .rpc("is_admin")
+          .then(({ data: adminResult }) => setIsAdmin(adminResult === true));
+      }
+    });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       setLoggedIn(!!session);
+      if (session) {
+        void supabase
+          .rpc("is_admin")
+          .then(({ data: adminResult }) => setIsAdmin(adminResult === true));
+      } else {
+        setIsAdmin(false);
+      }
     });
     return () => sub.subscription.unsubscribe();
   }, []);
@@ -43,25 +67,54 @@ export function Navbar() {
           />
         </Link>
 
-        <div className="hidden xl:flex items-center gap-5 2xl:gap-8">
-          {links.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className="text-xs uppercase tracking-wider text-neutral-600 hover:text-neutral-900 transition-colors relative 2xl:text-sm"
-              activeProps={{ className: "text-neutral-900" }}
-              activeOptions={{ exact: l.to === "/" }}
-            >
-              {({ isActive }) => (
-                <>
-                  {l.label}
-                  {isActive && (
-                    <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-red" />
-                  )}
-                </>
-              )}
-            </Link>
-          ))}
+        <div className="hidden xl:flex items-center gap-4 2xl:gap-6">
+          <div className="flex items-center gap-4 2xl:gap-6">
+            {links.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="relative text-xs uppercase tracking-wider text-neutral-600 transition-colors hover:text-neutral-900 2xl:text-sm"
+                activeProps={{ className: "text-neutral-900" }}
+                activeOptions={{ exact: l.to === "/" }}
+              >
+                {({ isActive }) => (
+                  <>
+                    {l.label}
+                    {isActive && (
+                      <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-red" />
+                    )}
+                  </>
+                )}
+              </Link>
+            ))}
+          </div>
+
+          {isAdmin && (
+            <div className="flex flex-col gap-1 border-l border-neutral-200 pl-4 2xl:pl-6">
+              <span className="text-[10px] uppercase tracking-widest text-neutral-400">
+                Application
+              </span>
+              <div className="flex items-center gap-3 2xl:gap-4">
+                {appLinks.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    className="relative whitespace-nowrap text-xs uppercase tracking-wider text-neutral-600 transition-colors hover:text-neutral-900"
+                    activeProps={{ className: "text-neutral-900" }}
+                  >
+                    {({ isActive }) => (
+                      <>
+                        {l.label}
+                        {isActive && (
+                          <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-red" />
+                        )}
+                      </>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="hidden xl:flex items-center gap-3">
@@ -103,6 +156,23 @@ export function Navbar() {
               {l.label}
             </Link>
           ))}
+          {isAdmin && (
+            <div className="mt-1 flex flex-col gap-1 border-t border-neutral-200 pt-3">
+              <span className="pb-1 text-xs uppercase tracking-widest text-neutral-400">
+                Application
+              </span>
+              {appLinks.map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setOpen(false)}
+                  className="py-2 text-sm uppercase tracking-wider text-neutral-700 hover:text-neutral-900"
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          )}
           {loggedIn ? (
             <button
               onClick={() => void handleLogout()}
