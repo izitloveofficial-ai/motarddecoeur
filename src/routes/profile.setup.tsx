@@ -76,7 +76,7 @@ function ProfileSetup() {
       const blob = await response.blob();
       const extension = photo.format || "jpeg";
       const file = new File([blob], `photo-${Date.now()}.${extension}`, { type: blob.type });
-      setPhotos((prev) => [...prev, file].slice(0, 3));
+      setPhotos((prev) => [...prev, file].slice(0, 6));
     } catch {
       // L'utilisateur a annulé (ex. refus de permission) : pas d'erreur à afficher.
     }
@@ -340,13 +340,13 @@ function ProfileSetup() {
               />
             </label>
             <label className="block text-sm font-medium">
-              Photos (jusqu'à 3)
+              Photos (jusqu'à 6)
               {Capacitor.isNativePlatform() ? (
                 <div className="mt-2 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#f5f0e8] p-4 text-sm text-neutral-600">
                   <button
                     type="button"
                     onClick={() => void takeNativePhoto()}
-                    disabled={photos.length >= 3}
+                    disabled={photos.length >= 6}
                     className="flex items-center gap-2 text-primary disabled:opacity-40"
                   >
                     <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
@@ -381,7 +381,7 @@ function ProfileSetup() {
                     accept="image/jpeg,image/png,image/webp"
                     multiple
                     onChange={(event) =>
-                      setPhotos(Array.from(event.target.files ?? []).slice(0, 3))
+                      setPhotos(Array.from(event.target.files ?? []).slice(0, 6))
                     }
                     className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2"
                   />

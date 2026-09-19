@@ -1,7 +1,8 @@
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Send, ShieldOff, Trash2 } from "lucide-react";
-import { type FormEvent, useEffect, useRef, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { ProfilePhotoGallery, type GalleryProfile } from "@/components/ProfilePhotoGallery";
 import { requireAdmin } from "@/lib/require-admin";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
@@ -26,12 +27,16 @@ function Conversation() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [otherName, setOtherName] = useState("");
   const [otherPhotoUrl, setOtherPhotoUrl] = useState<string | null>(null);
+  const [otherPhotos, setOtherPhotos] = useState<string[]>([]);
+  const [otherProfile, setOtherProfile] = useState<GalleryProfile>({ firstName: "Motard(e)" });
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const [content, setContent] = useState("");
   const [myId, setMyId] = useState<string | null>(null);
   const [otherId, setOtherId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const myIdRef = useRef<string | null>(null);
+  const closeGallery = useCallback(() => setGalleryOpen(false), []);
   useEffect(() => {
     if (!supabase) {
       setError("Supabase n'est pas configuré.");
@@ -83,16 +88,18 @@ function Conversation() {
       }
       const otherId = match.profile_a_id === user.id ? match.profile_b_id : match.profile_a_id;
       setOtherId(otherId);
-      const [{ data: profile }, { data: photo }, { data: existing, error: messagesError }] =
+      const [{ data: profile }, { data: photos }, { data: existing, error: messagesError }] =
         await Promise.all([
-          client.from("profiles").select("first_name").eq("id", otherId).maybeSingle(),
+          client
+            .from("profiles")
+            .select("first_name, bio, moto_brand, moto_model")
+            .eq("id", otherId)
+            .maybeSingle(),
           client
             .from("profile_photos")
             .select("storage_path")
             .eq("profile_id", otherId)
-            .order("position", { ascending: true })
-            .limit(1)
-            .maybeSingle(),
+            .order("position", { ascending: true }),
           client
             .from("messages")
             .select("id, sender_id, content, created_at")
@@ -100,12 +107,20 @@ function Conversation() {
             .order("created_at", { ascending: true }),
         ]);
       if (!cancelled) {
-        setOtherName(profile?.first_name ?? "Motard(e)");
-        setOtherPhotoUrl(
-          photo
-            ? client.storage.from("profile-photos").getPublicUrl(photo.storage_path).data.publicUrl
-            : null,
+        const firstName = profile?.first_name ?? "Motard(e)";
+        const photoUrls = (photos ?? []).map(
+          (photo) =>
+            client.storage.from("profile-photos").getPublicUrl(photo.storage_path).data.publicUrl,
         );
+        setOtherName(firstName);
+        setOtherProfile({
+          firstName,
+          bio: profile?.bio,
+          motoBrand: profile?.moto_brand,
+          motoModel: profile?.moto_model,
+        });
+        setOtherPhotos(photoUrls);
+        setOtherPhotoUrl(photoUrls[0] ?? null);
         setMessages(existing ?? []);
         if (messagesError) setError("Impossible de charger les messages.");
         await client
@@ -196,7 +211,12 @@ function Conversation() {
               >
                 <ArrowLeft className="h-4 w-4" />
               </Link>
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-neutral-300 bg-white text-sm font-medium text-neutral-600">
+              <button
+                type="button"
+                onClick={() => setGalleryOpen(true)}
+                aria-label={`Voir le profil et les photos de ${otherName || "cette personne"}`}
+                className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white text-sm font-medium text-neutral-600 shadow-md ring-1 ring-neutral-300 transition hover:ring-[#d6a85c]"
+              >
                 {otherPhotoUrl ? (
                   <img
                     src={otherPhotoUrl}
@@ -208,8 +228,11 @@ function Conversation() {
                     {otherName ? otherName.charAt(0).toUpperCase() : ""}
                   </span>
                 )}
-              </div>
-              <h1 className="font-display text-2xl">{otherName || "Conversation"}</h1>
+              </button>
+              <button type="button" onClick={() => setGalleryOpen(true)} className="text-left">
+                <h1 className="font-display text-xl sm:text-2xl">{otherName || "Conversation"}</h1>
+                <span className="text-xs text-neutral-500">Voir le profil</span>
+              </button>
             </div>
             <div className="flex items-center gap-4">
               <button
@@ -269,6 +292,12 @@ function Conversation() {
           </form>
         </section>
       </div>
+      <ProfilePhotoGallery
+        open={galleryOpen}
+        onClose={closeGallery}
+        photos={otherPhotos}
+        profile={otherProfile}
+      />
     </Layout>
   );
 }
