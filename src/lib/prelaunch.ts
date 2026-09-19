@@ -9,6 +9,7 @@ export const PRELAUNCH_MODE = true;
 /** Chemins accessibles pendant le mode pré-lancement. */
 export const PRELAUNCH_ALLOWED_PATHS = [
   "/join",
+  "/about",
   "/mentions-legales",
   "/confidentialite",
   "/conditions-utilisation",
@@ -16,6 +17,7 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/admin/preinscriptions",
   "/admin/members",
   "/admin/reports",
+  "/admin/announcements",
   // These pages remain hidden behind their browser-side requireAdmin guard.
   "/community",
   "/events",
