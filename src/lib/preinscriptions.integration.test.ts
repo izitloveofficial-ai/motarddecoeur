@@ -51,6 +51,7 @@ describe("POST /api/preinscriptions → base D1 → administration", () => {
   beforeEach(() => {
     sqlite = new Database(":memory:");
     sqlite.exec(readFileSync("migrations/0001_preinscriptions.sql", "utf8"));
+    sqlite.exec(readFileSync("migrations/0002_preserve_legacy_preinscription_fields.sql", "utf8"));
     originalFetch = globalThis.fetch;
   });
 
@@ -107,5 +108,98 @@ describe("POST /api/preinscriptions → base D1 → administration", () => {
     expect(adminResponse.status).toBe(200);
     const adminBody = (await adminResponse.json()) as { rows: Array<{ email: string }> };
     expect(adminBody.rows.map((row) => row.email)).toContain("integration@example.test");
+  });
+
+  test("refuse sans jeton (401) et avec un compte non administrateur (403)", async () => {
+    const DB = d1Database(sqlite);
+    expect(
+      (
+        await handleAdminPreinscriptionsRequest(
+          new Request("https://app.test/api/admin/preinscriptions"),
+          {
+            DB,
+            SUPABASE_URL: "https://identity.test",
+            SUPABASE_ANON_KEY: "identity-key",
+          },
+        )
+      ).status,
+    ).toBe(401);
+
+    globalThis.fetch = (async () => Response.json(false)) as typeof fetch;
+    const forbidden = await handleAdminPreinscriptionsRequest(
+      new Request("https://app.test/api/admin/preinscriptions", {
+        headers: { authorization: "Bearer ordinary-user" },
+      }),
+      { DB, SUPABASE_URL: "https://identity.test", SUPABASE_ANON_KEY: "identity-key" },
+    );
+    expect(forbidden.status).toBe(403);
+    expect(await forbidden.json()).toEqual({ error: "forbidden" });
+  });
+
+  test("conserve cinq historiques puis affiche immédiatement la sixième", async () => {
+    const DB = d1Database(sqlite);
+    const insert = sqlite.prepare(`INSERT INTO preinscriptions
+      (id,first_name,email,location,city,age,sex,bike_type,rider_profile,favorite_bike,
+       primary_interest,message,consent_rgpd,status,invitation_sent_at,converted_at,user_id,created_at)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`);
+    for (let index = 1; index <= 5; index++) {
+      insert.run(
+        `00000000-0000-4000-8000-00000000000${index}`,
+        `Historique ${index}`,
+        `historique${index}@example.test`,
+        `Lieu ${index}`,
+        `Ville ${index}`,
+        30 + index,
+        "prefere_ne_pas_dire",
+        `Moto ${index}`,
+        "motard",
+        `Favorite ${index}`,
+        "communaute",
+        `Message ${index}`,
+        1,
+        index === 1 ? "invited" : "pending",
+        index === 1 ? "2026-08-02T10:00:00Z" : null,
+        null,
+        null,
+        `2026-08-0${index}T09:00:00Z`,
+      );
+    }
+    globalThis.fetch = (async () => Response.json(true)) as typeof fetch;
+    const firstAdminRead = await handleAdminPreinscriptionsRequest(
+      new Request("https://app.test/api/admin/preinscriptions", {
+        headers: { authorization: "Bearer integration-admin" },
+      }),
+      { DB, SUPABASE_URL: "https://identity.test", SUPABASE_ANON_KEY: "identity-key" },
+    );
+    const firstRows = (await firstAdminRead.json()).rows;
+    expect(firstRows).toHaveLength(5);
+    expect(firstRows[4]).toEqual(
+      expect.objectContaining({
+        city: "Ville 1",
+        age: 31,
+        bike_type: "Moto 1",
+        consent_rgpd: 1,
+        status: "invited",
+        invitation_sent_at: "2026-08-02T10:00:00Z",
+        created_at: "2026-08-01T09:00:00Z",
+      }),
+    );
+
+    const createResponse = await handlePreinscriptionRequest(
+      new Request("https://app.test/api/preinscriptions", {
+        method: "POST",
+        headers: { "content-type": "application/json", "cf-connecting-ip": "192.0.2.6" },
+        body: JSON.stringify(valid),
+      }),
+      { DB },
+    );
+    expect(createResponse.status).toBe(201);
+    const secondAdminRead = await handleAdminPreinscriptionsRequest(
+      new Request("https://app.test/api/admin/preinscriptions", {
+        headers: { authorization: "Bearer integration-admin" },
+      }),
+      { DB, SUPABASE_URL: "https://identity.test", SUPABASE_ANON_KEY: "identity-key" },
+    );
+    expect((await secondAdminRead.json()).rows).toHaveLength(6);
   });
 });

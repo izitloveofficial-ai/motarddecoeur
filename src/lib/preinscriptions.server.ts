@@ -45,17 +45,24 @@ async function isRateLimited(db: AppDatabase, ip: string) {
   return Number(row?.attempts ?? 0) >= 5;
 }
 
-async function requireAdmin(request: Request, env: RuntimeEnv) {
+type AdminAuthorization = { authorized: true } | { authorized: false; status: 401 | 403 };
+
+export async function requireAdmin(request: Request, env: RuntimeEnv): Promise<AdminAuthorization> {
   const authorization = request.headers.get("authorization");
   const url = String(env.SUPABASE_URL ?? "").replace(/\/$/, "");
   const anonKey = String(env.SUPABASE_ANON_KEY ?? "");
-  if (!authorization?.startsWith("Bearer ") || !url || !anonKey) return false;
+  if (!authorization?.startsWith("Bearer ") || !url || !anonKey)
+    return { authorized: false, status: 401 };
   const response = await fetch(`${url}/rest/v1/rpc/is_admin`, {
     method: "POST",
     headers: { authorization, apikey: anonKey, "content-type": "application/json" },
     body: "{}",
   });
-  return response.ok && (await response.json()) === true;
+  if (response.status === 401) return { authorized: false, status: 401 };
+  if (!response.ok) return { authorized: false, status: response.status === 403 ? 403 : 401 };
+  return (await response.json()) === true
+    ? { authorized: true }
+    : { authorized: false, status: 403 };
 }
 
 export async function handlePreinscriptionRequest(request: Request, env: unknown) {
@@ -126,7 +133,12 @@ export async function handlePreinscriptionRequest(request: Request, env: unknown
 
 export async function handleAdminPreinscriptionsRequest(request: Request, rawEnv: unknown) {
   const env = rawEnv as RuntimeEnv;
-  if (!(await requireAdmin(request, env))) return json({ error: "unauthorized" }, 401);
+  const authorization = await requireAdmin(request, env);
+  if (!authorization.authorized)
+    return json(
+      { error: authorization.status === 401 ? "unauthenticated" : "forbidden" },
+      authorization.status,
+    );
   const db = database(env);
   if (request.method === "GET") {
     const result = await db.prepare("SELECT * FROM preinscriptions ORDER BY created_at DESC").all();

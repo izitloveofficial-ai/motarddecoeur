@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS preinscriptions (
   primary_interest TEXT CHECK(primary_interest IS NULL OR length(primary_interest) <= 40),
   message TEXT CHECK(message IS NULL OR length(message) <= 1000),
   consent_rgpd INTEGER NOT NULL CHECK(consent_rgpd = 1),
-  status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','invited','converted')),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','invited','converted','invalid','declined')),
   invitation_sent_at TEXT,
   converted_at TEXT,
   user_id TEXT UNIQUE,
