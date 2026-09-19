@@ -1,8 +1,8 @@
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
-import { CheckCircle2, LogOut, MapPin, ShieldCheck, Upload } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { CheckCircle2, LogOut, MapPin, ShieldCheck, Trash2, Upload } from "lucide-react";
+import { type FormEvent, useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
@@ -54,14 +54,138 @@ function eighteenYearsAgo() {
 const fieldClass =
   "mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition placeholder:text-[#a99b95] hover:border-[#d6a85c]/35 focus:border-[#e2b45f]/70 focus:ring-2 focus:ring-[#d9a441]/20";
 
+type ProfileForm = {
+  first_name: string;
+  birth_date: string;
+  gender: string;
+  looking_for: string;
+  moto_type: string;
+  moto_brand: string;
+  moto_model: string;
+  bio: string;
+  is_active: boolean;
+};
+
+type ExistingPhoto = {
+  id: string;
+  storage_path: string;
+  position: number;
+  publicUrl: string;
+};
+
+const emptyProfile: ProfileForm = {
+  first_name: "",
+  birth_date: "",
+  gender: "",
+  looking_for: "",
+  moto_type: "",
+  moto_brand: "",
+  moto_model: "",
+  bio: "",
+  is_active: true,
+};
+
 function ProfileSetup() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [feedback, setFeedback] = useState("");
+  const [profile, setProfile] = useState<ProfileForm>(emptyProfile);
+  const [hasProfile, setHasProfile] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [existingPhotos, setExistingPhotos] = useState<ExistingPhoto[]>([]);
+  const [deletingPhotoId, setDeletingPhotoId] = useState<string | null>(null);
   const [photos, setPhotos] = useState<File[]>([]);
   const [deleting, setDeleting] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+
+  useEffect(() => {
+    if (!supabase) return;
+    const client = supabase;
+    let cancelled = false;
+
+    async function loadProfile() {
+      const {
+        data: { user },
+      } = await client.auth.getUser();
+      if (cancelled) return;
+      if (!user) {
+        setStatus("error");
+        setFeedback("Session expirée. Reconnecte-toi puis réessaie.");
+        return;
+      }
+      const [profileResult, photosResult] = await Promise.all([
+        client.from("profiles").select("*").eq("id", user.id).maybeSingle(),
+        client
+          .from("profile_photos")
+          .select("id, storage_path, position")
+          .eq("profile_id", user.id)
+          .order("position", { ascending: true }),
+      ]);
+      if (cancelled) return;
+      if (profileResult.error || photosResult.error) {
+        setStatus("error");
+        setFeedback("Impossible de charger ton profil. Recharge la page puis réessaie.");
+        return;
+      }
+      if (profileResult.data) {
+        const current = profileResult.data;
+        setHasProfile(true);
+        setProfile({
+          first_name: current.first_name ?? "",
+          birth_date: current.birth_date ? String(current.birth_date).slice(0, 10) : "",
+          gender: current.gender ?? "",
+          looking_for: current.looking_for ?? "",
+          moto_type: current.moto_type ?? "",
+          moto_brand: current.moto_brand ?? "",
+          moto_model: current.moto_model ?? "",
+          bio: current.bio ?? "",
+          is_active: current.is_active ?? true,
+        });
+      }
+      setExistingPhotos(
+        (photosResult.data ?? []).map((photo) => ({
+          ...photo,
+          publicUrl: client.storage.from("profile-photos").getPublicUrl(photo.storage_path).data
+            .publicUrl,
+        })),
+      );
+      setLoadingProfile(false);
+    }
+
+    void loadProfile();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const updateField = <K extends keyof ProfileForm>(name: K, value: ProfileForm[K]) =>
+    setProfile((current) => ({ ...current, [name]: value }));
+
+  async function removeExistingPhoto(photo: ExistingPhoto) {
+    if (!supabase || deletingPhotoId) return;
+    setDeletingPhotoId(photo.id);
+    setFeedback("");
+    const { error: storageError } = await supabase.storage
+      .from("profile-photos")
+      .remove([photo.storage_path]);
+    if (storageError) {
+      setStatus("error");
+      setFeedback("Impossible de supprimer cette photo. Réessaie dans quelques instants.");
+      setDeletingPhotoId(null);
+      return;
+    }
+    const { error: rowError } = await supabase.from("profile_photos").delete().eq("id", photo.id);
+    if (rowError) {
+      setStatus("error");
+      setFeedback(
+        "Le fichier a été supprimé, mais la liste des photos n'a pas pu être actualisée.",
+      );
+    } else {
+      setExistingPhotos((current) => current.filter(({ id }) => id !== photo.id));
+    }
+    setDeletingPhotoId(null);
+  }
 
   async function takeNativePhoto() {
     try {
@@ -76,7 +200,7 @@ function ProfileSetup() {
       const blob = await response.blob();
       const extension = photo.format || "jpeg";
       const file = new File([blob], `photo-${Date.now()}.${extension}`, { type: blob.type });
-      setPhotos((prev) => [...prev, file].slice(0, 6));
+      setPhotos((prev) => [...prev, file].slice(0, Math.max(0, 6 - existingPhotos.length)));
     } catch {
       // L'utilisateur a annulé (ex. refus de permission) : pas d'erreur à afficher.
     }
@@ -206,26 +330,25 @@ function ProfileSetup() {
       setFeedback("Session expirée. Reconnecte-toi puis réessaie.");
       return;
     }
-    const data = new FormData(form);
-    const birthDate = String(data.get("birth_date") ?? "");
+    const birthDate = profile.birth_date;
     if (!birthDate || birthDate > eighteenYearsAgo()) {
       setStatus("error");
       setFeedback("Tu dois avoir au moins 18 ans pour créer un profil.");
       return;
     }
     setStatus("submitting");
-    const optional = (name: string) => String(data.get(name) ?? "").trim() || null;
+    const optional = (value: string) => value.trim() || null;
     const { error: profileError } = await supabase.from("profiles").upsert({
       id: user.id,
-      first_name: String(data.get("first_name") ?? "").trim(),
+      first_name: profile.first_name.trim(),
       birth_date: birthDate,
-      gender: optional("gender"),
-      looking_for: optional("looking_for"),
-      moto_type: optional("moto_type"),
-      moto_brand: optional("moto_brand"),
-      moto_model: optional("moto_model"),
-      bio: optional("bio"),
-      is_active: data.get("is_active") === "on",
+      gender: optional(profile.gender),
+      looking_for: optional(profile.looking_for),
+      moto_type: optional(profile.moto_type),
+      moto_brand: optional(profile.moto_brand),
+      moto_model: optional(profile.moto_model),
+      bio: optional(profile.bio),
+      is_active: profile.is_active,
       ...(coords
         ? {
             location: `SRID=4326;POINT(${coords.lng} ${coords.lat})`,
@@ -244,7 +367,11 @@ function ProfileSetup() {
     }
 
     let failedUploads = 0;
-    for (const [position, file] of photos.entries()) {
+    const uploadedPhotos: ExistingPhoto[] = [];
+    const firstPosition =
+      existingPhotos.reduce((maximum, photo) => Math.max(maximum, photo.position), -1) + 1;
+    for (const [index, file] of photos.entries()) {
+      const position = firstPosition + index;
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
       const path = `${user.id}/${crypto.randomUUID()}-${safeName}`;
       const { error: uploadError } = await supabase.storage
@@ -254,14 +381,23 @@ function ProfileSetup() {
         failedUploads++;
         continue;
       }
-      const { error: photoError } = await supabase
+      const { data: photoRow, error: photoError } = await supabase
         .from("profile_photos")
-        .insert({ profile_id: user.id, storage_path: path, position });
-      if (photoError) {
+        .insert({ profile_id: user.id, storage_path: path, position })
+        .select("id, storage_path, position")
+        .single();
+      if (photoError || !photoRow) {
         failedUploads++;
         await supabase.storage.from("profile-photos").remove([path]);
+      } else {
+        uploadedPhotos.push({
+          ...photoRow,
+          publicUrl: supabase.storage.from("profile-photos").getPublicUrl(path).data.publicUrl,
+        });
       }
     }
+    setHasProfile(true);
+    setExistingPhotos((current) => [...current, ...uploadedPhotos]);
     setStatus(failedUploads ? "error" : "success");
     setFeedback(
       failedUploads
@@ -269,13 +405,20 @@ function ProfileSetup() {
         : "Profil enregistré ! Il sera visible dès l'ouverture de la découverte de profils.",
     );
     if (!failedUploads) {
-      form.reset();
       setPhotos([]);
     }
   }
 
-  const select = (name: string, options: readonly (readonly [string, string])[]) => (
-    <select className={fieldClass} name={name} defaultValue="">
+  const select = (
+    name: "gender" | "looking_for" | "moto_type",
+    options: readonly (readonly [string, string])[],
+  ) => (
+    <select
+      className={fieldClass}
+      name={name}
+      value={profile[name]}
+      onChange={(event) => updateField(name, event.target.value)}
+    >
       <option value="">Sélectionner</option>
       {options.map(([value, label]) => (
         <option key={value} value={value}>
@@ -289,8 +432,14 @@ function ProfileSetup() {
     <Layout>
       <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
         <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
-          <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Dernière étape</span>
-          <h1 className="mt-3 mb-3 font-display text-4xl">Complète ton profil</h1>
+          {!hasProfile && (
+            <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
+              Dernière étape
+            </span>
+          )}
+          <h1 className="mt-3 mb-3 font-display text-4xl">
+            {hasProfile ? "Modifier mon profil" : "Complète ton profil"}
+          </h1>
           <p className="mb-8 text-sm text-[#d4c6bf]">
             Ces informations aident les autres motards à te trouver et à savoir ce que tu cherches.
           </p>
@@ -304,6 +453,8 @@ function ProfileSetup() {
                   autoComplete="given-name"
                   required
                   maxLength={80}
+                  value={profile.first_name}
+                  onChange={(event) => updateField("first_name", event.target.value)}
                 />
               </label>
               <label className="text-sm font-medium">
@@ -314,6 +465,8 @@ function ProfileSetup() {
                   type="date"
                   required
                   max={eighteenYearsAgo()}
+                  value={profile.birth_date}
+                  onChange={(event) => updateField("birth_date", event.target.value)}
                 />
               </label>
             </div>
@@ -329,11 +482,23 @@ function ProfileSetup() {
               </label>
               <label className="text-sm font-medium">
                 Marque
-                <input className={fieldClass} name="moto_brand" maxLength={80} />
+                <input
+                  className={fieldClass}
+                  name="moto_brand"
+                  maxLength={80}
+                  value={profile.moto_brand}
+                  onChange={(event) => updateField("moto_brand", event.target.value)}
+                />
               </label>
               <label className="text-sm font-medium">
                 Modèle
-                <input className={fieldClass} name="moto_model" maxLength={80} />
+                <input
+                  className={fieldClass}
+                  name="moto_model"
+                  maxLength={80}
+                  value={profile.moto_model}
+                  onChange={(event) => updateField("moto_model", event.target.value)}
+                />
               </label>
             </div>
             <label className="block text-sm font-medium">
@@ -343,16 +508,43 @@ function ProfileSetup() {
                 name="bio"
                 maxLength={1000}
                 placeholder="Ton style de conduite, tes balades préférées, ce que tu recherches…"
+                value={profile.bio}
+                onChange={(event) => updateField("bio", event.target.value)}
               />
             </label>
             <label className="block text-sm font-medium">
               Photos (jusqu'à 6)
+              {existingPhotos.length > 0 && (
+                <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {existingPhotos.map((photo, index) => (
+                    <li
+                      key={photo.id}
+                      className="relative aspect-square overflow-hidden rounded-xl border border-white/15 bg-[#302526]"
+                    >
+                      <img
+                        src={photo.publicUrl}
+                        alt={`Photo de profil ${index + 1}`}
+                        className="h-full w-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => void removeExistingPhoto(photo)}
+                        disabled={deletingPhotoId !== null}
+                        className="absolute top-2 right-2 rounded-full bg-[#21191a]/90 p-2 text-[#fff9f0] shadow transition hover:text-primary disabled:opacity-50"
+                        aria-label={`Supprimer la photo ${index + 1}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
               {Capacitor.isNativePlatform() ? (
                 <div className="mt-2 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
                   <button
                     type="button"
                     onClick={() => void takeNativePhoto()}
-                    disabled={photos.length >= 6}
+                    disabled={existingPhotos.length + photos.length >= 6}
                     className="flex items-center gap-2 text-primary disabled:opacity-40"
                   >
                     <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
@@ -387,15 +579,22 @@ function ProfileSetup() {
                     accept="image/jpeg,image/png,image/webp"
                     multiple
                     onChange={(event) =>
-                      setPhotos(Array.from(event.target.files ?? []).slice(0, 6))
+                      setPhotos((current) =>
+                        [...current, ...Array.from(event.target.files ?? [])].slice(
+                          0,
+                          Math.max(0, 6 - existingPhotos.length),
+                        ),
+                      )
                     }
+                    disabled={existingPhotos.length + photos.length >= 6}
                     className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2"
                   />
                 </div>
               )}
               {photos.length > 0 && (
                 <p className="mt-2 text-xs text-[#d4c6bf]">
-                  {photos.length} photo(s) sélectionnée(s)
+                  {photos.length} nouvelle(s) photo(s) sélectionnée(s) —{" "}
+                  {existingPhotos.length + photos.length}/6 au total
                 </p>
               )}
             </label>
@@ -428,7 +627,8 @@ function ProfileSetup() {
               <input
                 type="checkbox"
                 name="is_active"
-                defaultChecked
+                checked={profile.is_active}
+                onChange={(event) => updateField("is_active", event.target.checked)}
                 className="mt-1 h-4 w-4 accent-primary"
               />
               <span>
@@ -437,11 +637,17 @@ function ProfileSetup() {
               </span>
             </label>
             <button
-              disabled={status === "submitting"}
+              disabled={status === "submitting" || loadingProfile}
               className="w-full rounded-full bg-gradient-red px-8 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow disabled:opacity-60"
               type="submit"
             >
-              {status === "submitting" ? "Enregistrement…" : "Enregistrer mon profil"}
+              {loadingProfile
+                ? "Chargement…"
+                : status === "submitting"
+                  ? "Enregistrement…"
+                  : hasProfile
+                    ? "Enregistrer les modifications"
+                    : "Enregistrer mon profil"}
             </button>
             <p className="flex items-center justify-center gap-2 text-xs text-[#e4c986]">
               <ShieldCheck className="h-4 w-4" />
