@@ -185,86 +185,90 @@ function Conversation() {
 
   return (
     <Layout>
-      <section className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col px-6 py-8">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <Link
-              to="/matches"
-              aria-label="Retour aux coups de cœur"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-[#d4c6bf]"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/15 bg-[#302526] text-sm font-medium text-[#d4c6bf]">
-              {otherPhotoUrl ? (
-                <img
-                  src={otherPhotoUrl}
-                  alt={otherName || "Photo de l'interlocuteur"}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <span aria-hidden="true">{otherName ? otherName.charAt(0).toUpperCase() : ""}</span>
-              )}
-            </div>
-            <h1 className="font-display text-2xl">{otherName || "Conversation"}</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => void deleteConversation()}
-              className="flex items-center gap-1.5 text-xs text-[#a99b95] hover:text-[#e8be6c]"
-            >
-              <Trash2 className="h-3.5 w-3.5" /> Supprimer
-            </button>
-            <button
-              onClick={() => void blockOther()}
-              className="flex items-center gap-1.5 text-xs text-[#a99b95] hover:text-[#e8be6c]"
-            >
-              <ShieldOff className="h-3.5 w-3.5" /> Bloquer
-            </button>
-          </div>
-        </div>
-        {error && (
-          <div
-            role="alert"
-            className="mb-4 rounded-xl border border-primary/40 bg-primary/10 p-4 text-sm"
-          >
-            {error}
-          </div>
-        )}
-        <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl border border-[#d6a85c]/20 bg-[#241b1c] p-4">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.sender_id === myId ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${message.sender_id === myId ? "bg-gradient-red text-primary-foreground" : "border border-white/10 bg-[#302526]"}`}
+      <div className="min-h-[calc(100vh-7rem)] bg-[#faf6f0] text-neutral-900">
+        <section className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col px-6 py-8">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <Link
+                to="/matches"
+                aria-label="Retour aux coups de cœur"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-300 text-neutral-600"
               >
-                {message.content}
+                <ArrowLeft className="h-4 w-4" />
+              </Link>
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-neutral-300 bg-white text-sm font-medium text-neutral-600">
+                {otherPhotoUrl ? (
+                  <img
+                    src={otherPhotoUrl}
+                    alt={otherName || "Photo de l'interlocuteur"}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span aria-hidden="true">
+                    {otherName ? otherName.charAt(0).toUpperCase() : ""}
+                  </span>
+                )}
               </div>
+              <h1 className="font-display text-2xl">{otherName || "Conversation"}</h1>
             </div>
-          ))}
-          <div ref={bottomRef} />
-        </div>
-        <form onSubmit={send} className="mt-4 flex gap-2">
-          <input
-            aria-label="Message"
-            className="flex-1 rounded-xl border border-white/15 bg-[#302526]/90 px-4 py-3 text-sm outline-none focus:border-[#e2b45f]/70"
-            value={content}
-            onChange={(event) => setContent(event.target.value)}
-            placeholder="Écris un message…"
-            maxLength={2000}
-          />
-          <button
-            type="submit"
-            disabled={!content.trim()}
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-red text-primary-foreground disabled:opacity-50"
-            aria-label="Envoyer"
-          >
-            <Send className="h-5 w-5" />
-          </button>
-        </form>
-      </section>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => void deleteConversation()}
+                className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-[#e8be6c]"
+              >
+                <Trash2 className="h-3.5 w-3.5" /> Supprimer
+              </button>
+              <button
+                onClick={() => void blockOther()}
+                className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-[#e8be6c]"
+              >
+                <ShieldOff className="h-3.5 w-3.5" /> Bloquer
+              </button>
+            </div>
+          </div>
+          {error && (
+            <div
+              role="alert"
+              className="mb-4 rounded-xl border border-primary/40 bg-primary/10 p-4 text-sm"
+            >
+              {error}
+            </div>
+          )}
+          <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl border border-neutral-200 bg-white p-4">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.sender_id === myId ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${message.sender_id === myId ? "bg-gradient-red text-primary-foreground" : "border border-neutral-200 bg-white"}`}
+                >
+                  {message.content}
+                </div>
+              </div>
+            ))}
+            <div ref={bottomRef} />
+          </div>
+          <form onSubmit={send} className="mt-4 flex gap-2">
+            <input
+              aria-label="Message"
+              className="flex-1 rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm outline-none focus:border-[#e2b45f]/70"
+              value={content}
+              onChange={(event) => setContent(event.target.value)}
+              placeholder="Écris un message…"
+              maxLength={2000}
+            />
+            <button
+              type="submit"
+              disabled={!content.trim()}
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-red text-primary-foreground disabled:opacity-50"
+              aria-label="Envoyer"
+            >
+              <Send className="h-5 w-5" />
+            </button>
+          </form>
+        </section>
+      </div>
     </Layout>
   );
 }
