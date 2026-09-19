@@ -1,7 +1,7 @@
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
-import { CheckCircle2, MapPin, ShieldCheck, Upload } from "lucide-react";
+import { CheckCircle2, LogOut, MapPin, ShieldCheck, Upload } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
@@ -119,6 +119,12 @@ function ProfileSetup() {
       setStatus("error");
       return;
     }
+    await supabase.auth.signOut();
+    void navigate({ to: "/" });
+  }
+
+  async function handleLogout() {
+    if (!supabase) return;
     await supabase.auth.signOut();
     void navigate({ to: "/" });
   }
@@ -475,6 +481,14 @@ function ProfileSetup() {
           </div>
           <div className="mt-8 border-t border-neutral-200 pt-6">
             <h2 className="mb-2 text-sm font-medium text-neutral-600">Zone sensible</h2>
+            <button
+              type="button"
+              onClick={() => void handleLogout()}
+              className="mb-6 flex items-center gap-2 rounded-full border border-neutral-300 px-5 py-2 text-xs uppercase tracking-wider text-neutral-600 transition-colors hover:border-neutral-400 hover:text-neutral-900"
+            >
+              <LogOut className="h-4 w-4" />
+              Se déconnecter
+            </button>
             <p className="mb-3 text-xs leading-relaxed text-neutral-400">
               La suppression de ton compte efface définitivement ton profil, tes photos, tes coups
               de cœur et tes messages. Cette action est irréversible et conforme à ton droit à
