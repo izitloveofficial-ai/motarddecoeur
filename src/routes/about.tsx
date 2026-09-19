@@ -95,7 +95,11 @@ function About() {
               style={{ maxWidth: "605px", minWidth: "325px" }}
             >
               <section>
-                <a href="https://www.tiktok.com/@motardsdecoeur/video/7685061245497642272">
+                <a
+                  href="https://www.tiktok.com/@motardsdecoeur/video/7685061245497642272"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Voir la vidéo sur TikTok
                 </a>
               </section>
