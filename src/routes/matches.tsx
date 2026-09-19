@@ -43,7 +43,7 @@ function Matches() {
       .select("id, matched_at, profile_a_id, profile_b_id")
       .order("matched_at", { ascending: false });
     if (rowsError) {
-      setError("Impossible de charger tes matchs.");
+      setError("Impossible de charger tes coups de cœur.");
       setMatches([]);
       return;
     }
@@ -103,7 +103,7 @@ function Matches() {
   }
   async function removeMatch(id: string) {
     if (!supabase) return;
-    if (!window.confirm("Supprimer cette conversation et ce match ?")) return;
+    if (!window.confirm("Supprimer cette conversation et ce coup de cœur ?")) return;
     await supabase.from("matches").delete().eq("id", id);
     await load();
   }
@@ -113,7 +113,7 @@ function Matches() {
       <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <div className="mt-3 mb-6 flex items-end justify-between gap-4">
-          <h1 className="font-display text-4xl">Mes matchs</h1>
+          <h1 className="font-display text-4xl">Mes coups de cœur</h1>
           <Link
             to="/profile/blocked"
             className="text-xs text-[#a99b95] hover:text-[#e8be6c] hover:underline"
@@ -129,7 +129,7 @@ function Matches() {
         {matches === null && !error && <p className="text-sm text-[#d4c6bf]">Chargement…</p>}
         {matches?.length === 0 && (
           <div className="rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-8 text-center text-sm text-[#d4c6bf]">
-            Pas encore de match. Va faire un tour du côté de la{" "}
+            Pas encore de coup de cœur. Va faire un tour du côté de la{" "}
             <Link to="/discover" className="text-primary hover:underline">
               découverte
             </Link>{" "}
@@ -167,7 +167,7 @@ function Matches() {
                   )}
                 </p>
                 <p className="text-xs text-[#a99b95]">
-                  Match le {new Date(match.matched_at).toLocaleDateString("fr-FR")}
+                  Coup de cœur le {new Date(match.matched_at).toLocaleDateString("fr-FR")}
                 </p>
               </div>
               <Link
@@ -179,7 +179,7 @@ function Matches() {
               </Link>
               <button
                 onClick={() => void removeMatch(match.id)}
-                aria-label="Supprimer ce match"
+                aria-label="Supprimer ce coup de cœur"
                 className="text-[#a99b95] hover:text-[#e8be6c]"
               >
                 <Trash2 className="h-4 w-4" />

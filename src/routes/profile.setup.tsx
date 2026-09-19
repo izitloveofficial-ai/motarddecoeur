@@ -102,7 +102,7 @@ function ProfileSetup() {
     if (
       !supabase ||
       !window.confirm(
-        "Supprimer définitivement ton compte ? Ton profil, tes photos, tes matchs et tes messages seront effacés. Cette action est irréversible.",
+        "Supprimer définitivement ton compte ? Ton profil, tes photos, tes coups de cœur et tes messages seront effacés. Cette action est irréversible.",
       )
     )
       return;
@@ -473,9 +473,9 @@ function ProfileSetup() {
         <div className="mt-8 border-t border-white/10 pt-6">
           <h2 className="mb-2 text-sm font-medium text-[#d4c6bf]">Zone sensible</h2>
           <p className="mb-3 text-xs leading-relaxed text-[#a99b95]">
-            La suppression de ton compte efface définitivement ton profil, tes photos, tes matchs et
-            tes messages. Cette action est irréversible et conforme à ton droit à l'effacement
-            (RGPD).
+            La suppression de ton compte efface définitivement ton profil, tes photos, tes coups de
+            cœur et tes messages. Cette action est irréversible et conforme à ton droit à
+            l'effacement (RGPD).
           </p>
           <button
             onClick={() => void deleteAccount()}
