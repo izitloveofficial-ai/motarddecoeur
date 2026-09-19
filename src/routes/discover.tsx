@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Bike, Flag, Heart, RotateCcw, ShieldOff, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Ban, Bike, Flag, Heart, KeyRound, RotateCcw, ShieldOff } from "lucide-react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
 import { sendPushNotification } from "@/lib/push";
@@ -91,6 +91,13 @@ function Discover() {
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [lastPassed, setLastPassed] = useState<Candidate | null>(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [justLiked, setJustLiked] = useState(false);
+  const cardRef = useRef<HTMLElement>(null);
+  const dragStartX = useRef(0);
+  const activePointerId = useRef<number | null>(null);
+  const likeAnimationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     void loadCandidates();
@@ -247,7 +254,60 @@ function Discover() {
   useEffect(() => {
     setReportOpen(false);
     setReportReason("");
+    setDragOffset(0);
+    setIsDragging(false);
+    activePointerId.current = null;
   }, [index]);
+
+  useEffect(
+    () => () => {
+      if (likeAnimationTimer.current) clearTimeout(likeAnimationTimer.current);
+    },
+    [],
+  );
+
+  function startDrag(event: ReactPointerEvent<HTMLElement>) {
+    if (event.button !== 0 || !event.isPrimary) return;
+    if ((event.target as HTMLElement).closest("button, select, input, a")) return;
+    activePointerId.current = event.pointerId;
+    dragStartX.current = event.clientX;
+    setIsDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function moveDrag(event: ReactPointerEvent<HTMLElement>) {
+    if (activePointerId.current !== event.pointerId) return;
+    setDragOffset(event.clientX - dragStartX.current);
+  }
+
+  function finishDrag(event: ReactPointerEvent<HTMLElement>) {
+    if (activePointerId.current !== event.pointerId) return;
+    const offset = event.clientX - dragStartX.current;
+    const threshold = Math.min(100, (cardRef.current?.offsetWidth ?? 400) * 0.25);
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    activePointerId.current = null;
+    setIsDragging(false);
+    setDragOffset(0);
+
+    if (Math.abs(offset) >= threshold) void swipe(offset > 0);
+  }
+
+  function cancelDrag(event: ReactPointerEvent<HTMLElement>) {
+    if (activePointerId.current !== event.pointerId) return;
+    activePointerId.current = null;
+    setIsDragging(false);
+    setDragOffset(0);
+  }
+
+  function likeFromButton() {
+    if (likeAnimationTimer.current) clearTimeout(likeAnimationTimer.current);
+    setJustLiked(true);
+    likeAnimationTimer.current = setTimeout(() => setJustLiked(false), 300);
+    void swipe(true);
+  }
 
   const current = candidates?.[index];
   return (
@@ -399,12 +459,35 @@ function Discover() {
           </div>
         )}
         {current && (
-          <article className="overflow-hidden rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 shadow-[0_28px_80px_rgba(8,3,3,0.48)]">
+          <article
+            ref={cardRef}
+            onPointerDown={startDrag}
+            onPointerMove={moveDrag}
+            onPointerUp={finishDrag}
+            onPointerCancel={cancelDrag}
+            className={`relative touch-pan-y select-none overflow-hidden rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 shadow-[0_28px_80px_rgba(8,3,3,0.48)] ${isDragging ? "cursor-grabbing" : "cursor-grab transition-transform duration-300 ease-out"}`}
+            style={{ transform: `translateX(${dragOffset}px) rotate(${dragOffset / 20}deg)` }}
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute top-8 right-6 z-10 rotate-6 rounded-lg border-4 border-green-400 px-3 py-1 text-2xl font-black tracking-wider text-green-400"
+              style={{ opacity: dragOffset > 0 ? Math.min(dragOffset / 100, 1) : 0 }}
+            >
+              J'AIME
+            </div>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute top-8 left-6 z-10 -rotate-6 rounded-lg border-4 border-red-400 px-3 py-1 text-2xl font-black tracking-wider text-red-400"
+              style={{ opacity: dragOffset < 0 ? Math.min(-dragOffset / 100, 1) : 0 }}
+            >
+              PASSER
+            </div>
             <div className="aspect-square bg-[#211819]">
               {current.photoUrl ? (
                 <img
                   src={current.photoUrl}
                   alt={current.first_name}
+                  draggable={false}
                   className="h-full w-full object-cover"
                 />
               ) : (
@@ -434,14 +517,16 @@ function Discover() {
                   aria-label="Passer"
                   className="flex h-16 w-16 items-center justify-center rounded-full border border-white/15 bg-[#281e1f] text-[#d4c6bf] transition hover:scale-105"
                 >
-                  <X />
+                  <Ban />
                 </button>
                 <button
-                  onClick={() => void swipe(true)}
+                  onClick={likeFromButton}
                   aria-label="J'aime"
                   className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-red text-primary-foreground shadow-glow transition hover:scale-105"
                 >
-                  <Heart fill="currentColor" />
+                  <KeyRound
+                    className={`transition-transform duration-300 ${justLiked ? "rotate-[20deg]" : "rotate-0"}`}
+                  />
                 </button>
               </div>
               <div className="mt-5 flex items-center justify-center gap-5 text-xs text-[#a99b95]">
