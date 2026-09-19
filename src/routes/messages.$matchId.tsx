@@ -44,34 +44,17 @@ function Conversation() {
     }
     const client = supabase;
     let cancelled = false;
-    const channel = client
-      .channel(`messages:${matchId}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `match_id=eq.${matchId}` },
-        (payload) => {
-          const incoming = payload.new as Message;
-          setMessages((previous) =>
-            previous.some((message) => message.id === incoming.id)
-              ? previous
-              : [...previous, incoming],
-          );
-          if (myIdRef.current && incoming.sender_id !== myIdRef.current) {
-            void client
-              .from("messages")
-              .update({ read_at: new Date().toISOString() })
-              .eq("id", incoming.id);
-          }
-        },
-      )
-      .subscribe();
+    let channel: ReturnType<typeof client.channel> | null = null;
     async function init() {
       const {
         data: { user },
       } = await client.auth.getUser();
       if (!user || cancelled) return;
-      setMyId(user.id);
+
+      // Establish the identity before accepting realtime messages. The callback can then use
+      // this immutable value instead of closing over React state from the first render.
       myIdRef.current = user.id;
+      setMyId(user.id);
       const { data: match, error: matchError } = await client
         .from("matches")
         .select("profile_a_id, profile_b_id")
@@ -88,6 +71,34 @@ function Conversation() {
       }
       const otherId = match.profile_a_id === user.id ? match.profile_b_id : match.profile_a_id;
       setOtherId(otherId);
+
+      channel = client
+        .channel(`messages:${matchId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `match_id=eq.${matchId}`,
+          },
+          (payload) => {
+            const incoming = payload.new as Message;
+            setMessages((previous) =>
+              previous.some((message) => message.id === incoming.id)
+                ? previous
+                : [...previous, incoming],
+            );
+            if (incoming.sender_id !== user.id) {
+              void client
+                .from("messages")
+                .update({ read_at: new Date().toISOString() })
+                .eq("id", incoming.id);
+            }
+          },
+        )
+        .subscribe();
+
       const [{ data: profile }, { data: photos }, { data: existing, error: messagesError }] =
         await Promise.all([
           client
@@ -121,7 +132,17 @@ function Conversation() {
         });
         setOtherPhotos(photoUrls);
         setOtherPhotoUrl(photoUrls[0] ?? null);
-        setMessages(existing ?? []);
+        // An INSERT can arrive while the initial query is in flight. Merge both sources so the
+        // query cannot overwrite a realtime message (and keep the conversation chronological).
+        setMessages((realtimeMessages) => {
+          const byId = new Map(
+            [...(existing ?? []), ...realtimeMessages].map((message) => [message.id, message]),
+          );
+          return [...byId.values()].sort(
+            (first, second) =>
+              new Date(first.created_at).getTime() - new Date(second.created_at).getTime(),
+          );
+        });
         if (messagesError) setError("Impossible de charger les messages.");
         await client
           .from("messages")
@@ -134,7 +155,8 @@ function Conversation() {
     void init();
     return () => {
       cancelled = true;
-      void client.removeChannel(channel);
+      myIdRef.current = null;
+      if (channel) void client.removeChannel(channel);
     };
   }, [matchId]);
   useEffect(() => {
@@ -259,12 +281,14 @@ function Conversation() {
           )}
           <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-4">
             {messages.map((message) => (
+              // Use the synchronously populated ref as the single identity source for every
+              // message, regardless of whether it came from the query, realtime, or this form.
               <div
                 key={message.id}
-                className={`flex ${message.sender_id === myId ? "justify-end" : "justify-start"}`}
+                className={`flex ${message.sender_id === myIdRef.current ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${message.sender_id === myId ? "bg-neutral-900 text-white" : "bg-[var(--ember)] text-neutral-900"}`}
+                  className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${message.sender_id === myIdRef.current ? "bg-neutral-900 text-white" : "bg-[var(--ember)] text-neutral-900"}`}
                 >
                   {message.content}
                 </div>
