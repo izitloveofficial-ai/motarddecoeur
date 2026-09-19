@@ -1,7 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { PrelaunchLayout } from "@/components/PrelaunchLayout";
-import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import bikeDetail from "@/assets/bike-dark.jpg";
 import { Bike, Check, CheckCircle2, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
 
@@ -56,46 +55,38 @@ function Join() {
     const form = event.currentTarget;
     if (!form.reportValidity()) return;
 
-    if (!isSupabaseConfigured || !supabase) {
-      setStatus("error");
-      setFeedback(
-        "Le stockage des pré-inscriptions n’est pas encore configuré. Vos informations n’ont pas été envoyées.",
-      );
-      return;
-    }
-
     const data = new FormData(form);
-    const location = String(data.get("location") ?? "").trim() || null;
     setStatus("submitting");
-    const { error } = await supabase.from("preinscriptions").insert({
-      first_name: String(data.get("first_name") ?? "").trim(),
-      email: String(data.get("email") ?? "")
-        .trim()
-        .toLowerCase(),
-      location,
-      city: location,
-      rider_profile: String(data.get("rider_profile") ?? "") || null,
-      favorite_bike: String(data.get("favorite_bike") ?? "").trim() || null,
-      primary_interest: String(data.get("primary_interest") ?? "") || null,
-      message: String(data.get("message") ?? "").trim() || null,
-      consent_rgpd: data.get("consent_rgpd") === "on",
-    });
-
-    if (error) {
+    try {
+      const response = await fetch("/api/preinscriptions", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          first_name: data.get("first_name"),
+          email: data.get("email"),
+          location: data.get("location"),
+          rider_profile: data.get("rider_profile"),
+          favorite_bike: data.get("favorite_bike"),
+          primary_interest: data.get("primary_interest"),
+          message: data.get("message"),
+          consent_rgpd: data.get("consent_rgpd") === "on",
+          website: data.get("website"),
+        }),
+      });
+      const result = (await response.json()) as { message?: string };
+      if (!response.ok) throw new Error("submission_failed");
+      form.reset();
+      setStatus("success");
+      setFeedback(
+        result.message ??
+          "Votre préinscription est confirmée. Merci ! Vous serez informé(e) en priorité lors du lancement de Motards de Cœur.",
+      );
+    } catch {
       setStatus("error");
       setFeedback(
-        error.code === "23505"
-          ? "Cette adresse email figure déjà sur la liste de pré-inscription."
-          : "Une erreur empêche l’envoi pour le moment. Veuillez réessayer dans quelques instants.",
+        "Nous n’avons pas pu enregistrer votre préinscription. Veuillez réessayer dans quelques instants.",
       );
-      return;
     }
-
-    form.reset();
-    setStatus("success");
-    setFeedback(
-      "Merci ! Votre pré-inscription est bien enregistrée. Nous vous préviendrons dès le lancement de Motards de Cœur.",
-    );
   }
 
   const fieldClass =
@@ -193,6 +184,12 @@ function Join() {
             </div>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
+              <div className="absolute -left-[10000px]" aria-hidden="true">
+                <label>
+                  Site web
+                  <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+                </label>
+              </div>
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="text-sm font-medium">
                   Prénom *

@@ -37,13 +37,14 @@ function AdminPreinscriptions() {
   const [filter, setFilter] = useState("all");
   const [notice, setNotice] = useState("Chargement…");
   async function load() {
-    if (!supabase) return setNotice("Supabase n’est pas configuré.");
-    const { data, error } = await supabase
-      .from("preinscriptions")
-      .select("id,first_name,email,location,city,created_at,status,invitation_sent_at,user_id")
-      .order("created_at", { ascending: false });
-    setRows((data ?? []) as Registration[]);
-    setNotice(error ? "Accès refusé : un compte administrateur est requis." : "");
+    const session = supabase ? (await supabase.auth.getSession()).data.session : null;
+    if (!session) return setNotice("Une connexion administrateur est requise.");
+    const response = await fetch("/api/admin/preinscriptions", {
+      headers: { authorization: `Bearer ${session.access_token}` },
+    });
+    const data = (await response.json()) as { rows?: Registration[] };
+    setRows(data.rows ?? []);
+    setNotice(response.ok ? "" : "Accès refusé : un compte administrateur est requis.");
   }
   useEffect(() => {
     void load();
@@ -68,13 +69,21 @@ function AdminPreinscriptions() {
     )
       return;
     setNotice("Envoi en cours…");
-    const { data, error } = await supabase.functions.invoke("send-preinscription-invitations", {
-      body: { ids },
+    const session = (await supabase.auth.getSession()).data.session;
+    if (!session) return setNotice("Une connexion administrateur est requise.");
+    const response = await fetch("/api/admin/preinscriptions", {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${session.access_token}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ ids }),
     });
+    const data = (await response.json()) as { results?: { ok: boolean }[] };
     setNotice(
-      error
+      !response.ok
         ? "Campagne suspendue ou envoi refusé. Aucun envoi n’a été effectué."
-        : `${data.results.filter((item: { ok: boolean }) => item.ok).length} invitation(s) traitée(s).`,
+        : `${(data.results ?? []).filter((item) => item.ok).length} invitation(s) traitée(s).`,
     );
     setSelected([]);
     await load();

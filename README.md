@@ -2,9 +2,9 @@
 
 ## Pré-inscriptions
 
-Le formulaire `/join` enregistre directement les pré-inscriptions dans la table Supabase
-`public.preinscriptions` avec la configuration publique existante
-(`VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY`).
+Le formulaire `/join` transmet les préinscriptions à l'API serveur, qui les valide puis les écrit
+dans la base applicative D1. Voir `docs/preinscriptions-application-database.md` pour la migration,
+les variables serveur, l'import de l'historique et le retour arrière.
 
 ## Notification email reportée
 
