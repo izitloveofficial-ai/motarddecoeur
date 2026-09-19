@@ -21,6 +21,23 @@ const lookingForOptions = [
   ["communaute_motards", "Une communauté de motards"],
   ["indecis", "Je ne sais pas encore"],
 ] as const;
+const riderRoleOptions = [
+  ["conducteur", "Conducteur"],
+  ["conductrice", "Conductrice"],
+  ["passager", "Passager"],
+  ["passagere", "Passagère"],
+] as const;
+const experienceLevelOptions = [
+  ["debutant", "Débutant"],
+  ["intermediaire", "Intermédiaire"],
+  ["experimente", "Expérimenté"],
+  ["expert", "Expert"],
+] as const;
+const ridingPaceOptions = [
+  ["tranquille", "Tranquille"],
+  ["sportif", "Sportif"],
+  ["mixte", "Mixte"],
+] as const;
 const motoTypeOptions = [
   ["routiere", "Routière"],
   ["sportive", "Sportive"],
@@ -37,8 +54,20 @@ type Filters = {
   lookingFor: string;
   maxKm: string;
   motoType: string;
+  riderRole: string;
+  experienceLevel: string;
+  ridingPace: string;
 };
-const defaultFilters: Filters = { minAge: "", maxAge: "", lookingFor: "", maxKm: "", motoType: "" };
+const defaultFilters: Filters = {
+  minAge: "",
+  maxAge: "",
+  lookingFor: "",
+  maxKm: "",
+  motoType: "",
+  riderRole: "",
+  experienceLevel: "",
+  ridingPace: "",
+};
 
 type Candidate = {
   id: string;
@@ -139,6 +168,9 @@ function Discover() {
       p_max_age: filters.maxAge ? Number(filters.maxAge) : null,
       p_limit: 20,
       p_moto_type: filters.motoType || null,
+      p_rider_role: filters.riderRole || null,
+      p_experience_level: filters.experienceLevel || null,
+      p_riding_pace: filters.ridingPace || null,
     });
     if (profilesError) {
       setError("Impossible de charger les profils pour le moment.");
@@ -455,11 +487,68 @@ function Discover() {
                 ))}
               </select>
             </label>
+            <label className="text-sm font-medium">
+              <span className="flex items-center gap-2">
+                Profil {!isPremium && <PremiumLabel />}
+              </span>
+              <select
+                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
+                value={filters.riderRole}
+                onChange={(e) => setFilters((f) => ({ ...f, riderRole: e.target.value }))}
+                disabled={!isPremium}
+              >
+                <option value="">Tous</option>
+                {riderRoleOptions.map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm font-medium">
+              <span className="flex items-center gap-2">
+                Niveau {!isPremium && <PremiumLabel />}
+              </span>
+              <select
+                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
+                value={filters.experienceLevel}
+                onChange={(e) => setFilters((f) => ({ ...f, experienceLevel: e.target.value }))}
+                disabled={!isPremium}
+              >
+                <option value="">Tous</option>
+                {experienceLevelOptions.map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm font-medium">
+              <span className="flex items-center gap-2">
+                Style de conduite {!isPremium && <PremiumLabel />}
+              </span>
+              <select
+                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
+                value={filters.ridingPace}
+                onChange={(e) => setFilters((f) => ({ ...f, ridingPace: e.target.value }))}
+                disabled={!isPremium}
+              >
+                <option value="">Tous</option>
+                {ridingPaceOptions.map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
             {(filters.minAge ||
               filters.maxAge ||
               filters.lookingFor ||
               filters.maxKm ||
-              filters.motoType) && (
+              filters.motoType ||
+              filters.riderRole ||
+              filters.experienceLevel ||
+              filters.ridingPace) && (
               <button
                 onClick={() => setFilters(defaultFilters)}
                 className="text-left text-xs text-[#a99b95] hover:text-[#e8be6c] sm:col-span-3"
