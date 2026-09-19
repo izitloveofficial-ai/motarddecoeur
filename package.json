@@ -11,7 +11,9 @@
     "preview": "vite preview",
     "test": "bun test",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "admin:provision": "node scripts/provision-admin.mjs",
+    "preinscriptions:migrate": "node scripts/migrate-preinscriptions.mjs all"
   },
   "dependencies": {
     "@capacitor/android": "8.5.1",

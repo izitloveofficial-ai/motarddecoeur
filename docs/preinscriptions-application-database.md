@@ -2,6 +2,19 @@
 
 ## Cause du problème
 
+La migration `06990eb` a déplacé les préinscriptions vers D1, mais pas l'identité : le navigateur
+obtient toujours son jeton de Supabase et l'API vérifie toujours le rôle avec `is_admin()`. Le
+déploiement doit donc pointer `VITE_SUPABASE_URL` (navigateur) et `SUPABASE_URL` (serveur) vers le
+**même projet**, fournir `SUPABASE_ANON_KEY` au serveur et contenir l'UUID du compte dans
+`public.admin_users`. Si les variables serveur n'ont pas suivi la migration, ou si le compte a été
+recréé dans un nouveau projet (donc avec un nouvel UUID), `is_admin()` ne peut pas reconnaître le
+compte. C'est la rupture exacte dans le code migré : D1 ne contient et ne déduit aucun rôle.
+
+La page ne refait plus l'ancien contrôle RPC dans le navigateur. Elle transmet la session au nouvel
+endpoint D1, qui reste l'unique autorité. Une absence de session renvoie 401 et un compte valide sans
+rôle renvoie 403. Dans les deux cas, la page masque compteurs, filtres et tableau au lieu de rendre
+des zéros trompeurs.
+
 L'erreur serveur exacte est `Error: The DB binding is not configured`. La version précédente
 appelait `database(env)` et la table de limitation de débit **avant** de lire et valider le JSON.
 Une liaison `DB` absente produisait donc systématiquement un 500, y compris pour `{}`. Le serveur
@@ -17,8 +30,9 @@ utilisé comme base de données pour ce flux.
 1. Dans Lovable/Cloudflare, créer puis lier la nouvelle base D1 sous le nom de liaison exact `DB`.
    **`DB` est une liaison de ressource, pas une variable texte ni un secret.** Aucune variable
    `DATABASE_URL` n'est lue par l'application.
-2. Appliquer `migrations/0001_preinscriptions.sql` à cette base D1 avant le déploiement. Vérifier
-   ensuite `preinscriptions` et `preinscription_attempts` dans la liste des tables.
+2. Appliquer, dans l'ordre, `migrations/0001_preinscriptions.sql` puis la migration additive
+   `migrations/0002_preserve_legacy_preinscription_fields.sql`. Vérifier ensuite `preinscriptions`
+   et `preinscription_attempts` dans la liste des tables.
 3. Configurer côté serveur les variables d'identité déjà utilisées par l'administration :
    `SUPABASE_URL`, `SUPABASE_ANON_KEY` et `SUPABASE_SERVICE_ROLE_KEY`. Elles ne servent jamais à
    lire ou écrire les préinscriptions. Ne jamais les préfixer par `VITE_`.
@@ -33,10 +47,35 @@ base, puis le trajet API 201 → ligne en base → lecture immédiate par l'API 
 
 ## Import des cinq lignes historiques
 
-Avant de désactiver l'ancienne table, exporter les cinq lignes en CSV depuis Supabase. Pour chaque
-ligne, exécuter côté D1 un `INSERT OR IGNORE` dans `preinscriptions`, en faisant correspondre
-`city` vers `location`, en conservant `created_at`, `status`, `invitation_sent_at`, `user_id` et les
-champs de formulaire. Normaliser `email` en minuscules et convertir `consent_rgpd` en `1`.
+Le compte est créé (s'il n'existe pas) et promu sans adresse inscrite dans le dépôt :
+
+```sh
+SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... ADMIN_EMAIL=... ADMIN_PASSWORD=... \
+  npm run admin:provision
+```
+
+`ADMIN_PASSWORD` n'est nécessaire que lors d'une création. L'outil résout toujours l'adresse vers
+l'UUID Auth courant puis effectue un upsert dans `admin_users`; il peut donc réparer un UUID devenu
+obsolète après changement de projet.
+
+L'outil suivant exporte d'abord les cinq lignes Supabase dans un fichier JSON en mode `0600`, refuse
+de continuer si le total source n'est pas exactement cinq, puis les importe par paramètres dans D1.
+Il conserve les champs historiques (`city`, `age`, `sex`, `bike_type`), les champs récents, les
+dates, le consentement, le statut et les identifiants. Enfin, il relit D1 et compare chaque couple
+id/e-mail. Il n'exécute aucun `DELETE`, `DROP` ni modification de la source.
+
+```sh
+SOURCE_SUPABASE_URL=... SOURCE_SUPABASE_SERVICE_ROLE_KEY=... \
+CLOUDFLARE_ACCOUNT_ID=... CLOUDFLARE_D1_DATABASE_ID=... CLOUDFLARE_API_TOKEN=... \
+  npm run preinscriptions:migrate
+```
+
+Pour séparer les phases de contrôle :
+
+```sh
+node scripts/migrate-preinscriptions.mjs export
+node scripts/migrate-preinscriptions.mjs import
+```
 
 Exemple (les valeurs restent des paramètres, elles ne doivent pas être concaténées au SQL) :
 

@@ -22,11 +22,8 @@ export const Route = createFileRoute("/admin/preinscriptions")({
       data: { session },
     } = await supabase.auth.getSession();
     if (!session) throw redirect({ to: "/admin/login" });
-    const { data: isAdmin } = await supabase.rpc("is_admin");
-    if (!isAdmin) {
-      await supabase.auth.signOut();
-      throw redirect({ to: "/admin/login" });
-    }
+    // The API is the authority for the role. Keeping this check server-side avoids
+    // coupling the page to the legacy database RPC during the data migration.
   },
 });
 
@@ -36,15 +33,27 @@ function AdminPreinscriptions() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [notice, setNotice] = useState("Chargement…");
+  const [authenticationRequired, setAuthenticationRequired] = useState(false);
   async function load() {
     const session = supabase ? (await supabase.auth.getSession()).data.session : null;
-    if (!session) return setNotice("Une connexion administrateur est requise.");
+    if (!session) {
+      setAuthenticationRequired(true);
+      return setNotice("Connexion administrateur requise");
+    }
     const response = await fetch("/api/admin/preinscriptions", {
       headers: { authorization: `Bearer ${session.access_token}` },
     });
+    if (response.status === 401 || response.status === 403) {
+      setAuthenticationRequired(true);
+      setNotice("Connexion administrateur requise");
+      return;
+    }
     const data = (await response.json()) as { rows?: Registration[] };
-    setRows(data.rows ?? []);
-    setNotice(response.ok ? "" : "Accès refusé : un compte administrateur est requis.");
+    if (response.ok) {
+      setRows(data.rows ?? []);
+      setAuthenticationRequired(false);
+      setNotice("");
+    } else setNotice("Impossible de charger les préinscriptions.");
   }
   useEffect(() => {
     void load();
@@ -106,115 +115,131 @@ function AdminPreinscriptions() {
             Gérer les annonces
           </Link>
         </p>
-        <div className="my-8 grid gap-4 sm:grid-cols-4">
-          {[
-            ["Total", rows.length],
-            ["En attente", count("pending")],
-            ["Invitées", count("invited")],
-            ["Converties", count("converted")],
-          ].map(([label, value]) => (
-            <div className="rounded-2xl border p-5" key={label}>
-              <p className="text-sm text-muted-foreground">{label}</p>
-              <strong className="text-3xl">{value}</strong>
-            </div>
-          ))}
-        </div>
-        <div className="mb-5 flex flex-wrap gap-3">
-          <input
-            className="min-w-64 flex-1 rounded-xl border bg-card px-4 py-2"
-            type="search"
-            placeholder="Rechercher nom, e-mail, ville…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <select
-            className="rounded-xl border bg-card px-4"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <option value="all">Tous les statuts</option>
-            <option value="pending">En attente</option>
-            <option value="invited">Invités</option>
-            <option value="converted">Convertis</option>
-            <option value="invalid">Invalides</option>
-            <option value="declined">Désinscrits</option>
-          </select>
-          <button
-            className="rounded-xl bg-primary px-5 text-primary-foreground disabled:opacity-40"
-            disabled={!selected.length}
-            onClick={() => void invite(selected)}
-          >
-            Inviter la sélection ({selected.length})
-          </button>
-        </div>
-        {notice && (
-          <p className="mb-4 rounded-xl border border-primary/30 p-3" role="status">
-            {notice}
-          </p>
-        )}
-        <div className="overflow-x-auto rounded-2xl border">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-card">
-              <tr>
-                {[
-                  "",
-                  "Prénom",
-                  "E-mail",
-                  "Ville",
-                  "Inscription",
-                  "Statut",
-                  "Invitation",
-                  "Compte",
-                  "",
-                ].map((h) => (
-                  <th className="p-3" key={h}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {shown.map((row) => (
-                <tr className="border-t" key={row.id}>
-                  <td className="p-3">
-                    <input
-                      type="checkbox"
-                      aria-label={`Sélectionner ${row.email}`}
-                      checked={selected.includes(row.id)}
-                      onChange={(e) =>
-                        setSelected(
-                          e.target.checked
-                            ? [...selected, row.id]
-                            : selected.filter((id) => id !== row.id),
-                        )
-                      }
-                    />
-                  </td>
-                  <td className="p-3">{row.first_name}</td>
-                  <td className="p-3">{row.email}</td>
-                  <td className="p-3">{row.location ?? row.city ?? "—"}</td>
-                  <td className="p-3">{new Date(row.created_at).toLocaleDateString("fr-FR")}</td>
-                  <td className="p-3">{row.status}</td>
-                  <td className="p-3">
-                    {row.invitation_sent_at
-                      ? new Date(row.invitation_sent_at).toLocaleDateString("fr-FR")
-                      : "Non"}
-                  </td>
-                  <td className="p-3">{row.user_id ? "Oui" : "Non"}</td>
-                  <td className="p-3">
-                    <button
-                      className="text-primary disabled:opacity-40"
-                      disabled={row.status !== "pending"}
-                      onClick={() => void invite([row.id])}
-                    >
-                      Envoyer l’invitation
-                    </button>
-                  </td>
-                </tr>
+        {authenticationRequired ? (
+          <div className="my-8 rounded-2xl border border-primary/30 p-6" role="alert">
+            <p className="font-semibold">Connexion administrateur requise</p>
+            <Link
+              to="/admin/login"
+              className="mt-4 inline-flex rounded-xl bg-primary px-5 py-2 text-primary-foreground"
+            >
+              Se connecter
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div className="my-8 grid gap-4 sm:grid-cols-4">
+              {[
+                ["Total", rows.length],
+                ["En attente", count("pending")],
+                ["Invitées", count("invited")],
+                ["Converties", count("converted")],
+              ].map(([label, value]) => (
+                <div className="rounded-2xl border p-5" key={label}>
+                  <p className="text-sm text-muted-foreground">{label}</p>
+                  <strong className="text-3xl">{value}</strong>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </div>
+            <div className="mb-5 flex flex-wrap gap-3">
+              <input
+                className="min-w-64 flex-1 rounded-xl border bg-card px-4 py-2"
+                type="search"
+                placeholder="Rechercher nom, e-mail, ville…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <select
+                className="rounded-xl border bg-card px-4"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="all">Tous les statuts</option>
+                <option value="pending">En attente</option>
+                <option value="invited">Invités</option>
+                <option value="converted">Convertis</option>
+                <option value="invalid">Invalides</option>
+                <option value="declined">Désinscrits</option>
+              </select>
+              <button
+                className="rounded-xl bg-primary px-5 text-primary-foreground disabled:opacity-40"
+                disabled={!selected.length}
+                onClick={() => void invite(selected)}
+              >
+                Inviter la sélection ({selected.length})
+              </button>
+            </div>
+            {notice && (
+              <p className="mb-4 rounded-xl border border-primary/30 p-3" role="status">
+                {notice}
+              </p>
+            )}
+            <div className="overflow-x-auto rounded-2xl border">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-card">
+                  <tr>
+                    {[
+                      "",
+                      "Prénom",
+                      "E-mail",
+                      "Ville",
+                      "Inscription",
+                      "Statut",
+                      "Invitation",
+                      "Compte",
+                      "",
+                    ].map((h) => (
+                      <th className="p-3" key={h}>
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {shown.map((row) => (
+                    <tr className="border-t" key={row.id}>
+                      <td className="p-3">
+                        <input
+                          type="checkbox"
+                          aria-label={`Sélectionner ${row.email}`}
+                          checked={selected.includes(row.id)}
+                          onChange={(e) =>
+                            setSelected(
+                              e.target.checked
+                                ? [...selected, row.id]
+                                : selected.filter((id) => id !== row.id),
+                            )
+                          }
+                        />
+                      </td>
+                      <td className="p-3">{row.first_name}</td>
+                      <td className="p-3">{row.email}</td>
+                      <td className="p-3">{row.location ?? row.city ?? "—"}</td>
+                      <td className="p-3">
+                        {new Date(row.created_at).toLocaleDateString("fr-FR")}
+                      </td>
+                      <td className="p-3">{row.status}</td>
+                      <td className="p-3">
+                        {row.invitation_sent_at
+                          ? new Date(row.invitation_sent_at).toLocaleDateString("fr-FR")
+                          : "Non"}
+                      </td>
+                      <td className="p-3">{row.user_id ? "Oui" : "Non"}</td>
+                      <td className="p-3">
+                        <button
+                          className="text-primary disabled:opacity-40"
+                          disabled={row.status !== "pending"}
+                          onClick={() => void invite([row.id])}
+                        >
+                          Envoyer l’invitation
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
       </div>
     </main>
   );
