@@ -1,0 +1,151 @@
+import { ChevronLeft, ChevronRight, UserRound, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+export type GalleryProfile = {
+  firstName: string;
+  bio?: string | null;
+  motoBrand?: string | null;
+  motoModel?: string | null;
+};
+
+type ProfilePhotoGalleryProps = {
+  open: boolean;
+  onClose: () => void;
+  photos: string[];
+  profile: GalleryProfile;
+};
+
+export function ProfilePhotoGallery({ open, onClose, photos, profile }: ProfilePhotoGalleryProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    setActiveIndex(0);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [onClose, open]);
+
+  if (!open) return null;
+
+  function goTo(index: number) {
+    const nextIndex = Math.min(Math.max(index, 0), photos.length - 1);
+    setActiveIndex(nextIndex);
+    carouselRef.current?.scrollTo({
+      left: nextIndex * carouselRef.current.clientWidth,
+      behavior: "smooth",
+    });
+  }
+
+  const bike = [profile.motoBrand, profile.motoModel].filter(Boolean).join(" ");
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Photos de ${profile.firstName}`}
+      className="fixed inset-0 z-50 flex bg-[#faf6f0] text-neutral-900"
+    >
+      <div className="mx-auto flex h-full w-full max-w-3xl flex-col">
+        <header className="flex shrink-0 items-center justify-between px-4 py-3 sm:px-6">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-[#9b7432]">Profil</p>
+            <h2 className="font-display text-2xl">{profile.firstName}</h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fermer la galerie"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-300 bg-white shadow-sm transition hover:border-[#d6a85c]"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </header>
+
+        <div className="relative min-h-0 flex-1 bg-[#eee6da] sm:mx-6 sm:overflow-hidden sm:rounded-3xl">
+          {photos.length > 0 ? (
+            <>
+              <div
+                ref={carouselRef}
+                onScroll={(event) => {
+                  const width = event.currentTarget.clientWidth;
+                  if (width) setActiveIndex(Math.round(event.currentTarget.scrollLeft / width));
+                }}
+                className="flex h-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                {photos.map((photo, index) => (
+                  <div key={photo} className="h-full w-full shrink-0 snap-center">
+                    <img
+                      src={photo}
+                      alt={`Photo ${index + 1} de ${profile.firstName}`}
+                      className="h-full w-full object-contain"
+                      draggable={false}
+                    />
+                  </div>
+                ))}
+              </div>
+              {photos.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => goTo(activeIndex - 1)}
+                    disabled={activeIndex === 0}
+                    aria-label="Photo précédente"
+                    className="absolute left-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md disabled:opacity-30 sm:flex"
+                  >
+                    <ChevronLeft className="h-6 w-6" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => goTo(activeIndex + 1)}
+                    disabled={activeIndex === photos.length - 1}
+                    aria-label="Photo suivante"
+                    className="absolute right-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md disabled:opacity-30 sm:flex"
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </button>
+                  <div
+                    className="absolute inset-x-0 bottom-4 flex justify-center gap-2"
+                    aria-label={`${activeIndex + 1} sur ${photos.length}`}
+                  >
+                    {photos.map((photo, index) => (
+                      <button
+                        key={photo}
+                        type="button"
+                        onClick={() => goTo(index)}
+                        aria-label={`Afficher la photo ${index + 1}`}
+                        className={`h-2.5 rounded-full shadow-sm transition-all ${index === activeIndex ? "w-7 bg-[#d29b3d]" : "w-2.5 bg-white/80"}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-3 text-neutral-500">
+              <UserRound className="h-16 w-16" />
+              <p>Aucune photo disponible</p>
+            </div>
+          )}
+        </div>
+
+        {(profile.bio || bike) && (
+          <div className="shrink-0 space-y-2 px-5 py-4 sm:px-6 sm:py-5">
+            {bike && <p className="font-medium text-[#8b6528]">{bike}</p>}
+            {profile.bio && (
+              <p className="text-sm leading-relaxed text-neutral-600">{profile.bio}</p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
