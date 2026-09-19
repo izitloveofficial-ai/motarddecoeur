@@ -85,6 +85,19 @@ const emptyProfile: ProfileForm = {
   is_active: true,
 };
 
+function getNextStep(lookingFor: string) {
+  switch (lookingFor) {
+    case "balades_moto":
+      return { to: "/rides" as const, label: "Voir les balades à venir" };
+    case "communaute_motards":
+      return { to: "/community" as const, label: "Découvrir la communauté" };
+    case "amitie":
+      return { to: "/discover" as const, label: "Rencontrer des motards" };
+    default:
+      return { to: "/discover" as const, label: "Découvrir des profils" };
+  }
+}
+
 function ProfileSetup() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -430,6 +443,8 @@ function ProfileSetup() {
     </select>
   );
 
+  const nextStep = getNextStep(profile.looking_for);
+
   return (
     <Layout>
       <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
@@ -687,12 +702,20 @@ function ProfileSetup() {
               </div>
             )}
             {status === "success" && (
-              <Link
-                to="/discover"
-                className="block w-full rounded-full border border-primary/40 px-8 py-3 text-center text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
-              >
-                Découvrir des profils
-              </Link>
+              <div className="space-y-3 text-center">
+                <Link
+                  to={nextStep.to}
+                  className="block w-full rounded-full border border-primary/40 px-8 py-3 text-center text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
+                >
+                  {nextStep.label}
+                </Link>
+                <Link
+                  to="/discover"
+                  className="inline-block text-xs text-[#a99b95] underline decoration-white/20 underline-offset-4 transition hover:text-[#d4c6bf]"
+                >
+                  Vous pouvez aussi explorer les profils
+                </Link>
+              </div>
             )}
           </form>
           <div className="mt-12 border-t border-white/10 pt-6">
