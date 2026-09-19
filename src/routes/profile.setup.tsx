@@ -90,6 +90,7 @@ function ProfileSetup() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [feedback, setFeedback] = useState("");
   const [profile, setProfile] = useState<ProfileForm>(emptyProfile);
+  const [isPremium, setIsPremium] = useState(false);
   const [hasProfile, setHasProfile] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [existingPhotos, setExistingPhotos] = useState<ExistingPhoto[]>([]);
@@ -131,6 +132,7 @@ function ProfileSetup() {
       if (profileResult.data) {
         const current = profileResult.data;
         setHasProfile(true);
+        setIsPremium(current.is_premium === true);
         setProfile({
           first_name: current.first_name ?? "",
           birth_date: current.birth_date ? String(current.birth_date).slice(0, 10) : "",
@@ -432,6 +434,28 @@ function ProfileSetup() {
     <Layout>
       <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
         <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
+          <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-[#d6a85c]/30 bg-[#281e1f] p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="mb-2 text-xs uppercase tracking-[0.25em] text-[#a99b95]">
+                Forfait actuel
+              </p>
+              <span
+                className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider ${
+                  isPremium
+                    ? "border-[#e2b45f]/60 bg-[#d9a441]/15 text-[#f4ce7e]"
+                    : "border-white/20 bg-white/5 text-[#d4c6bf]"
+                }`}
+              >
+                {loadingProfile ? "Chargement…" : isPremium ? "Premium" : "Basique"}
+              </span>
+            </div>
+            <Link
+              to="/premium"
+              className="text-sm font-medium text-[#e8be6c] underline decoration-[#e8be6c]/40 underline-offset-4 transition hover:text-[#f4ce7e]"
+            >
+              Voir ou changer mon forfait
+            </Link>
+          </div>
           {!hasProfile && (
             <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
               Dernière étape
