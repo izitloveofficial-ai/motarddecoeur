@@ -13,6 +13,8 @@ type MatchRow = {
   unreadCount: number;
 };
 export const Route = createFileRoute("/matches")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   component: Matches,
   beforeLoad: async () => {
     await requireAdmin();

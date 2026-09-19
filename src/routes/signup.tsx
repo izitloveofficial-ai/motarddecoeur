@@ -6,6 +6,8 @@ import { requireAdmin } from "@/lib/require-admin";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/signup")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Créer mon compte — Motards de Cœur" },

@@ -1,19 +1,54 @@
 import { redirect } from "@tanstack/react-router";
+import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+
+const TOKEN_REFRESH_MARGIN_SECONDS = 60;
+
+type AdminClient = Pick<SupabaseClient, "auth" | "rpc">;
+
+async function getFreshSession(client: AdminClient): Promise<Session | null> {
+  const { data, error } = await client.auth.getSession();
+  if (error || !data.session) return null;
+
+  const expiresSoon =
+    data.session.expires_at !== undefined &&
+    data.session.expires_at <= Math.floor(Date.now() / 1000) + TOKEN_REFRESH_MARGIN_SECONDS;
+
+  if (!expiresSoon) return data.session;
+
+  const refreshed = await client.auth.refreshSession({
+    refresh_token: data.session.refresh_token,
+  });
+  return refreshed.error ? null : refreshed.data.session;
+}
+
+/**
+ * Vérifie le rôle avec le jeton exact de la session qui vient d'être lu ou
+ * rafraîchi. L'en-tête explicite évite qu'un appel RPC parte avec l'ancien
+ * jeton pendant que Supabase propage un rafraîchissement de session.
+ */
+export async function hasAdminAccess(client: AdminClient): Promise<boolean> {
+  const session = await getFreshSession(client);
+  if (!session) return false;
+
+  const { data, error } = await client
+    .rpc("is_admin")
+    .setHeader("Authorization", `Bearer ${session.access_token}`);
+
+  return !error && data === true;
+}
 
 /**
  * À utiliser dans le `beforeLoad` d'une route pour la réserver au compte admin.
- * Redirige silencieusement vers /join si la personne n'est pas connectée en admin —
- * jamais de message d'erreur qui confirmerait l'existence de la page à un visiteur normal.
+ * Les routes concernées désactivent leur SSR : la session Supabase est conservée
+ * dans le stockage du navigateur et n'est donc pas disponible sur le serveur.
  */
 export async function requireAdmin() {
-  if (!supabase) throw redirect({ to: "/join" });
+  // Defensive fallback for accidental server-side calls. Protected routes use
+  // `ssr: false`, so this branch never grants browser navigation by itself.
+  if (typeof window === "undefined") return;
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  if (!session) throw redirect({ to: "/join" });
-
-  const { data, error } = await supabase.rpc("is_admin");
-  if (error || data !== true) throw redirect({ to: "/join" });
+  if (!supabase || !(await hasAdminAccess(supabase))) {
+    throw redirect({ to: "/join" });
+  }
 }

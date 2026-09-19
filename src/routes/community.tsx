@@ -17,6 +17,8 @@ import ctaCommunity from "@/assets/cta-community.jpg";
 const SITE_URL = "https://motarddecoeur.lovable.app";
 
 export const Route = createFileRoute("/community")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Communauté — Motards de Cœur" },

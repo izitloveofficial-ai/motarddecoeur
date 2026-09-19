@@ -21,6 +21,8 @@ const EVENTS = [
 ];
 
 export const Route = createFileRoute("/events")({
+  // Supabase persists auth in browser storage, so authorization must run in the browser.
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Événements — Motards de Cœur" },
