@@ -1,14 +1,11 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { requireAdmin } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/login")({
-  // Supabase persists auth in browser storage, so authorization must run in the browser.
   ssr: false,
   head: () => ({ meta: [{ title: "Connexion — Motards de Cœur" }] }),
-  beforeLoad: requireAdmin,
   component: Login,
 });
 
