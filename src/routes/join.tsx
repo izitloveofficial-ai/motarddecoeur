@@ -1,6 +1,8 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { PrelaunchLayout } from "@/components/PrelaunchLayout";
+import { supabase } from "@/lib/supabase";
+import { PREINSCRIPTION_MESSAGES } from "@/lib/preinscriptions";
 import bikeDetail from "@/assets/bike-dark.jpg";
 import { Bike, Check, CheckCircle2, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
 
