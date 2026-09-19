@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Flag, Heart, RotateCcw, ShieldOff, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
 
@@ -54,6 +55,7 @@ type Candidate = {
 export const Route = createFileRoute("/discover")({
   component: Discover,
   beforeLoad: async () => {
+    await requireAdmin();
     if (!supabase) return;
     const {
       data: { session },

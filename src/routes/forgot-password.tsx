@@ -1,10 +1,12 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({ meta: [{ title: "Mot de passe oublié — Motards de Cœur" }] }),
+  beforeLoad: requireAdmin,
   component: ForgotPassword,
 });
 

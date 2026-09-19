@@ -2,6 +2,7 @@ import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-ro
 import { ArrowLeft, Send, ShieldOff, Trash2 } from "lucide-react";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
 
@@ -9,6 +10,7 @@ type Message = { id: string; sender_id: string; content: string; created_at: str
 export const Route = createFileRoute("/messages/$matchId")({
   component: Conversation,
   beforeLoad: async () => {
+    await requireAdmin();
     if (!supabase) return;
     const {
       data: { session },

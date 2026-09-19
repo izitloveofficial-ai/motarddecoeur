@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { CheckCircle2, MapPin, ShieldCheck, Upload } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 const genderOptions = [
@@ -33,6 +34,7 @@ const motoTypeOptions = [
 export const Route = createFileRoute("/profile/setup")({
   component: ProfileSetup,
   beforeLoad: async () => {
+    await requireAdmin();
     if (!supabase) throw redirect({ to: "/signup" });
     const {
       data: { session },

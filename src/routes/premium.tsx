@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
 import { Check, X, Crown, Zap, Star } from "lucide-react";
 
 const SITE_URL = "https://motarddecoeur.lovable.app";
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/premium")({
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/premium` }],
   }),
+  beforeLoad: requireAdmin,
   component: Premium,
 });
 

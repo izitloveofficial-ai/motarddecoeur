@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
 import { MessageCircle, Users, MapPin, Flame, Heart, Share2 } from "lucide-react";
 import c1 from "@/assets/avatar-c1.jpg";
 import c2 from "@/assets/avatar-c2.jpg";
@@ -26,6 +27,7 @@ export const Route = createFileRoute("/community")({
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/community` }],
   }),
+  beforeLoad: requireAdmin,
   component: Community,
 });
 

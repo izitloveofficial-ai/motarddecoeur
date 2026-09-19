@@ -2,6 +2,7 @@ import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 type MatchRow = {
@@ -14,6 +15,7 @@ type MatchRow = {
 export const Route = createFileRoute("/matches")({
   component: Matches,
   beforeLoad: async () => {
+    await requireAdmin();
     if (!supabase) return;
     const {
       data: { session },
