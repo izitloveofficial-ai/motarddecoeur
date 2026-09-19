@@ -14,6 +14,16 @@ type Registration = {
   user_id: string | null;
 };
 
+type ProgressUpdate = {
+  id: string;
+  subject: string;
+  body: string;
+  created_at: string;
+  sent_at: string | null;
+  recipient_count: number | null;
+  is_active: boolean;
+};
+
 export const Route = createFileRoute("/admin/preinscriptions")({
   component: AdminPreinscriptions,
   beforeLoad: async () => {
@@ -34,6 +44,33 @@ function AdminPreinscriptions() {
   const [filter, setFilter] = useState("all");
   const [notice, setNotice] = useState("Chargement…");
   const [authenticationRequired, setAuthenticationRequired] = useState(false);
+  const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
+  const [progressHistoryNotice, setProgressHistoryNotice] = useState("Chargement…");
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
+  const [isSendingProgressUpdate, setIsSendingProgressUpdate] = useState(false);
+  const [progressSendNotice, setProgressSendNotice] = useState("");
+
+  async function loadProgressUpdates() {
+    const client = supabase;
+    if (!client) return;
+
+    setProgressHistoryNotice("Chargement…");
+    const { data, error } = await client
+      .from("progress_updates")
+      .select("id, subject, body, created_at, sent_at, recipient_count, is_active")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("admin progress updates read failed", error);
+      setProgressHistoryNotice("Impossible de charger l’historique des mises à jour.");
+      return;
+    }
+
+    setProgressUpdates((data ?? []) as ProgressUpdate[]);
+    setProgressHistoryNotice(data?.length ? "" : "Aucune mise à jour envoyée pour le moment.");
+  }
+
   async function load() {
     const client = supabase;
     const session = client ? (await client.auth.getSession()).data.session : null;
@@ -41,6 +78,7 @@ function AdminPreinscriptions() {
       setAuthenticationRequired(true);
       return setNotice("Connexion administrateur requise");
     }
+    await loadProgressUpdates();
     // La policy RLS is_admin() est l'autorité : lecture directe depuis Supabase.
     const { data, error } = await client
       .from("preinscriptions")
@@ -97,6 +135,52 @@ function AdminPreinscriptions() {
     setSelected([]);
     await load();
   }
+
+  async function sendProgressUpdate() {
+    const client = supabase;
+    const trimmedSubject = subject.trim();
+    const trimmedBody = body.trim();
+    if (!client || !trimmedSubject || !trimmedBody || isSendingProgressUpdate) return;
+    if (
+      !window.confirm(
+        "Confirmer l’envoi de cette mise à jour à tous les pré-inscrits qui ne l’ont pas encore reçue ?",
+      )
+    )
+      return;
+
+    setIsSendingProgressUpdate(true);
+    setProgressSendNotice("");
+    const { data, error } = await client.functions.invoke("send-progress-update", {
+      body: { subject: trimmedSubject, body: trimmedBody },
+    });
+
+    let forbidden = data?.error === "forbidden";
+    if (!forbidden && error && "context" in error && error.context instanceof Response) {
+      const errorPayload = (await error.context
+        .clone()
+        .json()
+        .catch(() => null)) as {
+        error?: string;
+      } | null;
+      forbidden = errorPayload?.error === "forbidden";
+    }
+
+    if (error || data?.error) {
+      setProgressSendNotice(
+        forbidden
+          ? "Vous devez être connecté en admin pour envoyer une mise à jour."
+          : error?.message || data?.error || "Impossible d’envoyer la mise à jour.",
+      );
+      setIsSendingProgressUpdate(false);
+      return;
+    }
+
+    setProgressSendNotice(`Envoyé à ${data.sent} personne(s) sur ${data.totalCandidates}.`);
+    setSubject("");
+    setBody("");
+    await loadProgressUpdates();
+    setIsSendingProgressUpdate(false);
+  }
   return (
     <main className="min-h-screen bg-background px-6 py-12 text-foreground">
       <div className="mx-auto max-w-7xl">
@@ -140,6 +224,104 @@ function AdminPreinscriptions() {
                 </div>
               ))}
             </div>
+            <section className="mb-8 rounded-2xl border bg-card p-6">
+              <h2 className="font-display text-2xl">Mises à jour d’avancement</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Informez les pré-inscrits de l’avancement du projet. La dernière mise à jour active
+                sera aussi envoyée automatiquement aux nouveaux inscrits.
+              </p>
+
+              <form
+                className="mt-6 grid gap-4"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void sendProgressUpdate();
+                }}
+              >
+                <label className="grid gap-2 text-sm font-medium" htmlFor="progress-subject">
+                  Sujet
+                  <input
+                    id="progress-subject"
+                    className="rounded-xl border bg-background px-4 py-2 font-normal"
+                    type="text"
+                    maxLength={200}
+                    required
+                    disabled={isSendingProgressUpdate}
+                    value={subject}
+                    onChange={(event) => setSubject(event.target.value)}
+                  />
+                </label>
+                <label className="grid gap-2 text-sm font-medium" htmlFor="progress-body">
+                  Message
+                  <textarea
+                    id="progress-body"
+                    className="min-h-40 resize-y rounded-xl border bg-background px-4 py-3 font-normal"
+                    required
+                    disabled={isSendingProgressUpdate}
+                    value={body}
+                    onChange={(event) => setBody(event.target.value)}
+                  />
+                </label>
+                <div>
+                  <button
+                    className="rounded-xl bg-primary px-5 py-2 text-primary-foreground disabled:cursor-not-allowed disabled:opacity-40"
+                    type="submit"
+                    disabled={isSendingProgressUpdate || !subject.trim() || !body.trim()}
+                  >
+                    {isSendingProgressUpdate
+                      ? "Envoi en cours…"
+                      : "Envoyer à tous les pré-inscrits"}
+                  </button>
+                </div>
+                {progressSendNotice && (
+                  <p className="rounded-xl border border-primary/30 p-3" role="status">
+                    {progressSendNotice}
+                  </p>
+                )}
+              </form>
+
+              <h3 className="mt-8 text-lg font-semibold">Historique des envois</h3>
+              {progressHistoryNotice ? (
+                <p className="mt-3 text-sm text-muted-foreground" role="status">
+                  {progressHistoryNotice}
+                </p>
+              ) : (
+                <div className="mt-3 overflow-x-auto rounded-xl border">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-background">
+                      <tr>
+                        <th className="p-3">Sujet</th>
+                        <th className="p-3">Date d’envoi</th>
+                        <th className="p-3">Destinataires</th>
+                        <th className="p-3">Statut</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {progressUpdates.map((update) => (
+                        <tr className="border-t" key={update.id}>
+                          <td className="p-3 font-medium">{update.subject}</td>
+                          <td className="p-3">
+                            {update.sent_at
+                              ? new Date(update.sent_at).toLocaleString("fr-FR")
+                              : "—"}
+                          </td>
+                          <td className="p-3">{update.recipient_count ?? 0}</td>
+                          <td className="p-3">
+                            {update.is_active ? (
+                              <span className="inline-flex rounded-full bg-primary/15 px-2.5 py-1 text-xs font-semibold text-primary">
+                                Active
+                              </span>
+                            ) : (
+                              "—"
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
             <div className="mb-5 flex flex-wrap gap-3">
               <input
                 className="min-w-64 flex-1 rounded-xl border bg-card px-4 py-2"
