@@ -2,11 +2,9 @@ import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { requireAdmin } from "@/lib/require-admin";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/signup")({
-  // Supabase persists auth in browser storage, so authorization must run in the browser.
   ssr: false,
   head: () => ({
     meta: [
@@ -17,7 +15,6 @@ export const Route = createFileRoute("/signup")({
       },
     ],
   }),
-  beforeLoad: requireAdmin,
   component: Signup,
 });
 

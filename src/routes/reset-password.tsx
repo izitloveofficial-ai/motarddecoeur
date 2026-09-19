@@ -1,14 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { requireAdmin } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/reset-password")({
-  // Supabase persists auth in browser storage, so authorization must run in the browser.
   ssr: false,
   head: () => ({ meta: [{ title: "Nouveau mot de passe — Motards de Cœur" }] }),
-  beforeLoad: requireAdmin,
   component: ResetPassword,
 });
 function ResetPassword() {
