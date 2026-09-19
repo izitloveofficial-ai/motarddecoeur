@@ -41,6 +41,7 @@ function Matches() {
     const { data: rows, error: rowsError } = await supabase
       .from("matches")
       .select("id, matched_at, profile_a_id, profile_b_id")
+      .or(`profile_a_id.eq.${user.id},profile_b_id.eq.${user.id}`)
       .order("matched_at", { ascending: false });
     if (rowsError) {
       setError("Impossible de charger tes coups de cœur.");
@@ -113,7 +114,9 @@ function Matches() {
       <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <div className="mt-3 mb-6 flex items-end justify-between gap-4">
-          <h1 className="font-display text-4xl">Mes coups de cœur</h1>
+          <h1 className="font-display text-4xl">
+            Mes coups de cœur{matches !== null && ` (${matches.length})`}
+          </h1>
           <Link
             to="/profile/blocked"
             className="text-xs text-[#a99b95] hover:text-[#e8be6c] hover:underline"
