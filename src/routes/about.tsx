@@ -73,23 +73,25 @@ function About() {
           <p className="text-xl text-foreground font-display italic">
             Parce qu'au fond, <em>la route rapproche les cœurs</em>.
           </p>
-          <div className="flex justify-center py-4">
-            <blockquote
-              className="tiktok-embed"
-              cite="https://www.tiktok.com/@motardsdecoeur/video/7685061245497642272"
-              data-video-id="7685061245497642272"
-              style={{ maxWidth: "605px", minWidth: "325px" }}
+          <div className="flex flex-col items-center gap-4 py-4">
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              className="w-full max-w-sm rounded-2xl shadow-elegant bg-black"
+              poster={community}
             >
-              <section>
-                <a
-                  href="https://www.tiktok.com/@motardsdecoeur/video/7685061245497642272"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Voir la vidéo sur TikTok
-                </a>
-              </section>
-            </blockquote>
+              <source src="/videos/histoire.mp4" type="video/mp4" />
+              Notre histoire en vidéo — vidéo au format MP4 non lue par votre navigateur.
+            </video>
+            <a
+              href="https://www.tiktok.com/@motardsdecoeur"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-4 decoration-primary/40"
+            >
+              Suivez-nous sur TikTok @motardsdecoeur
+            </a>
           </div>
         </div>
       </section>
