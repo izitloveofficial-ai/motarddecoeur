@@ -74,24 +74,24 @@ const PLANS = [
 function Premium() {
   return (
     <Layout>
-      <section className="py-20 px-6 text-center border-b border-border/40">
+      <section className="px-4 py-12 sm:px-6 sm:py-20 text-center border-b border-border/40">
         <div className="mx-auto max-w-3xl animate-fade-up">
           <span className="inline-flex items-center gap-2 glass-red px-4 py-2 rounded-full text-xs uppercase tracking-widest mb-6">
             <Crown className="h-3 w-3" /> Vision premium
           </span>
-          <h1 className="font-display text-5xl md:text-7xl mb-6">Une expérience <span className="text-gradient-red italic">à construire</span></h1>
+          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl mb-6">Une expérience <span className="text-gradient-red italic">à construire</span></h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             Les offres premium ne sont pas encore ouvertes. Aucun abonnement, paiement ou avantage commercial n'est actif pendant cette phase de pré-lancement.
           </p>
         </div>
       </section>
 
-      <section className="py-20 px-6">
+      <section className="px-4 py-12 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-3 gap-8">
           {PLANS.map((p, i) => (
             <div
               key={i}
-              className={`relative rounded-3xl p-10 ${p.popular ? "glass-red ring-red-glow" : "glass"} hover-lift`}
+              className={`relative rounded-3xl p-6 sm:p-10 ${p.popular ? "glass-red ring-red-glow" : "glass"} hover-lift`}
             >
               {p.popular && (
                 <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-red text-primary-foreground px-4 py-1.5 rounded-full text-xs uppercase tracking-widest shadow-glow flex items-center gap-1">

@@ -448,7 +448,7 @@ function ProfileSetup() {
   return (
     <Layout>
       <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
-        <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
+        <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16">
           <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-[#d6a85c]/30 bg-[#281e1f] p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="mb-2 text-xs uppercase tracking-[0.25em] text-[#a99b95]">
@@ -476,7 +476,7 @@ function ProfileSetup() {
               Dernière étape
             </span>
           )}
-          <h1 className="mt-3 mb-3 font-display text-4xl">
+          <h1 className="mt-3 mb-3 font-display text-3xl sm:text-4xl">
             {hasProfile ? "Modifier mon profil" : "Complète ton profil"}
           </h1>
           <p className="mb-8 text-sm text-[#d4c6bf]">

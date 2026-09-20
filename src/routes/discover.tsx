@@ -400,10 +400,10 @@ function Discover() {
           </div>
         </div>
       )}
-      <section className="mx-auto max-w-md px-6 py-12 sm:py-16">
+      <section className="mx-auto max-w-md px-4 py-8 sm:px-6 sm:py-16">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <div className="mt-3 mb-6 flex items-center justify-between">
-          <h1 className="font-display text-4xl">Rencontres</h1>
+          <h1 className="font-display text-3xl sm:text-4xl">Rencontres</h1>
           <button
             onClick={() => setFiltersOpen((v) => !v)}
             className="rounded-full border border-white/15 px-4 py-2 text-xs uppercase tracking-wider text-[#d4c6bf] hover:border-[#e2b45f]/60"

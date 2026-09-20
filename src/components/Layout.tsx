@@ -10,10 +10,10 @@ export function Layout({ children }: { children: ReactNode }) {
     void registerForPushNotifications();
   }, []);
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="app-shell min-h-screen flex flex-col">
       <Navbar />
       <AnnouncementBanner />
-      <main className="flex-1 pt-28 md:pt-32 xl:pt-36">{children}</main>
+      <main className="app-main flex-1 pt-24 sm:pt-28 md:pt-32 xl:pt-36">{children}</main>
       <Footer />
     </div>
   );

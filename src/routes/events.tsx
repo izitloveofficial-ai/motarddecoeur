@@ -40,10 +40,10 @@ export const Route = createFileRoute("/events")({
 function Events() {
   return (
     <Layout>
-      <section className="py-16 px-6 border-b border-border/40">
+      <section className="px-4 py-10 sm:px-6 sm:py-16 border-b border-border/40">
         <div className="mx-auto max-w-7xl animate-fade-up">
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Agenda à construire</span>
-          <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">L'asphalte <span className="text-gradient-red italic">vous appelle.</span></h1>
+          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl mt-4 mb-4">L'asphalte <span className="text-gradient-red italic">vous appelle.</span></h1>
           <p className="text-muted-foreground max-w-2xl text-lg">
             Balades, festivals et balades solidaires font partie des idées de lancement.
             Aucun événement n'est encore confirmé, réservable ou ouvert aux inscriptions.
@@ -51,15 +51,15 @@ function Events() {
         </div>
       </section>
 
-      <section className="py-16 px-6">
+      <section className="px-4 py-10 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-7xl">
-          <div className="relative min-h-[34rem] rounded-3xl overflow-hidden shadow-elegant md:aspect-[21/9] md:min-h-0">
+          <div className="relative min-h-[30rem] sm:min-h-[34rem] rounded-3xl overflow-hidden shadow-elegant md:aspect-[21/9] md:min-h-0">
             <img src={EVENTS[0].img} alt={EVENTS[0].title} className="absolute inset-0 w-full h-full object-cover" width={1920} height={822} />
             <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/60 to-transparent" />
-            <div className="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl">
+            <div className="absolute inset-0 p-5 sm:p-8 md:p-16 flex flex-col justify-center max-w-2xl">
               <span className="self-start glass-red px-4 py-1.5 rounded-full text-xs uppercase tracking-widest mb-4">Piste d'événement</span>
               <div className="text-primary uppercase tracking-[0.3em] text-xs mb-3">{EVENTS[0].date}</div>
-              <h2 className="font-display text-4xl md:text-6xl mb-4">{EVENTS[0].title}</h2>
+              <h2 className="font-display text-3xl sm:text-4xl md:text-6xl mb-4">{EVENTS[0].title}</h2>
               <p className="text-foreground/80 mb-6 flex flex-wrap items-center gap-4">
                 <span className="flex items-center gap-1"><MapPin className="h-4 w-4" />{EVENTS[0].loc}</span>
                 <span className="flex items-center gap-1"><Users className="h-4 w-4" />{EVENTS[0].spots}</span>
@@ -72,7 +72,7 @@ function Events() {
         </div>
       </section>
 
-      <section className="py-16 px-6">
+      <section className="px-4 py-10 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-7xl grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {EVENTS.slice(1).map((e, i) => (
             <article key={i} className="group glass rounded-2xl overflow-hidden hover-lift">
@@ -84,7 +84,7 @@ function Events() {
               </div>
               <div className="p-6">
                 <h3 className="text-xl mb-3 font-display">{e.title}</h3>
-                <div className="flex items-center justify-between text-xs text-muted-foreground mb-5">
+                <div className="flex flex-col items-start gap-2 text-xs sm:flex-row sm:items-center sm:justify-between text-muted-foreground mb-5">
                   <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{e.loc}</span>
                   <span className="flex items-center gap-1"><Users className="h-3 w-3" />{e.spots}</span>
                 </div>

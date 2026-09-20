@@ -124,13 +124,13 @@ function Rides() {
 
   return (
     <Layout>
-      <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
-        <div className="mb-6 flex items-center justify-between">
+      <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16">
+        <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
               Motards de Cœur
             </span>
-            <h1 className="mt-2 font-display text-4xl">Balades</h1>
+            <h1 className="mt-2 font-display text-3xl sm:text-4xl">Balades</h1>
           </div>
           <button
             onClick={() => setShowForm((value) => !value)}
@@ -206,7 +206,7 @@ function Rides() {
               key={ride.id}
               className="rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 p-5"
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h2 className="font-display text-xl">{ride.title}</h2>
                   <p className="mt-1 text-sm text-[#e8be6c]">
@@ -229,17 +229,17 @@ function Rides() {
                     <Users className="h-3.5 w-3.5" /> {ride.attendeeCount} participant(s)
                   </p>
                 </div>
-                <div className="flex shrink-0 flex-col items-end gap-2">
+                <div className="flex shrink-0 flex-row items-center justify-between gap-2 sm:flex-col sm:items-end">
                   <button
                     onClick={() => void toggleJoin(ride)}
-                    className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wider ${ride.joined ? "border border-white/15 text-[#d4c6bf]" : "bg-gradient-red text-primary-foreground"}`}
+                    className={`whitespace-nowrap rounded-full min-h-11 px-4 py-2 text-xs font-medium uppercase tracking-wider ${ride.joined ? "border border-white/15 text-[#d4c6bf]" : "bg-gradient-red text-primary-foreground"}`}
                   >
                     {ride.joined ? "Se désinscrire" : "Participer"}
                   </button>
                   {ride.organizer_id === myId && (
                     <button
                       onClick={() => void cancelRide(ride)}
-                      className="text-xs text-[#a99b95] hover:text-[#e8be6c]"
+                      className="min-h-11 px-3 text-xs text-[#a99b95] hover:text-[#e8be6c]"
                     >
                       Annuler
                     </button>

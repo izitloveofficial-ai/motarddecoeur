@@ -64,7 +64,7 @@ export function Navbar() {
   );
 
   return (
-    <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
+    <header className="safe-top fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 xl:py-2">
         <Link
@@ -141,7 +141,7 @@ export function Navbar() {
         </div>
 
         <button
-          className="xl:hidden text-neutral-900"
+          className="xl:hidden grid min-h-11 min-w-11 place-items-center rounded-full text-neutral-900 hover:bg-neutral-100"
           onClick={() => setOpen(!open)}
           aria-label="Menu"
           aria-expanded={open}
@@ -157,7 +157,7 @@ export function Navbar() {
               key={l.to}
               to={l.to}
               onClick={() => setOpen(false)}
-              className="py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
+              className="flex min-h-11 items-center py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
             >
               {l.label}
             </Link>
@@ -169,7 +169,7 @@ export function Navbar() {
                   key={l.to}
                   to={l.to}
                   onClick={() => setOpen(false)}
-                  className="py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
+                  className="flex min-h-11 items-center py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
                 >
                   <span className="inline-flex items-center gap-2">
                     {l.label}
@@ -186,7 +186,7 @@ export function Navbar() {
           <Link
             to="/join"
             onClick={() => setOpen(false)}
-            className="mt-2 text-center px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground no-underline rounded-full"
+            className="mt-2 flex min-h-11 items-center justify-center px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground no-underline rounded-full"
           >
             Pré-inscription gratuite
           </Link>

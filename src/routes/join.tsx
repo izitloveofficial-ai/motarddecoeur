@@ -115,7 +115,7 @@ function Join() {
 
   return (
     <PrelaunchLayout>
-      <section className="relative isolate overflow-hidden border-b border-[#8d5b55]/25 bg-[#21191a] px-6 py-16 sm:py-20 lg:py-24">
+      <section className="relative isolate overflow-hidden border-b border-[#8d5b55]/25 bg-[#21191a] px-4 py-10 sm:px-6 sm:py-20 lg:py-24">
         <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
           <img
             src={bikeDetail}
@@ -133,7 +133,7 @@ function Join() {
             <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d9a441]/45 bg-[#d9a441]/15 px-5 py-3 text-sm font-bold uppercase tracking-wider text-[#f6d98d] shadow-[0_0_30px_rgba(217,164,65,0.16)] sm:text-base">
               Pré-inscriptions ouvertes ❤️
             </span>
-            <h1 className="font-display text-5xl md:text-7xl leading-none mb-6">
+            <h1 className="font-display text-3xl sm:text-5xl md:text-7xl leading-none mb-6">
               Motards de Cœur arrive bientôt.
             </h1>
             <p className="mb-5 max-w-2xl text-lg leading-relaxed text-[#d8cbc4]">
@@ -328,10 +328,10 @@ function Join() {
         </div>
       </section>
 
-      <section className="border-t border-white/[0.03] bg-gradient-to-b from-[#241b1c] to-[#191516] px-6 py-16 sm:py-20">
+      <section className="border-t border-white/[0.03] bg-gradient-to-b from-[#241b1c] to-[#191516] px-4 py-10 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-5xl text-center">
           <Mail className="mx-auto h-8 w-8 text-primary mb-5" />
-          <h2 className="font-display text-4xl md:text-5xl mb-4">
+          <h2 className="font-display text-2xl sm:text-4xl md:text-5xl mb-4">
             Une première liste d'attente, avant la vraie application.
           </h2>
           <p className="mx-auto max-w-3xl text-lg leading-relaxed text-[#cdbfba]">

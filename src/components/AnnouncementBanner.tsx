@@ -54,7 +54,7 @@ export function AnnouncementBanner() {
 
   return (
     <div className="bg-primary text-primary-foreground">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3 text-sm">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 text-sm sm:px-6">
         <p>
           <strong className="font-semibold">{announcement.title}</strong>
           <span className="ml-2">{announcement.body}</span>
@@ -62,7 +62,7 @@ export function AnnouncementBanner() {
         <button
           aria-label="Fermer l'annonce"
           onClick={dismiss}
-          className="shrink-0 rounded-full p-1 hover:bg-black/10"
+          className="grid min-h-11 min-w-11 shrink-0 place-items-center rounded-full p-1 hover:bg-black/10"
         >
           <X className="h-4 w-4" />
         </button>
