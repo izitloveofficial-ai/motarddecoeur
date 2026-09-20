@@ -417,7 +417,7 @@ function ProfileSetup() {
     setFeedback(
       failedUploads
         ? `Profil enregistré, mais ${failedUploads} photo(s) n'ont pas pu être ajoutée(s).`
-        : "Profil enregistré ! Il sera visible dès l'ouverture de la découverte de profils.",
+        : "Profil enregistré ! Tu peux maintenant poursuivre selon tes envies.",
     );
     if (!failedUploads) {
       setPhotos([]);
@@ -708,12 +708,6 @@ function ProfileSetup() {
                   className="block w-full rounded-full border border-primary/40 px-8 py-3 text-center text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
                 >
                   {nextStep.label}
-                </Link>
-                <Link
-                  to="/discover"
-                  className="inline-block text-xs text-[#a99b95] underline decoration-white/20 underline-offset-4 transition hover:text-[#d4c6bf]"
-                >
-                  Vous pouvez aussi explorer les profils
                 </Link>
               </div>
             )}
