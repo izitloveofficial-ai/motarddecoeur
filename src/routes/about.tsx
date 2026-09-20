@@ -21,19 +21,6 @@ export const Route = createFileRoute("/about")({
 });
 
 function About() {
-  useEffect(() => {
-    const scriptSrc = "https://www.tiktok.com/embed.js";
-
-    if (document.querySelector(`script[src="${scriptSrc}"]`)) {
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = scriptSrc;
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
-
   return (
     <Layout>
       <section className="relative -mt-20 h-[70vh] flex items-end overflow-hidden">
