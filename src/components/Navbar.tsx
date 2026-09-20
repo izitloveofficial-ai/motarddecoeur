@@ -21,6 +21,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [matchCount, setMatchCount] = useState(0);
+  const [lookingFor, setLookingFor] = useState<string | null>(null);
 
   useEffect(() => {
     if (!supabase) return;
@@ -29,6 +30,7 @@ export function Navbar() {
       if (!session || !supabase) {
         setIsAdmin(false);
         setMatchCount(0);
+        setLookingFor(null);
         return;
       }
 
@@ -38,9 +40,11 @@ export function Navbar() {
           .from("matches")
           .select("id", { count: "exact", head: true })
           .or(`profile_a_id.eq.${session.user.id},profile_b_id.eq.${session.user.id}`),
-      ]).then(([{ data: adminResult }, { count }]) => {
+        supabase.from("profiles").select("looking_for").eq("id", session.user.id).maybeSingle(),
+      ]).then(([{ data: adminResult }, { count }, { data: profile }]) => {
         setIsAdmin(adminResult === true);
         setMatchCount(count ?? 0);
+        setLookingFor(profile?.looking_for ?? null);
       });
     }
 
@@ -52,6 +56,12 @@ export function Navbar() {
     });
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  const visibleAppLinks = appLinks.filter(
+    (link) =>
+      link.to !== "/discover" ||
+      (lookingFor !== "balades_moto" && lookingFor !== "communaute_motards"),
+  );
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
@@ -93,7 +103,7 @@ export function Navbar() {
 
           {isAdmin && (
             <div className="flex items-center gap-3 border-l border-neutral-200 pl-4 2xl:gap-4 2xl:pl-6">
-              {appLinks.map((l) => (
+              {visibleAppLinks.map((l) => (
                 <Link
                   key={l.to}
                   to={l.to}
@@ -154,7 +164,7 @@ export function Navbar() {
           ))}
           {isAdmin && (
             <div className="mt-1 flex flex-col border-t border-neutral-200 pt-3">
-              {appLinks.map((l) => (
+              {visibleAppLinks.map((l) => (
                 <Link
                   key={l.to}
                   to={l.to}
