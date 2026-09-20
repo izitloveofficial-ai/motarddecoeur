@@ -9,11 +9,11 @@ import {
 function d1Database(sqlite: Database) {
   return {
     prepare(sql: string) {
-      let values: unknown[] = [];
+      let values: never[] = [];
       const statement = sqlite.prepare(sql);
       const api = {
         bind(...next: unknown[]) {
-          values = next;
+          values = next as never[];
           return api;
         },
         async first<T>() {
@@ -146,7 +146,7 @@ describe("flux de préinscription et administration", () => {
       ).status,
     ).toBe(401);
 
-    globalThis.fetch = (async () => Response.json(false)) as typeof fetch;
+    globalThis.fetch = (async () => Response.json(false)) as unknown as typeof fetch;
     const forbidden = await handleAdminPreinscriptionsRequest(
       new Request("https://app.test/api/admin/preinscriptions", {
         headers: { authorization: "Bearer ordinary-user" },
