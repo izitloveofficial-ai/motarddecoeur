@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { Layout } from "@/components/Layout";
 import { Heart, Compass, Shield, Flame } from "lucide-react";
 import bikeImg from "@/assets/about-hero.jpg";
