@@ -4,8 +4,8 @@ import { BrandLogo } from "./BrandLogo";
 
 export function Footer() {
   return (
-    <footer className="relative mt-32 border-t border-border/40 bg-card/40">
-      <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-12">
+    <footer className="safe-bottom relative mt-16 sm:mt-24 lg:mt-32 border-t border-border/40 bg-card/40">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 sm:py-16 md:grid-cols-4 md:gap-12">
         <div className="md:col-span-2">
           <div className="mb-4">
             <BrandLogo
@@ -16,16 +16,16 @@ export function Footer() {
           <p className="text-muted-foreground max-w-md mb-6">
             Rencontres, balades et communauté moto : rejoignez Motards de Cœur avant le lancement.
           </p>
-          <div className="flex gap-2 max-w-sm">
+          <div className="flex max-w-sm gap-2">
             <input
               type="email"
               placeholder="Pré-inscription gratuite"
               disabled
-              className="flex-1 px-4 py-3 bg-input/40 border border-border rounded-full text-sm text-muted-foreground disabled:cursor-not-allowed focus:outline-none"
+              className="min-w-0 flex-1 px-4 py-3 text-base sm:text-sm bg-input/40 border border-border rounded-full text-muted-foreground disabled:cursor-not-allowed focus:outline-none"
             />
             <Link
               to="/join"
-              className="px-4 py-3 bg-gradient-red rounded-full text-primary-foreground hover:shadow-glow transition"
+              className="grid min-h-11 min-w-11 place-items-center px-4 py-3 bg-gradient-red rounded-full text-primary-foreground hover:shadow-glow transition"
               aria-label="Se pré-inscrire gratuitement"
             >
               <Send className="h-4 w-4" />

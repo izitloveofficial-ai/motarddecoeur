@@ -111,15 +111,15 @@ function Matches() {
 
   return (
     <Layout>
-      <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
+      <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
-        <div className="mt-3 mb-6 flex items-end justify-between gap-4">
-          <h1 className="font-display text-4xl">
+        <div className="mt-3 mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <h1 className="font-display text-3xl sm:text-4xl">
             Mes coups de cœur{matches !== null && ` (${matches.length})`}
           </h1>
           <Link
             to="/profile/blocked"
-            className="text-xs text-[#a99b95] hover:text-[#e8be6c] hover:underline"
+            className="inline-flex min-h-11 items-center text-xs text-[#a99b95] hover:text-[#e8be6c] hover:underline"
           >
             Voir les personnes bloquées
           </Link>
@@ -169,7 +169,7 @@ function Matches() {
                     </span>
                   )}
                 </p>
-                <p className="text-xs text-[#a99b95]">
+                <p className="inline-flex min-h-11 items-center text-xs text-[#a99b95]">
                   Coup de cœur le {new Date(match.matched_at).toLocaleDateString("fr-FR")}
                 </p>
               </div>

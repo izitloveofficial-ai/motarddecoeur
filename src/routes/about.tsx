@@ -28,13 +28,13 @@ function About() {
         <div className="absolute inset-0 bg-gradient-overlay" />
         <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 animate-fade-up">
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Notre histoire</span>
-          <h1 className="font-display text-6xl md:text-8xl mt-4 leading-none">
+          <h1 className="font-display text-4xl sm:text-6xl md:text-8xl mt-4 leading-none">
             Né d'une <span className="text-gradient-red italic">passion</span><br /> partagée.
           </h1>
         </div>
       </section>
 
-      <section className="py-32 px-6">
+      <section className="px-4 py-14 sm:px-6 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-4xl space-y-12 text-lg leading-relaxed text-foreground/85">
           <p className="text-2xl text-foreground font-display italic">
             "Parfois, il suffit d'une rencontre pour changer de route."
@@ -96,11 +96,11 @@ function About() {
         </div>
       </section>
 
-      <section className="py-32 px-6 bg-card/30">
+      <section className="px-4 py-14 sm:px-6 sm:py-24 lg:py-32 bg-card/30">
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-16">
             <span className="text-primary uppercase tracking-[0.4em] text-xs">Nos valeurs</span>
-            <h2 className="font-display text-5xl md:text-6xl mt-4">Ce qui nous anime</h2>
+            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl mt-4">Ce qui nous anime</h2>
           </div>
           <div className="grid md:grid-cols-4 gap-8">
             {[
@@ -121,12 +121,12 @@ function About() {
         </div>
       </section>
 
-      <section className="py-32 px-6">
+      <section className="px-4 py-14 sm:px-6 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-16 items-center">
           <img src={community} alt="" className="rounded-2xl shadow-elegant" loading="lazy" width={1600} height={1000} />
           <div>
             <span className="text-primary uppercase tracking-[0.4em] text-xs">Mission</span>
-            <h2 className="font-display text-5xl mt-4 mb-6">Connecter les âmes libres.</h2>
+            <h2 className="font-display text-3xl sm:text-5xl mt-4 mb-6">Connecter les âmes libres.</h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
               Le projet veut aider les motards à sortir de l'isolement, à rencontrer
               des personnes qui partagent leur passion et à transformer de futures

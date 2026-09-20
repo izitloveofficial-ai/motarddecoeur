@@ -227,13 +227,13 @@ function Conversation() {
   return (
     <Layout>
       <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
-        <section className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col px-6 py-8">
-          <div className="mb-4 flex items-center justify-between gap-3">
+        <section className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col px-4 py-5 sm:px-6 sm:py-8">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <Link
                 to="/matches"
                 aria-label="Retour aux coups de cœur"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-[#d4c6bf]"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/15 text-[#d4c6bf]"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Link>
@@ -260,16 +260,16 @@ function Conversation() {
                 <span className="text-xs text-[#a99b95]">Voir le profil</span>
               </button>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex w-full items-center justify-end gap-2 sm:w-auto sm:gap-4">
               <button
                 onClick={() => void deleteConversation()}
-                className="flex items-center gap-1.5 text-xs text-[#a99b95] hover:text-[#e8be6c]"
+                className="flex min-h-11 items-center gap-1.5 px-2 text-xs text-[#a99b95] hover:text-[#e8be6c]"
               >
                 <Trash2 className="h-3.5 w-3.5" /> Supprimer
               </button>
               <button
                 onClick={() => void blockOther()}
-                className="flex items-center gap-1.5 text-xs text-[#a99b95] hover:text-[#e8be6c]"
+                className="flex min-h-11 items-center gap-1.5 px-2 text-xs text-[#a99b95] hover:text-[#e8be6c]"
               >
                 <ShieldOff className="h-3.5 w-3.5" /> Bloquer
               </button>

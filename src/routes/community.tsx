@@ -50,10 +50,10 @@ const POSTS = [
 function Community() {
   return (
     <Layout>
-      <section className="py-16 px-6 border-b border-border/40">
+      <section className="px-4 py-10 sm:px-6 sm:py-16 border-b border-border/40">
         <div className="mx-auto max-w-7xl">
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Communauté en préparation</span>
-          <h1 className="font-display text-5xl md:text-7xl mt-4 mb-4">La <span className="text-gradient-red italic">communauté</span> avant tout.</h1>
+          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl mt-4 mb-4">La <span className="text-gradient-red italic">communauté</span> avant tout.</h1>
           <p className="text-muted-foreground max-w-2xl text-lg">
             Groupes, discussions et projets de balades sont prévus pour une prochaine phase du projet.
             Aucun fil social, forum ou compte membre n'est ouvert pour l'instant.
@@ -61,7 +61,7 @@ function Community() {
         </div>
       </section>
 
-      <section className="py-16 px-6">
+      <section className="px-4 py-10 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-7xl">
           <h2 className="font-display text-3xl mb-8 flex items-center gap-3"><Flame className="text-primary" /> Groupes envisagés</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -80,13 +80,13 @@ function Community() {
         </div>
       </section>
 
-      <section className="py-16 px-6">
+      <section className="px-4 py-10 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-6">
             <h2 className="font-display text-3xl flex items-center gap-3"><MessageCircle className="text-primary" /> Exemples de futurs espaces</h2>
 
             {POSTS.map((p, i) => (
-              <article key={i} className="glass rounded-2xl p-6 hover-lift">
+              <article key={i} className="glass rounded-2xl p-4 sm:p-6 hover-lift">
                 <header className="flex items-center gap-3 mb-4">
                   <img src={p.img} alt={p.user} className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/30" loading="lazy" />
                   <div>
@@ -98,10 +98,10 @@ function Community() {
                 {p.photo && (
                   <img src={p.photo} alt="" className="rounded-xl mb-4 w-full max-h-80 object-cover" loading="lazy" />
                 )}
-                <div className="flex items-center gap-6 text-sm text-muted-foreground border-t border-border/40 pt-4">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground border-t border-border/40 pt-4">
                   <button type="button" disabled className="flex cursor-not-allowed items-center gap-2 opacity-75"><Heart className="h-4 w-4" /> À venir</button>
                   <button type="button" disabled className="flex cursor-not-allowed items-center gap-2 opacity-75"><MessageCircle className="h-4 w-4" /> À venir</button>
-                  <button type="button" disabled className="flex cursor-not-allowed items-center gap-2 opacity-75 ml-auto"><Share2 className="h-4 w-4" /> À venir</button>
+                  <button type="button" disabled className="flex cursor-not-allowed items-center gap-2 opacity-75 sm:ml-auto"><Share2 className="h-4 w-4" /> À venir</button>
                 </div>
               </article>
             ))}
@@ -114,7 +114,7 @@ function Community() {
           </div>
 
           <aside className="space-y-8">
-            <div className="glass rounded-2xl p-6">
+            <div className="glass rounded-2xl p-4 sm:p-6">
               <h3 className="font-display text-xl mb-4 flex items-center gap-2"><MapPin className="text-primary h-5 w-5" /> Organisation des balades</h3>
               <ul className="space-y-4">
                 {[

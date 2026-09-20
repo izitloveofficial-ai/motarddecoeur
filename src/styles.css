@@ -169,3 +169,35 @@
     box-shadow: 0 0 0 1px oklch(0.55 0.24 25 / 0.5), 0 0 30px oklch(0.55 0.24 25 / 0.3);
   }
 }
+
+/* Native shells and narrow viewports need to respect the device chrome. */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .app-main {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  @media (max-width: 767px) {
+    .app-main {
+      padding-top: calc(6rem + env(safe-area-inset-top));
+    }
+  }
+}
+
+/* Prevent mobile browser input zoom and provide dependable finger-sized controls. */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+
+  button,
+  [role="button"] {
+    min-height: 2.75rem;
+  }
+}
