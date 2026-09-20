@@ -6,10 +6,11 @@ let registrationStarted = false;
 
 /** Registers the signed-in user's native device for push notifications. */
 export async function registerForPushNotifications() {
-  if (registrationStarted || !Capacitor.isNativePlatform() || !supabase) return;
+  const client = supabase;
+  if (registrationStarted || !Capacitor.isNativePlatform() || !client) return;
   const {
     data: { session },
-  } = await supabase.auth.getSession();
+  } = await client.auth.getSession();
   if (!session) return;
   registrationStarted = true;
 
@@ -17,7 +18,7 @@ export async function registerForPushNotifications() {
   if (permission.receive !== "granted") return;
 
   await PushNotifications.addListener("registration", async ({ value: token }) => {
-    await supabase.from("push_tokens").upsert(
+    await client.from("push_tokens").upsert(
       {
         profile_id: session.user.id,
         token,

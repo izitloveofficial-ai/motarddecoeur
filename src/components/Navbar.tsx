@@ -77,7 +77,7 @@ export function Navbar() {
                 to={l.to}
                 className="relative text-xs uppercase tracking-wider text-neutral-600 no-underline transition-colors hover:text-neutral-900 2xl:text-sm"
                 activeProps={{ className: "text-neutral-900" }}
-                activeOptions={{ exact: l.to === "/" }}
+                activeOptions={{ exact: (l.to as string) === "/" }}
               >
                 {({ isActive }) => (
                   <>
