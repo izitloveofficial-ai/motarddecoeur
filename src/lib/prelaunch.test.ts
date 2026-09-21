@@ -2,6 +2,10 @@ import { describe, expect, test } from "bun:test";
 import { isPathAllowedDuringPrelaunch } from "./prelaunch";
 
 describe("prelaunch admin routes", () => {
+  test("allows the sitemap to be fetched", () => {
+    expect(isPathAllowedDuringPrelaunch("/sitemap.xml")).toBe(true);
+  });
+
   test.each(["/community", "/events", "/premium", "/profiles"])(
     "lets %s reach its strict requireAdmin guard",
     (path) => expect(isPathAllowedDuringPrelaunch(path)).toBe(true),

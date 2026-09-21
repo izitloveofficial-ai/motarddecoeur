@@ -8,6 +8,7 @@ export const PRELAUNCH_MODE = true;
 
 /** Chemins accessibles pendant le mode pré-lancement. */
 export const PRELAUNCH_ALLOWED_PATHS = [
+  "/sitemap.xml",
   "/join",
   "/about",
   "/mentions-legales",
