@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { BadgeCheck, Ban, Bike, Flag, Heart, KeyRound, RotateCcw, ShieldOff } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Layout } from "@/components/Layout";
+import { Slider } from "@/components/ui/slider";
 import { requireAdmin } from "@/lib/require-admin";
 import { requireDatingIntent } from "@/lib/require-dating-intent";
 import { sendPushNotification } from "@/lib/push";
@@ -69,6 +70,10 @@ const defaultFilters: Filters = {
   experienceLevel: "",
   ridingPace: "",
 };
+
+const MIN_AGE = 18;
+const MAX_AGE = 99;
+const MAX_DISTANCE_KM = 500;
 
 type Candidate = {
   id: string;
@@ -439,34 +444,38 @@ function Discover() {
         </div>
         {filtersOpen && (
           <div className="mb-6 grid gap-4 rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-5 sm:grid-cols-3">
-            <label className="text-sm font-medium">
-              <span className="flex items-center gap-2">
-                Âge min. {!isPremium && <PremiumLabel />}
-              </span>
-              <input
-                type="number"
-                min={18}
-                max={99}
-                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
-                value={filters.minAge}
-                onChange={(e) => setFilters((f) => ({ ...f, minAge: e.target.value }))}
+            <div className="text-sm font-medium sm:col-span-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2">
+                  Âge {!isPremium && <PremiumLabel />}
+                </span>
+                <span className="text-[#e8be6c]">
+                  {filters.minAge || MIN_AGE} — {filters.maxAge || MAX_AGE} ans
+                </span>
+              </div>
+              <Slider
+                className="mt-4"
+                min={MIN_AGE}
+                max={MAX_AGE}
+                step={1}
+                value={[
+                  filters.minAge ? Number(filters.minAge) : MIN_AGE,
+                  filters.maxAge ? Number(filters.maxAge) : MAX_AGE,
+                ]}
+                onValueChange={([minAge, maxAge]) =>
+                  setFilters((current) => ({
+                    ...current,
+                    minAge: minAge === MIN_AGE ? "" : String(minAge),
+                    maxAge: maxAge === MAX_AGE ? "" : String(maxAge),
+                  }))
+                }
                 disabled={!isPremium}
+                thumbLabels={["Âge minimum", "Âge maximum"]}
+                trackClassName="bg-[#e2b45f]/20"
+                rangeClassName="bg-[#e2b45f]"
+                thumbClassName="h-5 w-5 border-[#d6a85c] bg-[#fff9f0] focus-visible:ring-[#e2b45f]"
               />
-            </label>
-            <label className="text-sm font-medium">
-              <span className="flex items-center gap-2">
-                Âge max. {!isPremium && <PremiumLabel />}
-              </span>
-              <input
-                type="number"
-                min={18}
-                max={99}
-                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
-                value={filters.maxAge}
-                onChange={(e) => setFilters((f) => ({ ...f, maxAge: e.target.value }))}
-                disabled={!isPremium}
-              />
-            </label>
+            </div>
             <label className="text-sm font-medium">
               Tu recherches
               <select
@@ -482,21 +491,34 @@ function Discover() {
                 ))}
               </select>
             </label>
-            <label className="text-sm font-medium">
-              <span className="flex items-center gap-2">
-                Distance max. (km) {!isPremium && <PremiumLabel />}
-              </span>
-              <input
-                type="number"
-                min={1}
-                max={2000}
-                placeholder="Sans limite"
-                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
-                value={filters.maxKm}
-                onChange={(e) => setFilters((f) => ({ ...f, maxKm: e.target.value }))}
+            <div className="text-sm font-medium">
+              <div className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2">
+                  Distance max. {!isPremium && <PremiumLabel />}
+                </span>
+                <span className="text-[#e8be6c]">
+                  {filters.maxKm ? `${filters.maxKm} km` : "Sans limite"}
+                </span>
+              </div>
+              <Slider
+                className="mt-4"
+                min={5}
+                max={MAX_DISTANCE_KM}
+                step={5}
+                value={[filters.maxKm ? Number(filters.maxKm) : MAX_DISTANCE_KM]}
+                onValueChange={([maxKm]) =>
+                  setFilters((current) => ({
+                    ...current,
+                    maxKm: maxKm === MAX_DISTANCE_KM ? "" : String(maxKm),
+                  }))
+                }
                 disabled={!isPremium}
+                thumbLabels={["Distance maximale"]}
+                trackClassName="bg-[#e2b45f]/20"
+                rangeClassName="bg-[#e2b45f]"
+                thumbClassName="h-5 w-5 border-[#d6a85c] bg-[#fff9f0] focus-visible:ring-[#e2b45f]"
               />
-            </label>
+            </div>
             <label className="text-sm font-medium">
               <span className="flex items-center gap-2">
                 Type de moto {!isPremium && <PremiumLabel />}
