@@ -608,8 +608,16 @@ function Discover() {
           <p className="text-sm text-[#d4c6bf]">Chargement des profils…</p>
         )}
         {candidates && !current && (
-          <div className="rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-8 text-center text-sm text-[#d4c6bf]">
-            Plus de nouveaux profils pour le moment. Reviens un peu plus tard !
+          <div className="rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 p-8 text-center sm:p-10">
+            <Bike
+              className="mx-auto h-16 w-16 text-[#e2b45f]"
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
+            <h2 className="mt-5 font-display text-2xl text-[#fff9f0]">La route est calme</h2>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-[#d4c6bf]">
+              Plus de nouveaux profils pour le moment. Reviens un peu plus tard !
+            </p>
           </div>
         )}
         {current && (

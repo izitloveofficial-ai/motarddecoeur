@@ -1,5 +1,5 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { BadgeCheck, Trash2 } from "lucide-react";
+import { BadgeCheck, Heart, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
@@ -131,12 +131,20 @@ function Matches() {
         )}
         {matches === null && !error && <p className="text-sm text-[#d4c6bf]">Chargement…</p>}
         {matches?.length === 0 && (
-          <div className="rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-8 text-center text-sm text-[#d4c6bf]">
-            Pas encore de discussion. Va faire un tour du côté de la{" "}
-            <Link to="/discover" className="text-primary hover:underline">
-              découverte
-            </Link>{" "}
-            !
+          <div className="rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 p-8 text-center sm:p-10">
+            <Heart
+              className="mx-auto h-16 w-16 text-[#e2b45f]"
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
+            <h2 className="mt-5 font-display text-2xl text-[#fff9f0]">Ton prochain coup de cœur</h2>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-[#d4c6bf]">
+              Pas encore de discussion. Va faire un tour du côté de la{" "}
+              <Link to="/discover" className="text-primary hover:underline">
+                découverte
+              </Link>{" "}
+              !
+            </p>
           </div>
         )}
         <ul className="space-y-3">

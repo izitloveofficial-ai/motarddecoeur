@@ -1,0 +1,15 @@
+{
+  "name": "Motards de Cœur",
+  "short_name": "Motards de Cœur",
+  "start_url": "/join",
+  "display": "standalone",
+  "background_color": "#21191a",
+  "theme_color": "#21191a",
+  "icons": [
+    {
+      "src": "/logo-motards-de-coeur.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ]
+}
