@@ -23,6 +23,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [matchCount, setMatchCount] = useState(0);
+  const [likesCount, setLikesCount] = useState(0);
   const [lookingFor, setLookingFor] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export function Navbar() {
       if (!session || !supabase) {
         setIsAdmin(false);
         setMatchCount(0);
+        setLikesCount(0);
         setLookingFor(null);
         return;
       }
@@ -54,9 +56,11 @@ export function Navbar() {
           .select("id", { count: "exact", head: true })
           .or(`profile_a_id.eq.${session.user.id},profile_b_id.eq.${session.user.id}`),
         supabase.from("profiles").select("looking_for").eq("id", session.user.id).maybeSingle(),
-      ]).then(([{ data: adminResult }, { count }, { data: profile }]) => {
+        supabase.rpc("who_liked_me"),
+      ]).then(([{ data: adminResult }, { count }, { data: profile }, { data: likes }]) => {
         setIsAdmin(adminResult === true);
         setMatchCount(count ?? 0);
+        setLikesCount(likes?.length ?? 0);
         setLookingFor(profile?.looking_for ?? null);
       });
     }
@@ -132,6 +136,11 @@ export function Navbar() {
                             Premium
                           </span>
                         )}
+                        {l.to === "/discover/likes" && likesCount > 0 && (
+                          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                            {likesCount}
+                          </span>
+                        )}
                         {l.to === "/matches" && matchCount > 0 && (
                           <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
                             {matchCount}
@@ -194,6 +203,11 @@ export function Navbar() {
                     {"premium" in l && l.premium && (
                       <span className="rounded-full border border-[#d6a85c]/60 px-1.5 py-0.5 text-[9px] text-[#9a6a1f]">
                         Premium
+                      </span>
+                    )}
+                    {l.to === "/discover/likes" && likesCount > 0 && (
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                        {likesCount}
                       </span>
                     )}
                     {l.to === "/matches" && matchCount > 0 && (
