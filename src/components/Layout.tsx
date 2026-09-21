@@ -3,6 +3,7 @@ import { type ReactNode, useEffect } from "react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { AnnouncementBanner } from "./AnnouncementBanner";
+import { MobileTabBar } from "./MobileTabBar";
 import { registerForPushNotifications } from "@/lib/push";
 
 export function Layout({ children }: { children: ReactNode }) {
@@ -13,8 +14,11 @@ export function Layout({ children }: { children: ReactNode }) {
     <div className="app-shell min-h-screen flex flex-col">
       <Navbar />
       <AnnouncementBanner />
-      <main className="app-main flex-1 pt-24 sm:pt-28 md:pt-32 xl:pt-36">{children}</main>
+      <main className="app-main flex-1 pb-20 pt-24 sm:pb-0 sm:pt-28 md:pt-32 xl:pt-36">
+        {children}
+      </main>
       <Footer />
+      <MobileTabBar />
     </div>
   );
 }
