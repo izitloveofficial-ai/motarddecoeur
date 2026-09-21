@@ -73,6 +73,9 @@ type ExistingPhoto = {
   publicUrl: string;
 };
 
+type Prompt = { id: string; question: string };
+type PromptAnswer = { promptId: string; answer: string };
+
 const emptyProfile: ProfileForm = {
   first_name: "",
   birth_date: "",
@@ -114,6 +117,8 @@ function ProfileSetup() {
   const [deleting, setDeleting] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [availablePrompts, setAvailablePrompts] = useState<Prompt[]>([]);
+  const [promptAnswers, setPromptAnswers] = useState<PromptAnswer[]>([]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -130,16 +135,22 @@ function ProfileSetup() {
         setFeedback("Session expirée. Reconnecte-toi puis réessaie.");
         return;
       }
-      const [profileResult, photosResult] = await Promise.all([
+      const [profileResult, photosResult, promptsResult, answersResult] = await Promise.all([
         client.from("profiles").select("*").eq("id", user.id).maybeSingle(),
         client
           .from("profile_photos")
           .select("id, storage_path, position")
           .eq("profile_id", user.id)
           .order("position", { ascending: true }),
+        client.from("prompts").select("id, question").eq("is_active", true),
+        client
+          .from("profile_prompts")
+          .select("prompt_id, answer, position")
+          .eq("profile_id", user.id)
+          .order("position", { ascending: true }),
       ]);
       if (cancelled) return;
-      if (profileResult.error || photosResult.error) {
+      if (profileResult.error || photosResult.error || promptsResult.error || answersResult.error) {
         setStatus("error");
         setFeedback("Impossible de charger ton profil. Recharge la page puis réessaie.");
         return;
@@ -167,6 +178,13 @@ function ProfileSetup() {
             .publicUrl,
         })),
       );
+      setAvailablePrompts(promptsResult.data ?? []);
+      setPromptAnswers(
+        (answersResult.data ?? []).map((answer) => ({
+          promptId: answer.prompt_id,
+          answer: answer.answer ?? "",
+        })),
+      );
       setLoadingProfile(false);
     }
 
@@ -178,6 +196,21 @@ function ProfileSetup() {
 
   const updateField = <K extends keyof ProfileForm>(name: K, value: ProfileForm[K]) =>
     setProfile((current) => ({ ...current, [name]: value }));
+
+  function togglePrompt(promptId: string) {
+    setPromptAnswers((current) => {
+      const isSelected = current.some((answer) => answer.promptId === promptId);
+      if (isSelected) return current.filter((answer) => answer.promptId !== promptId);
+      if (current.length >= 3) return current;
+      return [...current, { promptId, answer: "" }];
+    });
+  }
+
+  function updatePromptAnswer(promptId: string, answer: string) {
+    setPromptAnswers((current) =>
+      current.map((item) => (item.promptId === promptId ? { ...item, answer } : item)),
+    );
+  }
 
   async function removeExistingPhoto(photo: ExistingPhoto) {
     if (!supabase || deletingPhotoId) return;
@@ -383,6 +416,26 @@ function ProfileSetup() {
       return;
     }
 
+    let promptsFailed = false;
+    const { error: deletePromptsError } = await supabase
+      .from("profile_prompts")
+      .delete()
+      .eq("profile_id", user.id);
+    const filledPromptAnswers = promptAnswers.filter(({ answer }) => answer.trim());
+    if (deletePromptsError) {
+      promptsFailed = true;
+    } else if (filledPromptAnswers.length) {
+      const { error: insertPromptsError } = await supabase.from("profile_prompts").insert(
+        filledPromptAnswers.map(({ promptId, answer }, position) => ({
+          profile_id: user.id,
+          prompt_id: promptId,
+          answer: answer.trim(),
+          position,
+        })),
+      );
+      promptsFailed = Boolean(insertPromptsError);
+    }
+
     let failedUploads = 0;
     const uploadedPhotos: ExistingPhoto[] = [];
     const firstPosition =
@@ -415,13 +468,15 @@ function ProfileSetup() {
     }
     setHasProfile(true);
     setExistingPhotos((current) => [...current, ...uploadedPhotos]);
-    setStatus(failedUploads ? "error" : "success");
+    setStatus(failedUploads || promptsFailed ? "error" : "success");
     setFeedback(
-      failedUploads
-        ? `Profil enregistré, mais ${failedUploads} photo(s) n'ont pas pu être ajoutée(s).`
-        : "Profil enregistré ! Tu peux maintenant poursuivre selon tes envies.",
+      promptsFailed
+        ? "Profil enregistré, mais tes réponses aux prompts n'ont pas pu être actualisées."
+        : failedUploads
+          ? `Profil enregistré, mais ${failedUploads} photo(s) n'ont pas pu être ajoutée(s).`
+          : "Profil enregistré ! Tu peux maintenant poursuivre selon tes envies.",
     );
-    if (!failedUploads) {
+    if (!failedUploads && !promptsFailed) {
       setPhotos([]);
     }
   }
@@ -588,6 +643,58 @@ function ProfileSetup() {
                     onChange={(event) => updateField("bio", event.target.value)}
                   />
                 </label>
+                <fieldset className="space-y-3 rounded-2xl border border-white/10 bg-[#281e1f] p-4">
+                  <legend className="px-1 font-display text-xl">Prompts</legend>
+                  <p className="text-sm leading-relaxed text-[#a99b95]">
+                    Choisis jusqu'à 3 questions pour donner un aperçu de ta personnalité
+                    (optionnel).
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {availablePrompts.map((prompt) => {
+                      const selected = promptAnswers.some(
+                        (answer) => answer.promptId === prompt.id,
+                      );
+                      const disabled = !selected && promptAnswers.length >= 3;
+                      return (
+                        <button
+                          key={prompt.id}
+                          type="button"
+                          onClick={() => togglePrompt(prompt.id)}
+                          disabled={disabled}
+                          aria-pressed={selected}
+                          className={`rounded-xl border px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                            selected
+                              ? "border-[#e2b45f] bg-[#d9a441]/15 text-[#fff9f0]"
+                              : "border-white/15 bg-[#302526] text-[#d4c6bf] hover:border-[#d6a85c]/50"
+                          }`}
+                        >
+                          {prompt.question}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {promptAnswers.map((item, index) => {
+                    const prompt = availablePrompts.find(({ id }) => id === item.promptId);
+                    if (!prompt) return null;
+                    return (
+                      <label key={item.promptId} className="block text-sm font-medium">
+                        {prompt.question}
+                        <textarea
+                          className={`${fieldClass} min-h-24 resize-y`}
+                          maxLength={300}
+                          placeholder="Ta réponse…"
+                          value={item.answer}
+                          onChange={(event) =>
+                            updatePromptAnswer(item.promptId, event.target.value)
+                          }
+                        />
+                        <span className="mt-1 block text-right text-xs font-normal text-[#a99b95]">
+                          {item.answer.length}/300 · réponse {index + 1} sur 3
+                        </span>
+                      </label>
+                    );
+                  })}
+                </fieldset>
               </div>
             )}
             {currentStep === 2 && (
