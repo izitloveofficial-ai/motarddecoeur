@@ -1,4 +1,4 @@
-import { Database } from "bun:sqlite";
+import { Database, type SQLQueryBindings } from "bun:sqlite";
 import { afterEach, describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import {
@@ -17,9 +17,9 @@ function environment() {
   sqlite.exec(readFileSync("migrations/0003_admin_password_reset.sql", "utf8"));
   const DB: AppDatabase = {
     prepare(sql) {
-      const values: unknown[] = [];
+      const values: SQLQueryBindings[] = [];
       const wrapper = {
-        bind(...bound: unknown[]) {
+        bind(...bound: SQLQueryBindings[]) {
           values.splice(0, values.length, ...bound);
           return wrapper;
         },
