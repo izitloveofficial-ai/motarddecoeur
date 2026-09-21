@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { CalendarPlus, MapPin, Users } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { sendPushNotification } from "@/lib/push";
 import { requireAdmin } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
@@ -12,6 +13,7 @@ type Ride = {
   description: string | null;
   location_name: string | null;
   starts_at: string;
+  organizerFirstName: string;
   attendeeCount: number;
   joined: boolean;
 };
@@ -36,6 +38,11 @@ function Rides() {
   const [notice, setNotice] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [followedOrganizerIds, setFollowedOrganizerIds] = useState<Set<string>>(new Set());
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<
+    "idle" | "requesting" | "captured" | "error"
+  >("idle");
 
   useEffect(() => {
     void load();
@@ -59,23 +66,49 @@ function Rides() {
       return;
     }
     const ids = (events ?? []).map((event) => event.id);
+    const organizerIds = [...new Set((events ?? []).map((event) => event.organizer_id))];
     const attendeesByEvent = new Map<string, string[]>();
-    if (ids.length > 0) {
-      const { data: attendees } = await supabase
-        .from("event_attendees")
-        .select("event_id, profile_id")
-        .in("event_id", ids);
-      for (const attendee of attendees ?? []) {
-        const list = attendeesByEvent.get(attendee.event_id) ?? [];
-        list.push(attendee.profile_id);
-        attendeesByEvent.set(attendee.event_id, list);
-      }
+    const organizerNames = new Map<string, string>();
+    const [{ data: attendees }, { data: follows }, { data: organizers }] = await Promise.all([
+      ids.length > 0
+        ? supabase.from("event_attendees").select("event_id, profile_id").in("event_id", ids)
+        : Promise.resolve({ data: [] }),
+      supabase.from("follows").select("followed_id").eq("follower_id", user.id),
+      organizerIds.length > 0
+        ? supabase.from("profiles").select("id, first_name").in("id", organizerIds)
+        : Promise.resolve({ data: [] }),
+    ]);
+    for (const attendee of attendees ?? []) {
+      const list = attendeesByEvent.get(attendee.event_id) ?? [];
+      list.push(attendee.profile_id);
+      attendeesByEvent.set(attendee.event_id, list);
     }
+    for (const organizer of organizers ?? [])
+      organizerNames.set(organizer.id, organizer.first_name);
+    setFollowedOrganizerIds(new Set((follows ?? []).map((follow) => follow.followed_id)));
     setRides(
       (events ?? []).map((event) => {
         const attendees = attendeesByEvent.get(event.id) ?? [];
-        return { ...event, attendeeCount: attendees.length, joined: attendees.includes(user.id) };
+        return {
+          ...event,
+          organizerFirstName: organizerNames.get(event.organizer_id) ?? "Motard(e)",
+          attendeeCount: attendees.length,
+          joined: attendees.includes(user.id),
+        };
       }),
+    );
+  }
+
+  function captureRideLocation() {
+    if (!navigator.geolocation) return setLocationStatus("error");
+    setLocationStatus("requesting");
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: position }) => {
+        setCoords({ lat: position.latitude, lng: position.longitude });
+        setLocationStatus("captured");
+      },
+      () => setLocationStatus("error"),
+      { enableHighAccuracy: false, timeout: 10000 },
     );
   }
 
@@ -86,21 +119,56 @@ function Rides() {
     if (!form.reportValidity()) return;
     const data = new FormData(form);
     setSaving(true);
-    const { error } = await supabase.from("events").insert({
-      organizer_id: myId,
-      title: String(data.get("title") ?? "").trim(),
-      description: String(data.get("description") ?? "").trim() || null,
-      location_name: String(data.get("location_name") ?? "").trim() || null,
-      starts_at: new Date(String(data.get("starts_at"))).toISOString(),
-    });
+    const title = String(data.get("title") ?? "").trim();
+    const { data: createdRide, error } = await supabase
+      .from("events")
+      .insert({
+        organizer_id: myId,
+        title,
+        description: String(data.get("description") ?? "").trim() || null,
+        location_name: String(data.get("location_name") ?? "").trim() || null,
+        starts_at: new Date(String(data.get("starts_at"))).toISOString(),
+        ...(coords ? { location: `SRID=4326;POINT(${coords.lng} ${coords.lat})` } : {}),
+      })
+      .select("id")
+      .single();
     setSaving(false);
     if (error) {
       setNotice("La balade n'a pas pu être créée.");
       return;
     }
+    const [{ data: organizer }, { data: targets }] = await Promise.all([
+      supabase.from("profiles").select("first_name").eq("id", myId).maybeSingle(),
+      supabase.rpc("event_notification_targets", { p_event_id: createdRide.id }),
+    ]);
+    await Promise.all(
+      (targets ?? [])
+        .filter(({ profile_id }) => profile_id !== myId)
+        .map(({ profile_id }) =>
+          sendPushNotification(
+            profile_id,
+            `${organizer?.first_name ?? "Un motard"} a créé une nouvelle balade : ${title}`,
+            "Rejoins-la si le cœur t'en dit !",
+          ),
+        ),
+    );
     form.reset();
+    setCoords(null);
+    setLocationStatus("idle");
     setShowForm(false);
     setNotice("Balade créée !");
+    await load();
+  }
+
+  async function toggleFollow(organizerId: string) {
+    if (!supabase || !myId || organizerId === myId) return;
+    if (followedOrganizerIds.has(organizerId))
+      await supabase
+        .from("follows")
+        .delete()
+        .eq("follower_id", myId)
+        .eq("followed_id", organizerId);
+    else await supabase.from("follows").insert({ follower_id: myId, followed_id: organizerId });
     await load();
   }
 
@@ -185,6 +253,28 @@ function Rides() {
                 className="mt-2 min-h-24 w-full rounded-xl border border-white/15 bg-[#302526]/90 px-4 py-3 text-sm outline-none focus:border-[#e2b45f]/70"
               />
             </label>
+            <div className="rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
+              <button
+                type="button"
+                onClick={captureRideLocation}
+                className="flex items-center gap-2 text-primary hover:underline"
+              >
+                <MapPin className="h-4 w-4" />
+                {locationStatus === "captured"
+                  ? "Position du rendez-vous enregistrée ✓"
+                  : locationStatus === "requesting"
+                    ? "Localisation en cours…"
+                    : "Activer la position du point de rendez-vous (recommandé)"}
+              </button>
+              <p className="mt-2 text-xs leading-relaxed text-[#a99b95]">
+                Cette position permet de prévenir les motards proches. Elle reste optionnelle.
+              </p>
+              {locationStatus === "error" && (
+                <p className="mt-2 text-xs text-primary">
+                  Localisation refusée ou indisponible — tu peux créer la balade sans position.
+                </p>
+              )}
+            </div>
             <button
               disabled={saving}
               type="submit"
@@ -209,6 +299,9 @@ function Rides() {
               <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h2 className="font-display text-xl">{ride.title}</h2>
+                  <p className="mt-1 text-xs text-[#a99b95]">
+                    Organisée par {ride.organizerFirstName}
+                  </p>
                   <p className="mt-1 text-sm text-[#e8be6c]">
                     {new Date(ride.starts_at).toLocaleString("fr-FR", {
                       dateStyle: "long",
@@ -236,12 +329,21 @@ function Rides() {
                   >
                     {ride.joined ? "Se désinscrire" : "Participer"}
                   </button>
-                  {ride.organizer_id === myId && (
+                  {ride.organizer_id === myId ? (
                     <button
                       onClick={() => void cancelRide(ride)}
                       className="min-h-11 px-3 text-xs text-[#a99b95] hover:text-[#e8be6c]"
                     >
                       Annuler
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => void toggleFollow(ride.organizer_id)}
+                      className="min-h-11 whitespace-nowrap px-3 text-xs text-[#d4c6bf] hover:text-[#e8be6c]"
+                    >
+                      {followedOrganizerIds.has(ride.organizer_id)
+                        ? "Ne plus suivre"
+                        : "Suivre cet organisateur"}
                     </button>
                   )}
                 </div>
