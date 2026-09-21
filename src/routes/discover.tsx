@@ -79,6 +79,7 @@ type Candidate = {
   moto_model: string | null;
   looking_for: string | null;
   distance_km: number | null;
+  compatibility_score: number;
   is_premium: boolean;
   photoUrl: string | null;
   prompts: { question: string; answer: string }[];
@@ -659,6 +660,17 @@ function Discover() {
                   />
                 )}
               </h2>
+              {current.compatibility_score > 0 && (
+                <span
+                  className={`mt-2 inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
+                    current.compatibility_score >= 70
+                      ? "border-[#e2b45f]/50 bg-[#e2b45f]/10 text-[#e8be6c]"
+                      : "border-white/15 bg-white/5 text-[#d4c6bf]"
+                  }`}
+                >
+                  {current.compatibility_score}% compatible
+                </span>
+              )}
               {current.distance_km !== null && current.distance_km !== undefined && (
                 <p className="mt-1 text-xs text-[#a99b95]">à environ {current.distance_km} km</p>
               )}
