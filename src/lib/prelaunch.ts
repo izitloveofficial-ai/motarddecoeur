@@ -35,5 +35,9 @@ export const PRELAUNCH_ALLOWED_PATHS = [
 
 export function isPathAllowedDuringPrelaunch(pathname: string) {
   const clean = pathname.replace(/\/+$/, "") || "/";
-  return PRELAUNCH_ALLOWED_PATHS.includes(clean) || clean.startsWith("/messages/");
+  return (
+    PRELAUNCH_ALLOWED_PATHS.includes(clean) ||
+    clean.startsWith("/messages/") ||
+    clean.startsWith("/rdv/")
+  );
 }

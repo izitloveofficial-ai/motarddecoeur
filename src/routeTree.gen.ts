@@ -39,6 +39,7 @@ import { Route as MatchesNewRouteImport } from './routes/matches.new'
 import { Route as MessagesMatchIdRouteImport } from './routes/messages.$matchId'
 import { Route as ProfileBlockedRouteImport } from './routes/profile.blocked'
 import { Route as ProfileSetupRouteImport } from './routes/profile.setup'
+import { Route as RdvTokenRouteImport } from './routes/rdv.$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -190,6 +191,11 @@ const ProfileSetupRoute = ProfileSetupRouteImport.update({
   path: '/profile/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RdvTokenRoute = RdvTokenRouteImport.update({
+  id: '/rdv/$token',
+  path: '/rdv/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/messages/$matchId': typeof MessagesMatchIdRoute
   '/profile/blocked': typeof ProfileBlockedRoute
   '/profile/setup': typeof ProfileSetupRoute
+  '/rdv/$token': typeof RdvTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -254,6 +261,7 @@ export interface FileRoutesByTo {
   '/messages/$matchId': typeof MessagesMatchIdRoute
   '/profile/blocked': typeof ProfileBlockedRoute
   '/profile/setup': typeof ProfileSetupRoute
+  '/rdv/$token': typeof RdvTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -287,6 +295,7 @@ export interface FileRoutesById {
   '/messages/$matchId': typeof MessagesMatchIdRoute
   '/profile/blocked': typeof ProfileBlockedRoute
   '/profile/setup': typeof ProfileSetupRoute
+  '/rdv/$token': typeof RdvTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -321,6 +330,7 @@ export interface FileRouteTypes {
     | '/messages/$matchId'
     | '/profile/blocked'
     | '/profile/setup'
+    | '/rdv/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -353,6 +363,7 @@ export interface FileRouteTypes {
     | '/messages/$matchId'
     | '/profile/blocked'
     | '/profile/setup'
+    | '/rdv/$token'
   id:
     | '__root__'
     | '/'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '/messages/$matchId'
     | '/profile/blocked'
     | '/profile/setup'
+    | '/rdv/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -417,6 +429,7 @@ export interface RootRouteChildren {
   MessagesMatchIdRoute: typeof MessagesMatchIdRoute
   ProfileBlockedRoute: typeof ProfileBlockedRoute
   ProfileSetupRoute: typeof ProfileSetupRoute
+  RdvTokenRoute: typeof RdvTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -631,6 +644,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileSetupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rdv/$token': {
+      id: '/rdv/$token'
+      path: '/rdv/$token'
+      fullPath: '/rdv/$token'
+      preLoaderRoute: typeof RdvTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -675,6 +695,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesMatchIdRoute: MessagesMatchIdRoute,
   ProfileBlockedRoute: ProfileBlockedRoute,
   ProfileSetupRoute: ProfileSetupRoute,
+  RdvTokenRoute: RdvTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

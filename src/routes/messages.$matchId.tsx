@@ -1,8 +1,15 @@
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Send, ShieldOff, Trash2 } from "lucide-react";
+import { ArrowLeft, Copy, Send, Share2, Shield, ShieldOff, Trash2 } from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProfilePhotoGallery, type GalleryProfile } from "@/components/ProfilePhotoGallery";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { requireAdmin } from "@/lib/require-admin";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
@@ -34,6 +41,14 @@ function Conversation() {
   const [myId, setMyId] = useState<string | null>(null);
   const [otherId, setOtherId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [safetyOpen, setSafetyOpen] = useState(false);
+  const [meetingLocation, setMeetingLocation] = useState("");
+  const [meetingAt, setMeetingAt] = useState("");
+  const [safetyNotes, setSafetyNotes] = useState("");
+  const [shareUrl, setShareUrl] = useState("");
+  const [safetyError, setSafetyError] = useState("");
+  const [creatingShare, setCreatingShare] = useState(false);
+  const [copied, setCopied] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const closeGallery = useCallback(() => setGalleryOpen(false), []);
   useEffect(() => {
@@ -237,6 +252,44 @@ function Conversation() {
     void navigate({ to: "/matches" });
   }
 
+  async function createSafetyShare(event: FormEvent) {
+    event.preventDefault();
+    if (!supabase || !myId || !meetingLocation.trim() || !meetingAt) return;
+    setCreatingShare(true);
+    setSafetyError("");
+    const { data, error: insertError } = await supabase
+      .from("safety_shares")
+      .insert({
+        user_id: myId,
+        match_id: matchId,
+        meeting_with: otherName || "Motard(e)",
+        meeting_location: meetingLocation.trim(),
+        meeting_at: new Date(meetingAt).toISOString(),
+        notes: safetyNotes.trim() || null,
+      })
+      .select("share_token")
+      .single();
+    setCreatingShare(false);
+    if (insertError || !data?.share_token) {
+      setSafetyError("Le lien n'a pas pu être créé. Réessaie dans un instant.");
+      return;
+    }
+    setShareUrl(`${window.location.origin}/rdv/${data.share_token}`);
+  }
+
+  async function copyShareUrl() {
+    await navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+  }
+
+  async function shareSafetyUrl() {
+    await navigator.share({
+      title: "Détails de mon rendez-vous",
+      text: `Voici les détails de mon rendez-vous avec ${otherName || "mon contact"}.`,
+      url: shareUrl,
+    });
+  }
+
   return (
     <Layout>
       <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
@@ -274,6 +327,13 @@ function Conversation() {
               </button>
             </div>
             <div className="flex w-full items-center justify-end gap-2 sm:w-auto sm:gap-4">
+              <button
+                type="button"
+                onClick={() => setSafetyOpen(true)}
+                className="flex min-h-11 items-center gap-1.5 px-2 text-xs text-[#e8be6c] hover:text-white"
+              >
+                <Shield className="h-3.5 w-3.5" /> Prévenir un proche
+              </button>
               <button
                 onClick={() => void deleteConversation()}
                 className="flex min-h-11 items-center gap-1.5 px-2 text-xs text-[#a99b95] hover:text-[#e8be6c]"
@@ -343,6 +403,105 @@ function Conversation() {
         photos={otherPhotos}
         profile={otherProfile}
       />
+      <Dialog
+        open={safetyOpen}
+        onOpenChange={(open) => {
+          setSafetyOpen(open);
+          if (!open) {
+            setShareUrl("");
+            setSafetyError("");
+            setCopied(false);
+          }
+        }}
+      >
+        <DialogContent className="max-w-md border-[#d6a85c]/30 bg-[#302425] text-[#fff9f0]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Shield className="h-5 w-5 text-[#e8be6c]" /> Prévenir un proche
+            </DialogTitle>
+            <DialogDescription className="text-[#c7b9b2]">
+              Crée un lien privé avec les détails de ton rendez-vous avec{" "}
+              {otherName || "ce contact"}. Il expirera automatiquement.
+            </DialogDescription>
+          </DialogHeader>
+          {shareUrl ? (
+            <div className="space-y-4">
+              <label className="block text-sm font-medium" htmlFor="safety-share-url">
+                Lien à transmettre
+              </label>
+              <input
+                id="safety-share-url"
+                readOnly
+                value={shareUrl}
+                className="w-full rounded-lg border border-white/15 bg-[#21191a] px-3 py-2 text-sm"
+              />
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => void copyShareUrl()}
+                  className="flex min-h-11 items-center gap-2 rounded-lg bg-[#e8be6c] px-4 py-2 font-medium text-[#21191a]"
+                >
+                  <Copy className="h-4 w-4" /> {copied ? "Lien copié !" : "Copier le lien"}
+                </button>
+                {typeof navigator !== "undefined" && "share" in navigator && (
+                  <button
+                    type="button"
+                    onClick={() => void shareSafetyUrl()}
+                    className="flex min-h-11 items-center gap-2 rounded-lg border border-white/20 px-4 py-2"
+                  >
+                    <Share2 className="h-4 w-4" /> Partager
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={createSafetyShare} className="space-y-4">
+              <label className="block text-sm font-medium">
+                Lieu du rendez-vous
+                <input
+                  required
+                  value={meetingLocation}
+                  onChange={(event) => setMeetingLocation(event.target.value)}
+                  maxLength={250}
+                  className="mt-1.5 w-full rounded-lg border border-white/15 bg-[#21191a] px-3 py-2"
+                />
+              </label>
+              <label className="block text-sm font-medium">
+                Date et heure du rendez-vous
+                <input
+                  required
+                  type="datetime-local"
+                  value={meetingAt}
+                  onChange={(event) => setMeetingAt(event.target.value)}
+                  className="mt-1.5 w-full rounded-lg border border-white/15 bg-[#21191a] px-3 py-2"
+                />
+              </label>
+              <label className="block text-sm font-medium">
+                Note (optionnelle)
+                <textarea
+                  value={safetyNotes}
+                  onChange={(event) => setSafetyNotes(event.target.value)}
+                  maxLength={500}
+                  rows={3}
+                  className="mt-1.5 w-full resize-none rounded-lg border border-white/15 bg-[#21191a] px-3 py-2"
+                />
+              </label>
+              {safetyError && (
+                <p role="alert" className="text-sm text-red-300">
+                  {safetyError}
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={creatingShare || !myId}
+                className="min-h-11 w-full rounded-lg bg-[#e8be6c] px-4 py-2 font-semibold text-[#21191a] disabled:opacity-50"
+              >
+                {creatingShare ? "Création…" : "Créer le lien de partage"}
+              </button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }
