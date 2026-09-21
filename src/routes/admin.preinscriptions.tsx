@@ -198,6 +198,10 @@ function AdminPreinscriptions() {
           <Link to="/admin/announcements" className="text-primary hover:underline">
             Gérer les annonces
           </Link>
+          {" · "}
+          <Link to="/admin/status" className="text-primary hover:underline">
+            Voir l’état des services
+          </Link>
         </p>
         {authenticationRequired ? (
           <div className="my-8 rounded-2xl border border-primary/30 p-6" role="alert">

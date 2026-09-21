@@ -34,6 +34,7 @@ import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
+import { Route as AdminStatusRouteImport } from './routes/admin.status'
 import { Route as DiscoverLikesRouteImport } from './routes/discover_.likes'
 import { Route as MatchesNewRouteImport } from './routes/matches.new'
 import { Route as MessagesMatchIdRouteImport } from './routes/messages.$matchId'
@@ -166,6 +167,11 @@ const AdminReportsRoute = AdminReportsRouteImport.update({
   path: '/admin/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStatusRoute = AdminStatusRouteImport.update({
+  id: '/admin/status',
+  path: '/admin/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiscoverLikesRoute = DiscoverLikesRouteImport.update({
   id: '/discover_/likes',
   path: '/discover/likes',
@@ -223,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/status': typeof AdminStatusRoute
   '/discover/likes': typeof DiscoverLikesRoute
   '/matches/new': typeof MatchesNewRoute
   '/messages/$matchId': typeof MessagesMatchIdRoute
@@ -256,6 +263,7 @@ export interface FileRoutesByTo {
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/status': typeof AdminStatusRoute
   '/discover/likes': typeof DiscoverLikesRoute
   '/matches/new': typeof MatchesNewRoute
   '/messages/$matchId': typeof MessagesMatchIdRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/status': typeof AdminStatusRoute
   '/discover_/likes': typeof DiscoverLikesRoute
   '/matches/new': typeof MatchesNewRoute
   '/messages/$matchId': typeof MessagesMatchIdRoute
@@ -325,6 +334,7 @@ export interface FileRouteTypes {
     | '/admin/members'
     | '/admin/preinscriptions'
     | '/admin/reports'
+    | '/admin/status'
     | '/discover/likes'
     | '/matches/new'
     | '/messages/$matchId'
@@ -358,6 +368,7 @@ export interface FileRouteTypes {
     | '/admin/members'
     | '/admin/preinscriptions'
     | '/admin/reports'
+    | '/admin/status'
     | '/discover/likes'
     | '/matches/new'
     | '/messages/$matchId'
@@ -391,6 +402,7 @@ export interface FileRouteTypes {
     | '/admin/members'
     | '/admin/preinscriptions'
     | '/admin/reports'
+    | '/admin/status'
     | '/discover_/likes'
     | '/matches/new'
     | '/messages/$matchId'
@@ -425,6 +437,7 @@ export interface RootRouteChildren {
   AdminMembersRoute: typeof AdminMembersRoute
   AdminPreinscriptionsRoute: typeof AdminPreinscriptionsRoute
   AdminReportsRoute: typeof AdminReportsRoute
+  AdminStatusRoute: typeof AdminStatusRoute
   DiscoverLikesRoute: typeof DiscoverLikesRoute
   MessagesMatchIdRoute: typeof MessagesMatchIdRoute
   ProfileBlockedRoute: typeof ProfileBlockedRoute
@@ -609,6 +622,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/status': {
+      id: '/admin/status'
+      path: '/admin/status'
+      fullPath: '/admin/status'
+      preLoaderRoute: typeof AdminStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover_/likes': {
       id: '/discover_/likes'
       path: '/discover/likes'
@@ -691,6 +711,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminMembersRoute: AdminMembersRoute,
   AdminPreinscriptionsRoute: AdminPreinscriptionsRoute,
   AdminReportsRoute: AdminReportsRoute,
+  AdminStatusRoute: AdminStatusRoute,
   DiscoverLikesRoute: DiscoverLikesRoute,
   MessagesMatchIdRoute: MessagesMatchIdRoute,
   ProfileBlockedRoute: ProfileBlockedRoute,

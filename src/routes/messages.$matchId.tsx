@@ -1,5 +1,14 @@
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Copy, Send, Share2, Shield, ShieldOff, Trash2 } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Copy,
+  Send,
+  Share2,
+  Shield,
+  ShieldOff,
+  Trash2,
+} from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProfilePhotoGallery, type GalleryProfile } from "@/components/ProfilePhotoGallery";
@@ -19,6 +28,7 @@ export const Route = createFileRoute("/messages/$matchId")({
   // Supabase persists auth in browser storage, so authorization must run in the browser.
   ssr: false,
   component: Conversation,
+  errorComponent: ConversationError,
   beforeLoad: async () => {
     await requireAdmin();
     if (!supabase) return;
@@ -28,6 +38,31 @@ export const Route = createFileRoute("/messages/$matchId")({
     if (!session) throw redirect({ to: "/login" });
   },
 });
+
+function ConversationError({ error }: { error: Error }) {
+  console.error("conversation rendering failed", error);
+
+  return (
+    <Layout>
+      <main className="flex min-h-[calc(100vh-7rem)] items-center justify-center bg-[#21191a] px-6 text-[#fff9f0]">
+        <div className="max-w-md rounded-2xl border border-[#d6a85c]/25 bg-[#302425] p-8 text-center shadow-xl">
+          <AlertTriangle className="mx-auto h-12 w-12 text-[#e8be6c]" aria-hidden="true" />
+          <h1 className="mt-5 font-display text-2xl">Conversation indisponible</h1>
+          <p className="mt-3 text-sm leading-6 text-[#c7b9b2]">
+            Un problème technique est survenu. Réessaie dans un instant.
+          </p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="mt-6 min-h-11 rounded-xl bg-[#e8be6c] px-6 py-2 font-semibold text-[#21191a] transition hover:bg-[#f1ca7a]"
+          >
+            Réessayer
+          </button>
+        </div>
+      </main>
+    </Layout>
+  );
+}
 function Conversation() {
   const { matchId } = Route.useParams();
   const navigate = useNavigate();
