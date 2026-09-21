@@ -44,7 +44,7 @@ function Matches() {
       .or(`profile_a_id.eq.${user.id},profile_b_id.eq.${user.id}`)
       .order("matched_at", { ascending: false });
     if (rowsError) {
-      setError("Impossible de charger tes coups de cœur.");
+      setError("Impossible de charger tes discussions.");
       setMatches([]);
       return;
     }
@@ -115,7 +115,7 @@ function Matches() {
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <div className="mt-3 mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between">
           <h1 className="font-display text-3xl sm:text-4xl">
-            Mes coups de cœur{matches !== null && ` (${matches.length})`}
+            Mes discussions{matches !== null && ` (${matches.length})`}
           </h1>
           <Link
             to="/profile/blocked"
@@ -132,7 +132,7 @@ function Matches() {
         {matches === null && !error && <p className="text-sm text-[#d4c6bf]">Chargement…</p>}
         {matches?.length === 0 && (
           <div className="rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-8 text-center text-sm text-[#d4c6bf]">
-            Pas encore de coup de cœur. Va faire un tour du côté de la{" "}
+            Pas encore de discussion. Va faire un tour du côté de la{" "}
             <Link to="/discover" className="text-primary hover:underline">
               découverte
             </Link>{" "}
