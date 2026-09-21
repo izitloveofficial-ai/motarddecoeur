@@ -9,6 +9,7 @@ import {
   ShieldOff,
   Trash2,
 } from "lucide-react";
+import type { RealtimeChannel } from "@supabase/supabase-js";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProfilePhotoGallery, type GalleryProfile } from "@/components/ProfilePhotoGallery";
@@ -23,7 +24,13 @@ import { requireAdmin } from "@/lib/require-admin";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
 
-type Message = { id: string; sender_id: string; content: string; created_at: string };
+type Message = {
+  id: string;
+  sender_id: string;
+  content: string;
+  created_at: string;
+  read_at: string | null;
+};
 export const Route = createFileRoute("/messages/$matchId")({
   // Supabase persists auth in browser storage, so authorization must run in the browser.
   ssr: false,
@@ -84,7 +91,11 @@ function Conversation() {
   const [safetyError, setSafetyError] = useState("");
   const [creatingShare, setCreatingShare] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isOtherTyping, setIsOtherTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const channelRef = useRef<RealtimeChannel | null>(null);
+  const lastTypingBroadcastAtRef = useRef(0);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeGallery = useCallback(() => setGalleryOpen(false), []);
   useEffect(() => {
     if (!supabase) {
@@ -143,7 +154,32 @@ function Conversation() {
             }
           },
         )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "messages",
+            filter: `match_id=eq.${matchId}`,
+          },
+          (payload) => {
+            const updated = payload.new as Message;
+            setMessages((previous) =>
+              previous.map((message) => (message.id === updated.id ? updated : message)),
+            );
+          },
+        )
+        .on("broadcast", { event: "typing" }, ({ payload }) => {
+          if (payload?.userId === user.id) return;
+          setIsOtherTyping(true);
+          if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+          typingTimeoutRef.current = setTimeout(() => {
+            setIsOtherTyping(false);
+            typingTimeoutRef.current = null;
+          }, 3000);
+        })
         .subscribe();
+      channelRef.current = channel;
 
       const [
         { data: profile },
@@ -168,7 +204,7 @@ function Conversation() {
           .order("position", { ascending: true }),
         client
           .from("messages")
-          .select("id, sender_id, content, created_at")
+          .select("id, sender_id, content, created_at, read_at")
           .eq("match_id", matchId)
           .order("created_at", { ascending: true }),
       ]);
@@ -214,12 +250,27 @@ function Conversation() {
     void init();
     return () => {
       cancelled = true;
+      channelRef.current = null;
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       if (channel) void client.removeChannel(channel);
     };
   }, [matchId]);
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isOtherTyping]);
+
+  function handleContentChange(value: string) {
+    setContent(value);
+    if (!myId || !value.trim()) return;
+
+    const now = Date.now();
+    if (now - lastTypingBroadcastAtRef.current < 2000) return;
+    lastTypingBroadcastAtRef.current = now;
+    void channelRef.current
+      ?.send({ type: "broadcast", event: "typing", payload: { type: "typing", userId: myId } })
+      .catch(() => undefined);
+  }
+
   async function send(event: FormEvent) {
     event.preventDefault();
     if (!supabase || !myId || !content.trim()) return;
@@ -229,7 +280,7 @@ function Conversation() {
     const { data: sentMessage, error: sendError } = await supabase
       .from("messages")
       .insert({ match_id: matchId, sender_id: myId, content: text })
-      .select("id, sender_id, content, created_at")
+      .select("id, sender_id, content, created_at, read_at")
       .single();
     if (sendError) {
       setContent(text);
@@ -392,7 +443,7 @@ function Conversation() {
             </div>
           )}
           <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-4">
-            {messages.map((message) => {
+            {messages.map((message, index) => {
               // Derive both alignment and colors from the same reactive identity. Unlike a ref,
               // myId triggers a render as soon as authentication resolves and stays authoritative
               // for historical, realtime, and newly inserted messages alike.
@@ -403,13 +454,25 @@ function Conversation() {
                   className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${isMine ? "bg-neutral-900 text-white" : "bg-[var(--ember)] text-white"}`}
+                    className={`flex max-w-[75%] flex-col ${isMine ? "items-end" : "items-start"}`}
                   >
-                    {message.content}
+                    <div
+                      className={`rounded-2xl px-4 py-2 text-sm ${isMine ? "bg-neutral-900 text-white" : "bg-[var(--ember)] text-white"}`}
+                    >
+                      {message.content}
+                    </div>
+                    {index === messages.length - 1 && isMine && message.read_at && (
+                      <span className="mt-1 px-1 text-xs text-[#a99b95]">Vu</span>
+                    )}
                   </div>
                 </div>
               );
             })}
+            {isOtherTyping && (
+              <p className="text-xs text-[#a99b95]" aria-live="polite">
+                {otherName || "Cette personne"} est en train d'écrire…
+              </p>
+            )}
             <div ref={bottomRef} />
           </div>
           <form onSubmit={send} className="mt-4 flex gap-2">
@@ -417,7 +480,7 @@ function Conversation() {
               aria-label="Message"
               className="flex-1 rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-[#e2b45f]/70"
               value={content}
-              onChange={(event) => setContent(event.target.value)}
+              onChange={(event) => handleContentChange(event.target.value)}
               placeholder="Écris un message…"
               maxLength={2000}
             />
