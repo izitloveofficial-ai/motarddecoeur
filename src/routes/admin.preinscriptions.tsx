@@ -1,4 +1,4 @@
-import { Link, createFileRoute, redirect } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -26,15 +26,6 @@ type ProgressUpdate = {
 
 export const Route = createFileRoute("/admin/preinscriptions")({
   component: AdminPreinscriptions,
-  beforeLoad: async () => {
-    if (!supabase) return;
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) throw redirect({ to: "/admin/login" });
-    // The API is the authority for the role. Keeping this check server-side avoids
-    // coupling the page to the legacy database RPC during the data migration.
-  },
 });
 
 function AdminPreinscriptions() {
@@ -72,24 +63,15 @@ function AdminPreinscriptions() {
   }
 
   async function load() {
-    const client = supabase;
-    const session = client ? (await client.auth.getSession()).data.session : null;
-    if (!client || !session) {
+    const response = await fetch("/api/admin/preinscriptions");
+    if (response.status === 401 || response.status === 403) {
       setAuthenticationRequired(true);
       return setNotice("Connexion administrateur requise");
     }
+    if (!response.ok) return setNotice("Impossible de charger les préinscriptions.");
+    const payload = (await response.json()) as { rows: Registration[] };
     await loadProgressUpdates();
-    // La policy RLS is_admin() est l'autorité : lecture directe depuis Supabase.
-    const { data, error } = await client
-      .from("preinscriptions")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) {
-      console.error("admin preinscriptions read failed", error);
-      setNotice("Impossible de charger les préinscriptions.");
-      return;
-    }
-    setRows((data ?? []) as Registration[]);
+    setRows(payload.rows);
     setAuthenticationRequired(false);
     setNotice("");
   }

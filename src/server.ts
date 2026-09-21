@@ -6,6 +6,11 @@ import {
   handleAdminPreinscriptionsRequest,
   handlePreinscriptionRequest,
 } from "./lib/preinscriptions.server";
+import {
+  handleAdminForgotPassword,
+  handleAdminLogin,
+  handleAdminResetPassword,
+} from "./lib/admin-auth.server";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -45,6 +50,9 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const pathname = new URL(request.url).pathname;
+      if (pathname === "/api/admin/login") return handleAdminLogin(request, env);
+      if (pathname === "/api/admin/forgot-password") return handleAdminForgotPassword(request, env);
+      if (pathname === "/api/admin/reset-password") return handleAdminResetPassword(request, env);
       if (pathname === "/api/preinscriptions") return handlePreinscriptionRequest(request, env);
       if (pathname === "/api/admin/preinscriptions")
         return handleAdminPreinscriptionsRequest(request, env);

@@ -1,6 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/login")({ component: AdminLogin });
 
@@ -13,32 +12,18 @@ function AdminLogin() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!supabase) return setNotice("Supabase n'est pas configuré.");
     setLoading(true);
     setNotice("");
-
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const response = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
-
-    if (signInError) {
+    if (!response.ok) {
       setNotice("Identifiants incorrects.");
       setLoading(false);
       return;
     }
-
-    // On vérifie côté serveur (via RLS + is_admin()) que ce compte est bien administrateur,
-    // jamais en se fiant uniquement à une vérification côté client.
-    const { data: isAdmin, error: adminCheckError } = await supabase.rpc("is_admin");
-
-    if (adminCheckError || !isAdmin) {
-      await supabase.auth.signOut();
-      setNotice("Ce compte n'a pas les droits administrateur.");
-      setLoading(false);
-      return;
-    }
-
     void navigate({ to: "/admin/preinscriptions" });
   }
 
@@ -75,6 +60,12 @@ function AdminLogin() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <Link
+              to="/admin/forgot-password"
+              className="mt-2 inline-block text-sm text-primary hover:underline"
+            >
+              Mot de passe oublié ?
+            </Link>
           </div>
           {notice && (
             <p className="rounded-xl border border-primary/30 p-3 text-sm" role="status">

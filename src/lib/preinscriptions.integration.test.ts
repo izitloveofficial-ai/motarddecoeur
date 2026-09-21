@@ -76,7 +76,7 @@ describe("flux de préinscription et administration", () => {
     expect(response.status).toBe(400);
   });
 
-  test("enregistre dans le flux historique et lit l'administration depuis Supabase", async () => {
+  test("enregistre puis lit la même préinscription depuis D1", async () => {
     const DB = d1Database(sqlite);
     const createResponse = await handlePreinscriptionRequest(
       new Request("https://app.test/api/preinscriptions", {
@@ -125,10 +125,7 @@ describe("flux de préinscription et administration", () => {
     expect(adminResponse.status).toBe(200);
     const adminBody = (await adminResponse.json()) as { rows: Array<{ email: string }> };
     expect(adminBody.rows.map((row) => row.email)).toContain("integration@example.test");
-    expect(requests[1]?.url).toBe(
-      "https://identity.test/rest/v1/preinscriptions?select=*&order=created_at.desc",
-    );
-    expect(requests[1]?.headers.get("authorization")).toBe("Bearer service-key");
+    expect(requests).toHaveLength(1);
   });
 
   test("refuse sans jeton (401) et avec un compte non administrateur (403)", async () => {
@@ -157,7 +154,7 @@ describe("flux de préinscription et administration", () => {
     expect(await forbidden.json()).toEqual({ error: "forbidden" });
   });
 
-  test("retourne les préinscriptions Supabase dans l'ordre fourni par l'API", async () => {
+  test("retourne les préinscriptions D1 de la plus récente à la plus ancienne", async () => {
     const DB = d1Database(sqlite);
     const insert = sqlite.prepare(`INSERT INTO preinscriptions
       (id,first_name,email,location,city,age,sex,bike_type,rider_profile,favorite_bike,
@@ -185,20 +182,7 @@ describe("flux de préinscription et administration", () => {
         `2026-08-0${index}T09:00:00Z`,
       );
     }
-    const supabaseRows = Array.from({ length: 5 }, (_, index) => ({
-      email: `historique${index + 1}@example.test`,
-      city: `Ville ${index + 1}`,
-      age: 31 + index,
-      bike_type: `Moto ${index + 1}`,
-      consent_rgpd: true,
-      status: index === 0 ? "invited" : "pending",
-      invitation_sent_at: index === 0 ? "2026-08-02T10:00:00Z" : null,
-      created_at: `2026-08-0${5 - index}T09:00:00Z`,
-    }));
-    globalThis.fetch = (async (input) =>
-      String(input).endsWith("/rest/v1/rpc/is_admin")
-        ? Response.json(true)
-        : Response.json(supabaseRows)) as typeof fetch;
+    globalThis.fetch = (async () => Response.json(true)) as typeof fetch;
     const firstAdminRead = await handleAdminPreinscriptionsRequest(
       new Request("https://app.test/api/admin/preinscriptions", {
         headers: { authorization: "Bearer integration-admin" },
@@ -214,12 +198,12 @@ describe("flux de préinscription et administration", () => {
     expect(firstRows).toHaveLength(5);
     expect(firstRows[0]).toEqual(
       expect.objectContaining({
-        city: "Ville 1",
-        age: 31,
-        bike_type: "Moto 1",
-        consent_rgpd: true,
-        status: "invited",
-        invitation_sent_at: "2026-08-02T10:00:00Z",
+        city: "Ville 5",
+        age: 35,
+        bike_type: "Moto 5",
+        consent_rgpd: 1,
+        status: "pending",
+        invitation_sent_at: null,
         created_at: "2026-08-05T09:00:00Z",
       }),
     );
