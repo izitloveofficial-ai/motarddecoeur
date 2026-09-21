@@ -26,6 +26,17 @@ export function Navbar() {
   const [lookingFor, setLookingFor] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
+  useEffect(() => {
     if (!supabase) return;
 
     function loadAccountStatus(session: { user: { id: string } } | null) {
@@ -66,7 +77,7 @@ export function Navbar() {
   );
 
   return (
-    <header className="safe-top fixed top-0 z-50 w-full bg-white border-b-2 border-primary/60 shadow-sm">
+    <header className="safe-top fixed top-0 z-[60] w-full bg-white border-b-2 border-primary/60 shadow-sm xl:z-50">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-red" />
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 xl:py-2">
         <Link
@@ -158,7 +169,7 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div className="xl:hidden max-h-[calc(100vh-6rem)] overflow-y-auto bg-white border-t border-border/40 px-6 py-4 flex flex-col gap-3 animate-fade-in">
+        <div className="fixed inset-x-0 bottom-0 top-[calc(4.125rem+env(safe-area-inset-top))] z-40 flex flex-col gap-3 overflow-y-auto bg-white px-6 py-4 animate-fade-in sm:top-[calc(4.625rem+env(safe-area-inset-top))] md:top-[calc(5.125rem+env(safe-area-inset-top))] xl:hidden">
           {links.map((l) => (
             <Link
               key={l.to}
