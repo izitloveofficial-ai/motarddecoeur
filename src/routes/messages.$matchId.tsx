@@ -92,7 +92,7 @@ function Conversation() {
   const [creatingShare, setCreatingShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isOtherTyping, setIsOtherTyping] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const messageListRef = useRef<HTMLDivElement>(null);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const lastTypingBroadcastAtRef = useRef(0);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -256,7 +256,8 @@ function Conversation() {
     };
   }, [matchId]);
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const messageList = messageListRef.current;
+    messageList?.scrollTo({ top: messageList.scrollHeight, behavior: "smooth" });
   }, [messages, isOtherTyping]);
 
   function handleContentChange(value: string) {
@@ -378,8 +379,8 @@ function Conversation() {
 
   return (
     <Layout>
-      <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
-        <section className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col px-4 py-5 sm:px-6 sm:py-8">
+      <div className="h-[calc(100dvh-10rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] overflow-hidden bg-[#21191a] text-[#fff9f0] sm:h-[calc(100dvh-7rem)] md:h-[calc(100dvh-8rem)] xl:h-[calc(100dvh-9rem)]">
+        <section className="mx-auto flex h-full min-h-0 max-w-2xl flex-col px-4 py-5 sm:px-6 sm:py-8">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <Link
@@ -442,7 +443,10 @@ function Conversation() {
               {error}
             </div>
           )}
-          <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-4">
+          <div
+            ref={messageListRef}
+            className="min-h-0 flex-1 space-y-3 overscroll-contain overflow-y-auto rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-4"
+          >
             {messages.map((message, index) => {
               // Derive both alignment and colors from the same reactive identity. Unlike a ref,
               // myId triggers a render as soon as authentication resolves and stays authoritative
@@ -473,7 +477,6 @@ function Conversation() {
                 {otherName || "Cette personne"} est en train d'écrire…
               </p>
             )}
-            <div ref={bottomRef} />
           </div>
           <form onSubmit={send} className="mt-4 flex gap-2">
             <input
