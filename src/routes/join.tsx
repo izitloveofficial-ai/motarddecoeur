@@ -1,6 +1,12 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { PrelaunchLayout } from "@/components/PrelaunchLayout";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { supabase } from "@/lib/supabase";
 import { PREINSCRIPTION_MESSAGES } from "@/lib/preinscriptions";
 import bikeDetail from "@/assets/bike-dark.jpg";
@@ -22,6 +28,33 @@ const searchOptions = [
   ["amitie", "De l’amitié"],
   ["communaute_motards", "Une communauté de motards"],
   ["indecis", "Je ne sais pas encore"],
+] as const;
+
+const faqItems = [
+  {
+    question: "C'est vraiment gratuit ?",
+    answer: "Oui, 100 % gratuit, sans engagement et sans carte bancaire.",
+  },
+  {
+    question: "Pourquoi donner mon email ?",
+    answer:
+      "Uniquement pour te prévenir dès l'ouverture et t'informer de l'avancement du projet. Ton email ne sera jamais partagé ni vendu.",
+  },
+  {
+    question: "Faut-il avoir une moto ?",
+    answer:
+      "Non, l'appli est ouverte aux motards, motardes, passagers, passagères et passionné(e)s, permis en cours compris.",
+  },
+  {
+    question: "Quand est-ce que ça ouvre ?",
+    answer:
+      "On ne donne pas encore de date précise, mais les personnes pré-inscrites seront informées en priorité, avant tout le monde.",
+  },
+  {
+    question: "Est-ce que je peux me désinscrire ?",
+    answer:
+      "Oui, à tout moment, en répondant simplement à l'un des emails reçus ou en nous contactant.",
+  },
 ] as const;
 
 export const Route = createFileRoute("/join")({
@@ -137,6 +170,10 @@ function Join() {
             <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#d9a441]/45 bg-[#d9a441]/15 px-5 py-3 text-sm font-bold uppercase tracking-wider text-[#f6d98d] shadow-[0_0_30px_rgba(217,164,65,0.16)] sm:text-base">
               Pré-inscriptions ouvertes ❤️
             </span>
+            <p className="mb-5 max-w-2xl text-base font-medium leading-relaxed text-[#f1d493] sm:text-lg">
+              Motard, motarde, passager, permis en cours ou simplement attiré par cet univers : tu
+              as ta place.
+            </p>
             <h1 className="font-display text-3xl sm:text-5xl md:text-7xl leading-none mb-6">
               Motards de Cœur arrive bientôt.
             </h1>
@@ -345,12 +382,42 @@ function Join() {
         <div className="mx-auto max-w-5xl text-center">
           <Mail className="mx-auto h-8 w-8 text-primary mb-5" />
           <h2 className="font-display text-2xl sm:text-4xl md:text-5xl mb-4">
-            Une première liste d'attente, avant la vraie application.
+            Une première liste d'attente — l'application mobile arrive prochainement.
           </h2>
+          <p className="mx-auto mb-4 max-w-3xl text-lg font-medium leading-relaxed text-[#f1d493]">
+            Chaque pré-inscription nous aide à réunir les premiers profils avant l'ouverture.
+          </p>
           <p className="mx-auto max-w-3xl text-lg leading-relaxed text-[#cdbfba]">
             Cette étape prépare le lancement avec une collecte simple et consentie. Les comptes
             utilisateurs, profils, likes, messagerie et offres premium viendront plus tard.
           </p>
+        </div>
+      </section>
+
+      <section className="border-t border-[#d6a85c]/10 bg-[#191516] px-4 pb-16 pt-6 sm:px-6 sm:pb-24 sm:pt-10">
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-8 text-center">
+            <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
+              Questions fréquentes
+            </span>
+            <h2 className="mt-3 font-display text-3xl sm:text-4xl">Avant de nous rejoindre</h2>
+          </div>
+          <Accordion type="single" collapsible className="space-y-3">
+            {faqItems.map((item, index) => (
+              <AccordionItem
+                key={item.question}
+                value={`faq-${index}`}
+                className="rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 px-5 shadow-[0_12px_35px_rgba(10,4,4,0.18)] backdrop-blur-xl sm:px-6"
+              >
+                <AccordionTrigger className="py-5 text-base text-[#fff9f0] hover:no-underline sm:text-lg">
+                  {item.question}
+                </AccordionTrigger>
+                <AccordionContent className="pr-8 text-sm leading-relaxed text-[#d4c6bf] sm:text-base">
+                  {item.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </section>
     </PrelaunchLayout>
