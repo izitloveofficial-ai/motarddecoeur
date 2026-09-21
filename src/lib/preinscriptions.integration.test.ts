@@ -182,7 +182,7 @@ describe("flux de préinscription et administration", () => {
         `2026-08-0${index}T09:00:00Z`,
       );
     }
-    globalThis.fetch = (async () => Response.json(true)) as typeof fetch;
+    globalThis.fetch = (async () => Response.json(true)) as unknown as typeof fetch;
     const firstAdminRead = await handleAdminPreinscriptionsRequest(
       new Request("https://app.test/api/admin/preinscriptions", {
         headers: { authorization: "Bearer integration-admin" },

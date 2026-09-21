@@ -146,8 +146,8 @@ function Rides() {
     ]);
     await Promise.all(
       (targets ?? [])
-        .filter(({ profile_id }) => profile_id !== myId)
-        .map(({ profile_id }) =>
+        .filter(({ profile_id }: { profile_id: string }) => profile_id !== myId)
+        .map(({ profile_id }: { profile_id: string }) =>
           sendPushNotification(
             profile_id,
             `${organizer?.first_name ?? "Un motard"} a créé une nouvelle balade : ${title}`,
