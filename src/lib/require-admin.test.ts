@@ -16,6 +16,8 @@ function session(overrides: Partial<Session> = {}): Session {
 
 function client(options: {
   current?: Session | null;
+  authEvent?: Session | null;
+  authEventDelay?: number;
   refreshed?: Session | null;
   sessionError?: object | null;
   refreshError?: object | null;
@@ -24,6 +26,8 @@ function client(options: {
 }) {
   const authorizationHeaders: string[] = [];
   let refreshCount = 0;
+  let subscriptionCount = 0;
+  let unsubscribeCount = 0;
   const rpcResult = {
     setHeader(name: string, value: string) {
       if (name === "Authorization") authorizationHeaders.push(value);
@@ -38,6 +42,25 @@ function client(options: {
           data: { session: options.current ?? null },
           error: options.sessionError ?? null,
         }),
+        onAuthStateChange: (
+          callback: (event: "INITIAL_SESSION", session: Session | null) => void,
+        ) => {
+          subscriptionCount += 1;
+          const timer = setTimeout(
+            () => callback("INITIAL_SESSION", options.authEvent ?? null),
+            options.authEventDelay ?? 0,
+          );
+          return {
+            data: {
+              subscription: {
+                unsubscribe() {
+                  unsubscribeCount += 1;
+                  clearTimeout(timer);
+                },
+              },
+            },
+          };
+        },
         refreshSession: async () => {
           refreshCount += 1;
           return {
@@ -50,6 +73,8 @@ function client(options: {
     } as never,
     authorizationHeaders,
     getRefreshCount: () => refreshCount,
+    getSubscriptionCount: () => subscriptionCount,
+    getUnsubscribeCount: () => unsubscribeCount,
   };
 }
 
@@ -60,6 +85,20 @@ describe("hasAdminAccess", () => {
     expect(await hasAdminAccess(mock.fake)).toBe(true);
     expect(mock.authorizationHeaders).toEqual(["Bearer current-token"]);
     expect(mock.getRefreshCount()).toBe(0);
+    expect(mock.getSubscriptionCount()).toBe(0);
+  });
+
+  test("uses the initial auth event when browser session restoration is delayed", async () => {
+    const mock = client({
+      current: null,
+      authEvent: session({ access_token: "restored-token" }),
+      authEventDelay: 10,
+    });
+
+    expect(await hasAdminAccess(mock.fake)).toBe(true);
+    expect(mock.authorizationHeaders).toEqual(["Bearer restored-token"]);
+    expect(mock.getSubscriptionCount()).toBe(1);
+    expect(mock.getUnsubscribeCount()).toBe(1);
   });
 
   test("refreshes an expiring token before checking the role", async () => {

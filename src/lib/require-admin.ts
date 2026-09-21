@@ -7,7 +7,36 @@ const TOKEN_REFRESH_MARGIN_SECONDS = 60;
 type AdminClient = Pick<SupabaseClient, "auth" | "rpc">;
 
 async function getFreshSession(client: AdminClient): Promise<Session | null> {
-  const { data, error } = await client.auth.getSession();
+  const initial = await client.auth.getSession();
+  let data = initial.data;
+  const { error } = initial;
+
+  if (!error && !data.session) {
+    // On a full page load, Supabase may still be restoring the browser session
+    // when getSession() first runs. Give its initial auth event one chance to
+    // provide that session, without holding up genuinely signed-out visitors.
+    const resolved = await new Promise<Session | null>((resolve) => {
+      let settled = false;
+      const subscriptionRef: { current?: { unsubscribe: () => void } } = {};
+      const timeout = setTimeout(() => finish(null), 800);
+      const finish = (session: Session | null) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        subscriptionRef.current?.unsubscribe();
+        resolve(session);
+      };
+
+      const { data: sub } = client.auth.onAuthStateChange((_event, session) => finish(session));
+      subscriptionRef.current = sub.subscription;
+      // Accommodate auth clients or test doubles that deliver the initial
+      // event synchronously, before onAuthStateChange returns its subscription.
+      if (settled) subscriptionRef.current.unsubscribe();
+    });
+
+    if (resolved) data = { session: resolved };
+  }
+
   if (error || !data.session) return null;
 
   const expiresSoon =
