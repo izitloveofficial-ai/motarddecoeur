@@ -73,17 +73,10 @@ function About() {
           <p className="text-xl text-foreground font-display italic">
             Parce qu'au fond, <em>la route rapproche les cœurs</em>.
           </p>
-          <div className="flex flex-col items-center gap-4 py-4">
-            <video
-              controls
-              playsInline
-              preload="metadata"
-              className="w-full max-w-sm rounded-2xl shadow-elegant bg-black"
-              poster={community}
-            >
-              <source src="/videos/histoire.mp4" type="video/mp4" />
-              Notre histoire en vidéo — vidéo au format MP4 non lue par votre navigateur.
-            </video>
+          <div className="flex flex-col items-center gap-2 py-4 text-center">
+            <p className="text-base text-muted-foreground">
+              Retrouvez nos histoires, nos rencontres et nos prochaines routes sur TikTok.
+            </p>
             <a
               href="https://www.tiktok.com/@motardsdecoeur"
               target="_blank"
