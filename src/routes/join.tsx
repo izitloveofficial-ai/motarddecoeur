@@ -108,6 +108,10 @@ function Join() {
     form.reset();
     setStatus("success");
     setFeedback(PREINSCRIPTION_MESSAGES.success);
+    if (typeof window !== "undefined") {
+      const ttq = (window as Window & { ttq?: { track: (event: string) => void } }).ttq;
+      if (ttq) ttq.track("CompleteRegistration");
+    }
   }
 
   const fieldClass =
