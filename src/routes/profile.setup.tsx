@@ -119,6 +119,9 @@ function ProfileSetup() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [availablePrompts, setAvailablePrompts] = useState<Prompt[]>([]);
   const [promptAnswers, setPromptAnswers] = useState<PromptAnswer[]>([]);
+  const [draftPromptId, setDraftPromptId] = useState("");
+  const [draftPromptAnswer, setDraftPromptAnswer] = useState("");
+  const [editingPromptId, setEditingPromptId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!supabase) return;
@@ -197,19 +200,49 @@ function ProfileSetup() {
   const updateField = <K extends keyof ProfileForm>(name: K, value: ProfileForm[K]) =>
     setProfile((current) => ({ ...current, [name]: value }));
 
-  function togglePrompt(promptId: string) {
-    setPromptAnswers((current) => {
-      const isSelected = current.some((answer) => answer.promptId === promptId);
-      if (isSelected) return current.filter((answer) => answer.promptId !== promptId);
-      if (current.length >= 3) return current;
-      return [...current, { promptId, answer: "" }];
-    });
+  function selectPrompt(promptId: string) {
+    setDraftPromptId(promptId);
+    setDraftPromptAnswer(
+      promptAnswers.find((answer) => answer.promptId === promptId)?.answer ?? "",
+    );
   }
 
-  function updatePromptAnswer(promptId: string, answer: string) {
+  function editPromptAnswer(promptId: string) {
+    setEditingPromptId(promptId);
+    selectPrompt(promptId);
+  }
+
+  function validatePromptAnswer() {
+    const answer = draftPromptAnswer.trim();
+    if (!draftPromptId || !answer) return;
+    const nextCount = editingPromptId ? promptAnswers.length : promptAnswers.length + 1;
     setPromptAnswers((current) =>
-      current.map((item) => (item.promptId === promptId ? { ...item, answer } : item)),
+      editingPromptId
+        ? current.map((item) =>
+            item.promptId === editingPromptId ? { promptId: draftPromptId, answer } : item,
+          )
+        : [...current, { promptId: draftPromptId, answer }],
     );
+    setDraftPromptId("");
+    setDraftPromptAnswer("");
+    setEditingPromptId(null);
+    if (nextCount === 3) goToNextStep();
+  }
+
+  function removePromptAnswer(promptId: string) {
+    setPromptAnswers((current) => current.filter((item) => item.promptId !== promptId));
+    if (draftPromptId === promptId || editingPromptId === promptId) {
+      setDraftPromptId("");
+      setDraftPromptAnswer("");
+      setEditingPromptId(null);
+    }
+  }
+
+  function skipPrompts() {
+    setDraftPromptId("");
+    setDraftPromptAnswer("");
+    setEditingPromptId(null);
+    goToNextStep();
   }
 
   async function removeExistingPhoto(photo: ExistingPhoto) {
@@ -645,55 +678,128 @@ function ProfileSetup() {
                 </label>
                 <fieldset className="space-y-3 rounded-2xl border border-white/10 bg-[#281e1f] p-4">
                   <legend className="px-1 font-display text-xl">Prompts</legend>
-                  <p className="text-sm leading-relaxed text-[#a99b95]">
-                    Choisis jusqu'à 3 questions pour donner un aperçu de ta personnalité
-                    (optionnel).
+                  <p className="text-sm leading-relaxed text-[#d4c6bf]">
+                    <strong className="text-[#e8be6c]">Optionnel</strong>, mais ça aide à créer des
+                    conversations plus naturelles.
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {availablePrompts.map((prompt) => {
-                      const selected = promptAnswers.some(
-                        (answer) => answer.promptId === prompt.id,
-                      );
-                      const disabled = !selected && promptAnswers.length >= 3;
-                      return (
-                        <button
-                          key={prompt.id}
-                          type="button"
-                          onClick={() => togglePrompt(prompt.id)}
-                          disabled={disabled}
-                          aria-pressed={selected}
-                          className={`rounded-xl border px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-40 ${
-                            selected
-                              ? "border-[#e2b45f] bg-[#d9a441]/15 text-[#fff9f0]"
-                              : "border-white/15 bg-[#302526] text-[#d4c6bf] hover:border-[#d6a85c]/50"
-                          }`}
+                  {promptAnswers.length > 0 && (
+                    <ul className="space-y-2" aria-label="Réponses déjà ajoutées">
+                      {promptAnswers.map((item) => {
+                        const prompt = availablePrompts.find(({ id }) => id === item.promptId);
+                        if (!prompt) return null;
+                        return (
+                          <li
+                            key={item.promptId}
+                            className="rounded-xl border border-[#d6a85c]/30 bg-[#302526] p-3"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold text-[#fff9f0]">
+                                  {prompt.question}
+                                </p>
+                                <p className="mt-1 whitespace-pre-wrap text-sm text-[#d4c6bf]">
+                                  {item.answer}
+                                </p>
+                              </div>
+                              <div className="flex shrink-0 items-center gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => editPromptAnswer(item.promptId)}
+                                  className="rounded-lg px-2 py-1 text-xs font-medium text-[#e8be6c] transition hover:bg-white/5 hover:text-[#f4ce7e]"
+                                >
+                                  Modifier
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => removePromptAnswer(item.promptId)}
+                                  className="rounded-lg p-2 text-[#a99b95] transition hover:bg-white/5 hover:text-[#fff9f0]"
+                                  aria-label={`Retirer la réponse à « ${prompt.question} »`}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </div>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                  {(promptAnswers.length < 3 || draftPromptId) && (
+                    <div className="rounded-xl border border-white/10 bg-[#21191a]/50 p-3">
+                      <label className="block text-sm font-medium">
+                        {editingPromptId
+                          ? "Modifier la question"
+                          : promptAnswers.length === 0
+                            ? "Choisis une question"
+                            : "Ajouter une autre question"}
+                        <select
+                          className={fieldClass}
+                          value={draftPromptId}
+                          onChange={(event) => selectPrompt(event.target.value)}
                         >
-                          {prompt.question}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {promptAnswers.map((item, index) => {
-                    const prompt = availablePrompts.find(({ id }) => id === item.promptId);
-                    if (!prompt) return null;
-                    return (
-                      <label key={item.promptId} className="block text-sm font-medium">
-                        {prompt.question}
-                        <textarea
-                          className={`${fieldClass} min-h-24 resize-y`}
-                          maxLength={300}
-                          placeholder="Ta réponse…"
-                          value={item.answer}
-                          onChange={(event) =>
-                            updatePromptAnswer(item.promptId, event.target.value)
-                          }
-                        />
-                        <span className="mt-1 block text-right text-xs font-normal text-[#a99b95]">
-                          {item.answer.length}/300 · réponse {index + 1} sur 3
-                        </span>
+                          <option value="">Sélectionner une question</option>
+                          {availablePrompts.map((prompt) => {
+                            const alreadyAdded = promptAnswers.some(
+                              (answer) => answer.promptId === prompt.id,
+                            );
+                            if (
+                              alreadyAdded &&
+                              prompt.id !== draftPromptId &&
+                              prompt.id !== editingPromptId
+                            )
+                              return null;
+                            return (
+                              <option key={prompt.id} value={prompt.id}>
+                                {prompt.question}
+                              </option>
+                            );
+                          })}
+                        </select>
                       </label>
-                    );
-                  })}
+                      {draftPromptId && (
+                        <label className="mt-3 block text-sm font-medium">
+                          Ta réponse
+                          <textarea
+                            className={`${fieldClass} min-h-24 resize-y`}
+                            maxLength={300}
+                            autoFocus
+                            placeholder="Ta réponse…"
+                            value={draftPromptAnswer}
+                            onChange={(event) => setDraftPromptAnswer(event.target.value)}
+                          />
+                          <span className="mt-1 block text-right text-xs font-normal text-[#a99b95]">
+                            {draftPromptAnswer.length}/300
+                          </span>
+                          <button
+                            type="button"
+                            onClick={validatePromptAnswer}
+                            disabled={!draftPromptAnswer.trim()}
+                            className="mt-2 w-full rounded-xl bg-[#e2b45f] px-4 py-3 text-sm font-semibold text-[#21191a] transition hover:bg-[#f4ce7e] disabled:cursor-not-allowed disabled:opacity-40"
+                          >
+                            Valider cette réponse
+                          </button>
+                        </label>
+                      )}
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-2 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={skipPrompts}
+                      className="flex-1 rounded-xl border border-[#e2b45f]/60 px-4 py-3 text-sm font-semibold text-[#e8be6c] transition hover:border-[#e2b45f] hover:bg-[#d9a441]/10"
+                    >
+                      Passer cette étape
+                    </button>
+                    {promptAnswers.length > 0 && promptAnswers.length < 3 && (
+                      <button
+                        type="button"
+                        onClick={skipPrompts}
+                        className="flex-1 rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm font-medium text-[#fff9f0] transition hover:border-[#d6a85c]/50"
+                      >
+                        C'est suffisant, continuer
+                      </button>
+                    )}
+                  </div>
                 </fieldset>
               </div>
             )}
