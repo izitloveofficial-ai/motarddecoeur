@@ -1,5 +1,5 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { Bike, Crown, Heart } from "lucide-react";
+import { Bike, Crown, Heart, HeartCrack } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
@@ -150,8 +150,18 @@ function WhoLikedMe() {
           <p className="mt-6 text-sm text-[#d4c6bf]">Chargement des coups de cœur…</p>
         )}
         {isPremium && profiles?.length === 0 && (
-          <div className="mt-8 rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-8 text-center text-sm text-[#d4c6bf]">
-            Personne ne vous a encore mis de coup de cœur — revenez bientôt !
+          <div className="mt-8 rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 p-8 text-center sm:p-10">
+            <HeartCrack
+              className="mx-auto h-16 w-16 text-[#e2b45f]"
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
+            <h2 className="mt-5 font-display text-2xl text-[#fff9f0]">
+              Pas encore de coup de cœur
+            </h2>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-[#d4c6bf]">
+              Personne ne vous a encore liké. Revenez bientôt !
+            </p>
           </div>
         )}
         {isPremium && profiles && profiles.length > 0 && (
