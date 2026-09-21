@@ -15,9 +15,12 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
+  eventDayModifier = "hasEvents",
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
+  /** Modifier whose days should display a small event indicator. */
+  eventDayModifier?: string;
 }) {
   const defaultClassNames = getDefaultClassNames();
 
@@ -119,7 +122,12 @@ function Calendar({
 
           return <ChevronDownIcon className={cn("size-4", className)} {...props} />;
         },
-        DayButton: CalendarDayButton,
+        DayButton: (dayButtonProps) => (
+          <CalendarDayButton
+            {...dayButtonProps}
+            showEventIndicator={Boolean(dayButtonProps.modifiers[eventDayModifier])}
+          />
+        ),
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -140,8 +148,9 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
+  showEventIndicator = false,
   ...props
-}: React.ComponentProps<typeof DayButton>) {
+}: React.ComponentProps<typeof DayButton> & { showEventIndicator?: boolean }) {
   const defaultClassNames = getDefaultClassNames();
 
   const ref = React.useRef<HTMLButtonElement>(null);
@@ -170,7 +179,15 @@ function CalendarDayButton({
         className,
       )}
       {...props}
-    />
+    >
+      {props.children}
+      {showEventIndicator && (
+        <span
+          aria-hidden="true"
+          className="absolute bottom-1 size-1.5 rounded-full bg-[#e8be6c] group-data-[selected=true]/day:bg-primary-foreground"
+        />
+      )}
+    </Button>
   );
 }
 
