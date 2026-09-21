@@ -81,6 +81,7 @@ type Candidate = {
   distance_km: number | null;
   is_premium: boolean;
   photoUrl: string | null;
+  prompts: { question: string; answer: string }[];
 };
 
 export const Route = createFileRoute("/discover")({
@@ -179,7 +180,7 @@ function Discover() {
       setCandidates([]);
       return;
     }
-    const filtered = (profiles ?? []) as Omit<Candidate, "photoUrl">[];
+    const filtered = (profiles ?? []) as Omit<Candidate, "photoUrl" | "prompts">[];
     const targetedProfileId = window.sessionStorage.getItem("discover-target-profile");
     if (targetedProfileId) {
       const targetedIndex = filtered.findIndex((profile) => profile.id === targetedProfileId);
@@ -190,25 +191,40 @@ function Discover() {
       window.sessionStorage.removeItem("discover-target-profile");
     }
     const photosByProfile = new Map<string, string>();
+    const promptsByProfile = new Map<string, { question: string; answer: string }[]>();
     if (filtered.length) {
-      const { data: photos } = await supabase
-        .from("profile_photos")
-        .select("profile_id, storage_path, position")
-        .in(
-          "profile_id",
-          filtered.map((profile) => profile.id),
-        )
-        .order("position", { ascending: true });
+      const profileIds = filtered.map((profile) => profile.id);
+      const [{ data: photos }, { data: promptAnswers, error: promptsError }] = await Promise.all([
+        supabase
+          .from("profile_photos")
+          .select("profile_id, storage_path, position")
+          .in("profile_id", profileIds)
+          .order("position", { ascending: true }),
+        supabase
+          .from("profile_prompts")
+          .select("profile_id, answer, position, prompts(question)")
+          .in("profile_id", profileIds)
+          .order("position", { ascending: true }),
+      ]);
       for (const photo of photos ?? [])
         if (!photosByProfile.has(photo.profile_id)) {
           const { data } = supabase.storage.from("profile-photos").getPublicUrl(photo.storage_path);
           photosByProfile.set(photo.profile_id, data.publicUrl);
         }
+      if (promptsError) setError("Les prompts de profil n'ont pas pu être chargés.");
+      for (const item of promptAnswers ?? []) {
+        const relatedPrompt = item.prompts as unknown as { question: string } | null;
+        if (!relatedPrompt?.question) continue;
+        const current = promptsByProfile.get(item.profile_id) ?? [];
+        current.push({ question: relatedPrompt.question, answer: item.answer });
+        promptsByProfile.set(item.profile_id, current);
+      }
     }
     setCandidates(
       filtered.map((profile) => ({
         ...profile,
         photoUrl: photosByProfile.get(profile.id) ?? null,
+        prompts: promptsByProfile.get(profile.id) ?? [],
       })),
     );
   }
@@ -653,6 +669,16 @@ function Discover() {
               )}
               {current.bio && (
                 <p className="mt-3 text-sm leading-relaxed text-[#d4c6bf]">{current.bio}</p>
+              )}
+              {current.prompts.length > 0 && (
+                <div className="mt-3 space-y-3 text-sm leading-relaxed text-[#d4c6bf]">
+                  {current.prompts.map((prompt) => (
+                    <div key={prompt.question}>
+                      <p className="font-semibold text-[#fff9f0]">{prompt.question}</p>
+                      <p>{prompt.answer}</p>
+                    </div>
+                  ))}
+                </div>
               )}
               <div className="mt-6 flex justify-center gap-6">
                 <button

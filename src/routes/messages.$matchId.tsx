@@ -95,24 +95,33 @@ function Conversation() {
         )
         .subscribe();
 
-      const [{ data: profile }, { data: photos }, { data: existing, error: messagesError }] =
-        await Promise.all([
-          client
-            .from("profiles")
-            .select("first_name, bio, moto_brand, moto_model")
-            .eq("id", otherId)
-            .maybeSingle(),
-          client
-            .from("profile_photos")
-            .select("storage_path")
-            .eq("profile_id", otherId)
-            .order("position", { ascending: true }),
-          client
-            .from("messages")
-            .select("id, sender_id, content, created_at")
-            .eq("match_id", matchId)
-            .order("created_at", { ascending: true }),
-        ]);
+      const [
+        { data: profile },
+        { data: photos },
+        { data: promptAnswers },
+        { data: existing, error: messagesError },
+      ] = await Promise.all([
+        client
+          .from("profiles")
+          .select("first_name, bio, moto_brand, moto_model")
+          .eq("id", otherId)
+          .maybeSingle(),
+        client
+          .from("profile_photos")
+          .select("storage_path")
+          .eq("profile_id", otherId)
+          .order("position", { ascending: true }),
+        client
+          .from("profile_prompts")
+          .select("answer, position, prompts(question)")
+          .eq("profile_id", otherId)
+          .order("position", { ascending: true }),
+        client
+          .from("messages")
+          .select("id, sender_id, content, created_at")
+          .eq("match_id", matchId)
+          .order("created_at", { ascending: true }),
+      ]);
       if (!cancelled) {
         const firstName = profile?.first_name ?? "Motard(e)";
         const photoUrls = (photos ?? []).map(
@@ -125,6 +134,10 @@ function Conversation() {
           bio: profile?.bio,
           motoBrand: profile?.moto_brand,
           motoModel: profile?.moto_model,
+          prompts: (promptAnswers ?? []).flatMap((item) => {
+            const prompt = item.prompts as unknown as { question: string } | null;
+            return prompt?.question ? [{ question: prompt.question, answer: item.answer }] : [];
+          }),
         });
         setOtherPhotos(photoUrls);
         setOtherPhotoUrl(photoUrls[0] ?? null);

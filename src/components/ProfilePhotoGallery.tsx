@@ -6,6 +6,7 @@ export type GalleryProfile = {
   bio?: string | null;
   motoBrand?: string | null;
   motoModel?: string | null;
+  prompts?: { question: string; answer: string }[];
 };
 
 type ProfilePhotoGalleryProps = {
@@ -137,10 +138,16 @@ export function ProfilePhotoGallery({ open, onClose, photos, profile }: ProfileP
           )}
         </div>
 
-        {(profile.bio || bike) && (
-          <div className="shrink-0 space-y-2 px-5 py-4 sm:px-6 sm:py-5">
+        {(profile.bio || bike || profile.prompts?.length) && (
+          <div className="max-h-[40vh] shrink-0 space-y-3 overflow-y-auto px-5 py-4 sm:px-6 sm:py-5">
             {bike && <p className="font-medium text-[#e8be6c]">{bike}</p>}
             {profile.bio && <p className="text-sm leading-relaxed text-[#d4c6bf]">{profile.bio}</p>}
+            {profile.prompts?.map((prompt) => (
+              <div key={prompt.question} className="text-sm leading-relaxed text-[#d4c6bf]">
+                <p className="font-semibold text-[#fff9f0]">{prompt.question}</p>
+                <p>{prompt.answer}</p>
+              </div>
+            ))}
           </div>
         )}
       </div>
