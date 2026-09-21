@@ -1,7 +1,8 @@
-import { Link, createFileRoute, redirect } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, RefreshCw, XCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { requireAdminPage } from "@/lib/require-admin";
 
 type ServiceHealth = {
   ok: boolean;
@@ -18,18 +19,7 @@ type HealthCheck = {
 export const Route = createFileRoute("/admin/status")({
   ssr: false,
   component: AdminStatus,
-  beforeLoad: async () => {
-    if (!supabase) return;
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) throw redirect({ to: "/admin/login" });
-    const { data: isAdmin } = await supabase.rpc("is_admin");
-    if (!isAdmin) {
-      await supabase.auth.signOut();
-      throw redirect({ to: "/admin/login" });
-    }
-  },
+  beforeLoad: requireAdminPage,
 });
 
 function AdminStatus() {

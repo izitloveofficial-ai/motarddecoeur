@@ -14,7 +14,7 @@ import postLocal from "@/assets/post-local.jpg";
 import postCustom from "@/assets/post-custom.jpg";
 import ctaCommunity from "@/assets/cta-community.jpg";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/community")({
   // Supabase persists auth in browser storage, so authorization must run in the browser.

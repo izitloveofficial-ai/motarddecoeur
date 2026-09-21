@@ -1,6 +1,7 @@
-import { Link, createFileRoute, redirect } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { requireAdminPage } from "@/lib/require-admin";
 
 type Member = {
   id: string;
@@ -21,19 +22,9 @@ type Photo = {
   url: string;
 };
 export const Route = createFileRoute("/admin/members")({
+  ssr: false,
   component: AdminMembers,
-  beforeLoad: async () => {
-    if (!supabase) return;
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) throw redirect({ to: "/admin/login" });
-    const { data: admin } = await supabase.rpc("is_admin");
-    if (!admin) {
-      await supabase.auth.signOut();
-      throw redirect({ to: "/admin/login" });
-    }
-  },
+  beforeLoad: requireAdminPage,
 });
 function age(value: string) {
   const birth = new Date(value);

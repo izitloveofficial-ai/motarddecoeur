@@ -22,7 +22,7 @@ import teamC from "@/assets/avatar-team-3.jpg";
 import solidaireImg from "@/assets/home-solidaire.jpg";
 import ctaRoad from "@/assets/cta-road.jpg";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   head: () => ({

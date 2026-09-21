@@ -9,7 +9,7 @@ import m2 from "@/assets/profile-man2.jpg";
 import lea from "@/assets/profile-lea.jpg";
 import julien from "@/assets/profile-julien.jpg";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/profiles")({
   // Supabase persists auth in browser storage, so authorization must run in the browser.

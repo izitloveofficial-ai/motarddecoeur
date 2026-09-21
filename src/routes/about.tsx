@@ -4,7 +4,7 @@ import { Heart, Compass, Shield, Flame } from "lucide-react";
 import bikeImg from "@/assets/about-hero.jpg";
 import community from "@/assets/post-ride.jpg";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/about")({
   head: () => ({

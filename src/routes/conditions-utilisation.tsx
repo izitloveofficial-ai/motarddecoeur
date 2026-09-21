@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Layout } from "@/components/Layout";
 import { ScrollText } from "lucide-react";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 const CONTACT_EMAIL = "contact@motardsdecoeur.com";
 
 export const Route = createFileRoute("/conditions-utilisation")({

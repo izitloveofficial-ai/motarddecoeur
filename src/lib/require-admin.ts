@@ -52,3 +52,21 @@ export async function requireAdmin() {
     throw redirect({ to: "/join" });
   }
 }
+
+/** Browser guard for private administration pages. */
+export async function requireAdminPage() {
+  if (typeof window === "undefined") return;
+
+  if (supabase && (await hasAdminAccess(supabase))) return;
+
+  // The pre-registration administration uses the server-issued, HttpOnly
+  // admin session. Supporting it here keeps every /admin page behind the same
+  // navigation guard while the underlying data APIs retain their own checks.
+  const serverSession = await fetch("/api/admin/session", {
+    credentials: "same-origin",
+    headers: { accept: "application/json" },
+  }).catch(() => null);
+  if (serverSession?.ok) return;
+
+  throw redirect({ to: "/admin/login" });
+}

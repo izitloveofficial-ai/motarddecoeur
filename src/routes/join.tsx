@@ -6,7 +6,7 @@ import { PREINSCRIPTION_MESSAGES } from "@/lib/preinscriptions";
 import bikeDetail from "@/assets/bike-dark.jpg";
 import { Bike, Check, CheckCircle2, HeartHandshake, Mail, MapPin, ShieldCheck } from "lucide-react";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 
 const riderOptions = [
   ["motard", "Motard"],
@@ -283,6 +283,15 @@ function Join() {
                   name="message"
                   maxLength={1000}
                 />
+              </label>
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#d6a85c]/20 bg-[#281e1f]/70 p-4 text-sm leading-relaxed text-[#d4c6bf]">
+                <input
+                  className="mt-1 h-4 w-4 accent-primary"
+                  name="age_confirmation"
+                  type="checkbox"
+                  required
+                />
+                <span>Je certifie avoir 18 ans ou plus. *</span>
               </label>
               <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#d6a85c]/20 bg-[#281e1f]/70 p-4 text-sm leading-relaxed text-[#d4c6bf]">
                 <input

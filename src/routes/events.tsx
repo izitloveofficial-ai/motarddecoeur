@@ -9,7 +9,7 @@ import evExpo from "@/assets/event-expo.jpg";
 import evAlps from "@/assets/event-alps.jpg";
 import evHarbour from "@/assets/event-harbour.jpg";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 
 const EVENTS = [
   { date: "À VENIR", title: "Balade coucher de soleil — Côte d'Azur", loc: "Nice — Monaco", type: "Balade", spots: "places à définir", img: evCoast, featured: true },
