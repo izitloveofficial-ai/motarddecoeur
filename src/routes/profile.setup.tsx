@@ -100,6 +100,8 @@ function getNextStep(lookingFor: string) {
 
 function ProfileSetup() {
   const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [furthestStep, setFurthestStep] = useState(1);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [feedback, setFeedback] = useState("");
   const [profile, setProfile] = useState<ProfileForm>(emptyProfile);
@@ -444,6 +446,18 @@ function ProfileSetup() {
   );
 
   const nextStep = getNextStep(profile.looking_for);
+  const stepLabels = ["Identité", "Ta moto", "Ta recherche", "Photos et visibilité"];
+
+  function goToNextStep() {
+    if (currentStep === 1 && (!profile.first_name.trim() || !profile.birth_date)) {
+      const form = document.querySelector<HTMLFormElement>("#profile-form");
+      form?.reportValidity();
+      return;
+    }
+    const next = Math.min(4, currentStep + 1);
+    setCurrentStep(next);
+    setFurthestStep((step) => Math.max(step, next));
+  }
 
   return (
     <Layout>
@@ -482,212 +496,294 @@ function ProfileSetup() {
           <p className="mb-8 text-sm text-[#d4c6bf]">
             Ces informations aident les autres motards à te trouver et à savoir ce que tu cherches.
           </p>
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            <div className="grid gap-5 sm:grid-cols-2">
-              <label className="text-sm font-medium">
-                Prénom *
-                <input
-                  className={fieldClass}
-                  name="first_name"
-                  autoComplete="given-name"
-                  required
-                  maxLength={80}
-                  value={profile.first_name}
-                  onChange={(event) => updateField("first_name", event.target.value)}
-                />
-              </label>
-              <label className="text-sm font-medium">
-                Date de naissance *
-                <input
-                  className={fieldClass}
-                  name="birth_date"
-                  type="date"
-                  required
-                  max={eighteenYearsAgo()}
-                  value={profile.birth_date}
-                  onChange={(event) => updateField("birth_date", event.target.value)}
-                />
-              </label>
-            </div>
-            <div className="grid gap-5 sm:grid-cols-2">
-              <label className="text-sm font-medium">Genre{select("gender", genderOptions)}</label>
-              <label className="text-sm font-medium">
-                Tu recherches{select("looking_for", lookingForOptions)}
-              </label>
-            </div>
-            <div className="grid gap-5 sm:grid-cols-3">
-              <label className="text-sm font-medium">
-                Type de moto{select("moto_type", motoTypeOptions)}
-              </label>
-              <label className="text-sm font-medium">
-                Marque
-                <input
-                  className={fieldClass}
-                  name="moto_brand"
-                  maxLength={80}
-                  value={profile.moto_brand}
-                  onChange={(event) => updateField("moto_brand", event.target.value)}
-                />
-              </label>
-              <label className="text-sm font-medium">
-                Modèle
-                <input
-                  className={fieldClass}
-                  name="moto_model"
-                  maxLength={80}
-                  value={profile.moto_model}
-                  onChange={(event) => updateField("moto_model", event.target.value)}
-                />
-              </label>
-            </div>
-            <label className="block text-sm font-medium">
-              Présentation
-              <textarea
-                className={`${fieldClass} min-h-32 resize-y`}
-                name="bio"
-                maxLength={1000}
-                placeholder="Ton style de conduite, tes balades préférées, ce que tu recherches…"
-                value={profile.bio}
-                onChange={(event) => updateField("bio", event.target.value)}
-              />
-            </label>
-            <label className="block text-sm font-medium">
-              Photos (jusqu'à 6)
-              {existingPhotos.length > 0 && (
-                <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {existingPhotos.map((photo, index) => (
-                    <li
-                      key={photo.id}
-                      className="relative aspect-square overflow-hidden rounded-xl border border-white/15 bg-[#302526]"
-                    >
-                      <img
-                        src={photo.publicUrl}
-                        alt={`Photo de profil ${index + 1}`}
-                        className="h-full w-full object-cover"
-                      />
+          <form id="profile-form" className="space-y-5" onSubmit={handleSubmit}>
+            <div className="mb-8" aria-label={`Étape ${currentStep} sur 4`}>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <p className="text-sm font-medium text-[#fff9f0]">Étape {currentStep} sur 4</p>
+                <p className="text-xs text-[#a99b95]">{stepLabels[currentStep - 1]}</p>
+              </div>
+              <ol className="grid grid-cols-4 gap-2">
+                {stepLabels.map((label, index) => {
+                  const step = index + 1;
+                  const isAccessible = step <= furthestStep;
+                  return (
+                    <li key={label}>
                       <button
                         type="button"
-                        onClick={() => void removeExistingPhoto(photo)}
-                        disabled={deletingPhotoId !== null}
-                        className="absolute top-2 right-2 rounded-full bg-[#21191a]/90 p-2 text-[#fff9f0] shadow transition hover:text-primary disabled:opacity-50"
-                        aria-label={`Supprimer la photo ${index + 1}`}
+                        onClick={() => isAccessible && setCurrentStep(step)}
+                        disabled={!isAccessible}
+                        aria-label={`Étape ${step} : ${label}`}
+                        aria-current={step === currentStep ? "step" : undefined}
+                        className="group flex w-full flex-col items-center gap-2 disabled:cursor-default"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <span
+                          className={`flex h-7 w-7 items-center justify-center rounded-full border text-xs font-semibold transition ${
+                            step <= currentStep
+                              ? "border-[#e2b45f] bg-[#e2b45f] text-[#21191a]"
+                              : "border-white/20 bg-[#302526] text-[#a99b95]"
+                          }`}
+                        >
+                          {step}
+                        </span>
+                        <span
+                          className={`h-2 w-full rounded-full transition ${
+                            step <= currentStep ? "bg-[#e2b45f]" : "bg-white/15"
+                          }`}
+                        />
                       </button>
                     </li>
-                  ))}
-                </ul>
-              )}
-              {Capacitor.isNativePlatform() ? (
-                <div className="mt-2 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
-                  <button
-                    type="button"
-                    onClick={() => void takeNativePhoto()}
-                    disabled={existingPhotos.length + photos.length >= 6}
-                    className="flex items-center gap-2 text-primary disabled:opacity-40"
-                  >
-                    <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
-                    Ajouter une photo (appareil photo ou galerie)
-                  </button>
-                  {photos.length > 0 && (
-                    <ul className="mt-3 flex flex-wrap gap-2">
-                      {photos.map((file, i) => (
+                  );
+                })}
+              </ol>
+            </div>
+            {currentStep === 1 && (
+              <div className="space-y-5">
+                <h2 className="font-display text-2xl">Identité</h2>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <label className="text-sm font-medium">
+                    Prénom *
+                    <input
+                      className={fieldClass}
+                      name="first_name"
+                      autoComplete="given-name"
+                      required
+                      maxLength={80}
+                      value={profile.first_name}
+                      onChange={(event) => updateField("first_name", event.target.value)}
+                    />
+                  </label>
+                  <label className="text-sm font-medium">
+                    Date de naissance *
+                    <input
+                      className={fieldClass}
+                      name="birth_date"
+                      type="date"
+                      required
+                      max={eighteenYearsAgo()}
+                      value={profile.birth_date}
+                      onChange={(event) => updateField("birth_date", event.target.value)}
+                    />
+                  </label>
+                </div>
+                <label className="block text-sm font-medium">
+                  Genre{select("gender", genderOptions)}
+                </label>
+              </div>
+            )}
+            {currentStep === 3 && (
+              <div className="space-y-5">
+                <h2 className="font-display text-2xl">Ce que tu recherches</h2>
+                <label className="text-sm font-medium">
+                  Tu recherches{select("looking_for", lookingForOptions)}
+                </label>
+
+                <label className="block text-sm font-medium">
+                  Présentation
+                  <textarea
+                    className={`${fieldClass} min-h-32 resize-y`}
+                    name="bio"
+                    maxLength={1000}
+                    placeholder="Ton style de conduite, tes balades préférées, ce que tu recherches…"
+                    value={profile.bio}
+                    onChange={(event) => updateField("bio", event.target.value)}
+                  />
+                </label>
+              </div>
+            )}
+            {currentStep === 2 && (
+              <div className="space-y-5">
+                <h2 className="font-display text-2xl">Ta moto</h2>
+                <div className="grid gap-5 sm:grid-cols-3">
+                  <label className="text-sm font-medium">
+                    Type de moto{select("moto_type", motoTypeOptions)}
+                  </label>
+                  <label className="text-sm font-medium">
+                    Marque
+                    <input
+                      className={fieldClass}
+                      name="moto_brand"
+                      maxLength={80}
+                      value={profile.moto_brand}
+                      onChange={(event) => updateField("moto_brand", event.target.value)}
+                    />
+                  </label>
+                  <label className="text-sm font-medium">
+                    Modèle
+                    <input
+                      className={fieldClass}
+                      name="moto_model"
+                      maxLength={80}
+                      value={profile.moto_model}
+                      onChange={(event) => updateField("moto_model", event.target.value)}
+                    />
+                  </label>
+                </div>
+              </div>
+            )}
+            {currentStep === 4 && (
+              <div className="space-y-5">
+                <h2 className="font-display text-2xl">Photos et visibilité</h2>
+                <label className="block text-sm font-medium">
+                  Photos (jusqu'à 6)
+                  {existingPhotos.length > 0 && (
+                    <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      {existingPhotos.map((photo, index) => (
                         <li
-                          key={i}
-                          className="flex items-center gap-2 rounded-full border border-white/15 bg-[#302526] px-3 py-1 text-xs"
+                          key={photo.id}
+                          className="relative aspect-square overflow-hidden rounded-xl border border-white/15 bg-[#302526]"
                         >
-                          Photo {i + 1}
+                          <img
+                            src={photo.publicUrl}
+                            alt={`Photo de profil ${index + 1}`}
+                            className="h-full w-full object-cover"
+                          />
                           <button
                             type="button"
-                            onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
-                            className="text-[#a99b95] hover:text-primary"
-                            aria-label={`Retirer la photo ${i + 1}`}
+                            onClick={() => void removeExistingPhoto(photo)}
+                            disabled={deletingPhotoId !== null}
+                            className="absolute top-2 right-2 rounded-full bg-[#21191a]/90 p-2 text-[#fff9f0] shadow transition hover:text-primary disabled:opacity-50"
+                            aria-label={`Supprimer la photo ${index + 1}`}
                           >
-                            ×
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </li>
                       ))}
                     </ul>
                   )}
+                  {Capacitor.isNativePlatform() ? (
+                    <div className="mt-2 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
+                      <button
+                        type="button"
+                        onClick={() => void takeNativePhoto()}
+                        disabled={existingPhotos.length + photos.length >= 6}
+                        className="flex items-center gap-2 text-primary disabled:opacity-40"
+                      >
+                        <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
+                        Ajouter une photo (appareil photo ou galerie)
+                      </button>
+                      {photos.length > 0 && (
+                        <ul className="mt-3 flex flex-wrap gap-2">
+                          {photos.map((file, i) => (
+                            <li
+                              key={i}
+                              className="flex items-center gap-2 rounded-full border border-white/15 bg-[#302526] px-3 py-1 text-xs"
+                            >
+                              Photo {i + 1}
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setPhotos((prev) => prev.filter((_, idx) => idx !== i))
+                                }
+                                className="text-[#a99b95] hover:text-primary"
+                                aria-label={`Retirer la photo ${i + 1}`}
+                              >
+                                ×
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="mt-2 flex items-center gap-3 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
+                      <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        multiple
+                        onChange={(event) =>
+                          setPhotos((current) =>
+                            [...current, ...Array.from(event.target.files ?? [])].slice(
+                              0,
+                              Math.max(0, 6 - existingPhotos.length),
+                            ),
+                          )
+                        }
+                        disabled={existingPhotos.length + photos.length >= 6}
+                        className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2"
+                      />
+                    </div>
+                  )}
+                  {photos.length > 0 && (
+                    <p className="mt-2 text-xs text-[#d4c6bf]">
+                      {photos.length} nouvelle(s) photo(s) sélectionnée(s) —{" "}
+                      {existingPhotos.length + photos.length}/6 au total
+                    </p>
+                  )}
+                </label>
+                <div className="rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
+                  <button
+                    type="button"
+                    onClick={captureLocation}
+                    className="flex items-center gap-2 text-primary hover:underline"
+                  >
+                    <MapPin className="h-4 w-4" />
+                    {locationStatus === "captured"
+                      ? "Position enregistrée ✓"
+                      : locationStatus === "requesting"
+                        ? "Localisation en cours…"
+                        : "Activer ma position (recommandé)"}
+                  </button>
+                  <p className="mt-2 text-xs leading-relaxed text-[#a99b95]">
+                    Utilisée uniquement pour te proposer des motards proches et calculer une
+                    distance approximative. Ta position exacte n'est jamais visible par les autres,
+                    seulement une distance arrondie.
+                  </p>
+                  {locationStatus === "error" && (
+                    <p className="mt-2 text-xs text-primary">
+                      Localisation refusée ou indisponible — tu peux continuer sans, mais le tri par
+                      distance ne fonctionnera pas.
+                    </p>
+                  )}
                 </div>
-              ) : (
-                <div className="mt-2 flex items-center gap-3 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
-                  <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm leading-relaxed text-[#d4c6bf]">
                   <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
-                    onChange={(event) =>
-                      setPhotos((current) =>
-                        [...current, ...Array.from(event.target.files ?? [])].slice(
-                          0,
-                          Math.max(0, 6 - existingPhotos.length),
-                        ),
-                      )
-                    }
-                    disabled={existingPhotos.length + photos.length >= 6}
-                    className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2"
+                    type="checkbox"
+                    name="is_active"
+                    checked={profile.is_active}
+                    onChange={(event) => updateField("is_active", event.target.checked)}
+                    className="mt-1 h-4 w-4 accent-primary"
                   />
-                </div>
+                  <span>
+                    Rendre mon profil visible dans la découverte. Décoche pour masquer
+                    temporairement ton profil sans le supprimer.
+                  </span>
+                </label>
+              </div>
+            )}
+            <div className="flex gap-3 pt-2">
+              {currentStep > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep((step) => Math.max(1, step - 1))}
+                  className="w-full rounded-full border border-primary/40 px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
+                >
+                  Précédent
+                </button>
               )}
-              {photos.length > 0 && (
-                <p className="mt-2 text-xs text-[#d4c6bf]">
-                  {photos.length} nouvelle(s) photo(s) sélectionnée(s) —{" "}
-                  {existingPhotos.length + photos.length}/6 au total
-                </p>
-              )}
-            </label>
-            <div className="rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
-              <button
-                type="button"
-                onClick={captureLocation}
-                className="flex items-center gap-2 text-primary hover:underline"
-              >
-                <MapPin className="h-4 w-4" />
-                {locationStatus === "captured"
-                  ? "Position enregistrée ✓"
-                  : locationStatus === "requesting"
-                    ? "Localisation en cours…"
-                    : "Activer ma position (recommandé)"}
-              </button>
-              <p className="mt-2 text-xs leading-relaxed text-[#a99b95]">
-                Utilisée uniquement pour te proposer des motards proches et calculer une distance
-                approximative. Ta position exacte n'est jamais visible par les autres, seulement une
-                distance arrondie.
-              </p>
-              {locationStatus === "error" && (
-                <p className="mt-2 text-xs text-primary">
-                  Localisation refusée ou indisponible — tu peux continuer sans, mais le tri par
-                  distance ne fonctionnera pas.
-                </p>
+              {currentStep < 4 && (
+                <button
+                  type="button"
+                  onClick={goToNextStep}
+                  className="w-full rounded-full bg-gradient-red px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow"
+                >
+                  Suivant
+                </button>
               )}
             </div>
-            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm leading-relaxed text-[#d4c6bf]">
-              <input
-                type="checkbox"
-                name="is_active"
-                checked={profile.is_active}
-                onChange={(event) => updateField("is_active", event.target.checked)}
-                className="mt-1 h-4 w-4 accent-primary"
-              />
-              <span>
-                Rendre mon profil visible dans la découverte. Décoche pour masquer temporairement
-                ton profil sans le supprimer.
-              </span>
-            </label>
-            <button
-              disabled={status === "submitting" || loadingProfile}
-              className="w-full rounded-full bg-gradient-red px-8 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow disabled:opacity-60"
-              type="submit"
-            >
-              {loadingProfile
-                ? "Chargement…"
-                : status === "submitting"
-                  ? "Enregistrement…"
-                  : hasProfile
-                    ? "Enregistrer les modifications"
+            {currentStep === 4 && (
+              <button
+                disabled={status === "submitting" || loadingProfile}
+                className="w-full rounded-full bg-gradient-red px-8 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow disabled:opacity-60"
+                type="submit"
+              >
+                {loadingProfile
+                  ? "Chargement…"
+                  : status === "submitting"
+                    ? "Enregistrement…"
                     : "Enregistrer mon profil"}
-            </button>
+              </button>
+            )}
             <p className="flex items-center justify-center gap-2 text-xs text-[#e4c986]">
               <ShieldCheck className="h-4 w-4" />
               Ta position exacte n'est jamais affichée publiquement.
