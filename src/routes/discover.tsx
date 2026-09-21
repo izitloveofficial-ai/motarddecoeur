@@ -180,6 +180,15 @@ function Discover() {
       return;
     }
     const filtered = (profiles ?? []) as Omit<Candidate, "photoUrl">[];
+    const targetedProfileId = window.sessionStorage.getItem("discover-target-profile");
+    if (targetedProfileId) {
+      const targetedIndex = filtered.findIndex((profile) => profile.id === targetedProfileId);
+      if (targetedIndex >= 0) {
+        const [targetedProfile] = filtered.splice(targetedIndex, 1);
+        filtered.unshift(targetedProfile);
+      }
+      window.sessionStorage.removeItem("discover-target-profile");
+    }
     const photosByProfile = new Map<string, string>();
     if (filtered.length) {
       const { data: photos } = await supabase

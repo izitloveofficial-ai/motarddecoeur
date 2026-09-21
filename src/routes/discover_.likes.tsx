@@ -1,0 +1,201 @@
+import { Link, createFileRoute, redirect } from "@tanstack/react-router";
+import { Bike, Crown, Heart } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Layout } from "@/components/Layout";
+import { requireAdmin } from "@/lib/require-admin";
+import { requireDatingIntent } from "@/lib/require-dating-intent";
+import { supabase } from "@/lib/supabase";
+
+type LikedProfile = {
+  id: string;
+  first_name: string;
+  birth_date: string;
+  bio: string | null;
+  moto_brand: string | null;
+  moto_model: string | null;
+  moto_type: string | null;
+  liked_at: string;
+  photoUrl: string | null;
+};
+
+export const Route = createFileRoute("/discover_/likes")({
+  ssr: false,
+  component: WhoLikedMe,
+  beforeLoad: async () => {
+    await requireAdmin();
+    await requireDatingIntent();
+    if (!supabase) return;
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) throw redirect({ to: "/login" });
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", session.user.id)
+      .maybeSingle();
+    if (!profile) throw redirect({ to: "/profile/setup" });
+  },
+});
+
+function getAge(birthDate: string) {
+  const birth = new Date(birthDate);
+  const today = new Date();
+  let years = today.getFullYear() - birth.getFullYear();
+  if (today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate())) years--;
+  return years;
+}
+
+function WhoLikedMe() {
+  const [isPremium, setIsPremium] = useState<boolean | null>(null);
+  const [profiles, setProfiles] = useState<LikedProfile[] | null>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function load() {
+      if (!supabase) {
+        setError("Supabase n'est pas configuré.");
+        return;
+      }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: account, error: accountError } = await supabase
+        .from("profiles")
+        .select("is_premium")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (accountError) {
+        setError("Impossible de charger votre abonnement pour le moment.");
+        return;
+      }
+      const premium = account?.is_premium === true;
+      setIsPremium(premium);
+      if (!premium) return;
+
+      const { data, error: profilesError } = await supabase.rpc("who_liked_me");
+      if (profilesError) {
+        setError("Impossible de charger les coups de cœur pour le moment.");
+        setProfiles([]);
+        return;
+      }
+
+      const likedProfiles = (data ?? []) as Omit<LikedProfile, "photoUrl">[];
+      const photos = new Map<string, string>();
+      if (likedProfiles.length) {
+        const { data: photoRows } = await supabase
+          .from("profile_photos")
+          .select("profile_id, storage_path, position")
+          .in(
+            "profile_id",
+            likedProfiles.map((profile) => profile.id),
+          )
+          .order("position", { ascending: true });
+        for (const photo of photoRows ?? []) {
+          if (!photos.has(photo.profile_id)) {
+            const { data: publicUrl } = supabase.storage
+              .from("profile-photos")
+              .getPublicUrl(photo.storage_path);
+            photos.set(photo.profile_id, publicUrl.publicUrl);
+          }
+        }
+      }
+      setProfiles(
+        likedProfiles.map((profile) => ({
+          ...profile,
+          photoUrl: photos.get(profile.id) ?? null,
+        })),
+      );
+    }
+
+    void load();
+  }, []);
+
+  function prioritizeProfile(profileId: string) {
+    window.sessionStorage.setItem("discover-target-profile", profileId);
+  }
+
+  return (
+    <Layout>
+      <section className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-16">
+        <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
+        <h1 className="mt-3 font-display text-3xl sm:text-4xl">Qui m&apos;a liké</h1>
+
+        {error && (
+          <p role="alert" className="mt-6 rounded-xl border border-primary/40 p-4 text-sm">
+            {error}
+          </p>
+        )}
+        {isPremium === null && !error && <p className="mt-6 text-sm text-[#d4c6bf]">Chargement…</p>}
+
+        {isPremium === false && (
+          <div className="mt-8 rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-8 text-center sm:p-12">
+            <Crown className="mx-auto h-10 w-10 text-[#e8be6c]" aria-hidden="true" />
+            <h2 className="mt-4 font-display text-2xl">Fonctionnalité Premium</h2>
+            <p className="mx-auto mt-3 max-w-md text-sm text-[#d4c6bf]">
+              Voyez qui vous a déjà mis un coup de cœur, avant même de swiper.
+            </p>
+            <Link
+              to="/premium"
+              className="mt-6 inline-flex min-h-11 items-center rounded-full bg-gradient-red px-6 py-3 text-sm font-medium uppercase tracking-wider text-primary-foreground no-underline"
+            >
+              Découvrir Premium
+            </Link>
+          </div>
+        )}
+
+        {isPremium && profiles === null && !error && (
+          <p className="mt-6 text-sm text-[#d4c6bf]">Chargement des coups de cœur…</p>
+        )}
+        {isPremium && profiles?.length === 0 && (
+          <div className="mt-8 rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-8 text-center text-sm text-[#d4c6bf]">
+            Personne ne vous a encore mis de coup de cœur — revenez bientôt !
+          </div>
+        )}
+        {isPremium && profiles && profiles.length > 0 && (
+          <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {profiles.map((profile) => (
+              <li key={profile.id}>
+                <Link
+                  to="/discover"
+                  onClick={() => prioritizeProfile(profile.id)}
+                  className="group block h-full overflow-hidden rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 text-inherit no-underline transition hover:-translate-y-1 hover:border-[#d6a85c]/50"
+                >
+                  <div className="aspect-[4/3] bg-[#211819]">
+                    {profile.photoUrl ? (
+                      <img
+                        src={profile.photoUrl}
+                        alt={`Photo de ${profile.first_name}`}
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                      />
+                    ) : (
+                      <div className="grid h-full place-items-center">
+                        <Heart className="h-10 w-10 text-[#e8be6c]/50" aria-hidden="true" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-5">
+                    <h2 className="font-display text-2xl">
+                      {profile.first_name}, {getAge(profile.birth_date)} ans
+                    </h2>
+                    <p className="mt-2 flex items-center gap-2 text-sm text-[#d4c6bf]">
+                      <Bike className="h-4 w-4 shrink-0 text-[#e8be6c]" aria-hidden="true" />
+                      {[profile.moto_type, profile.moto_brand, profile.moto_model]
+                        .filter(Boolean)
+                        .join(" · ") || "Moto non renseignée"}
+                    </p>
+                    <span className="mt-5 inline-flex min-h-11 items-center text-xs font-medium uppercase tracking-wider text-[#e8be6c]">
+                      Swiper ce profil
+                    </span>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </Layout>
+  );
+}
