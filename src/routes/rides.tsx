@@ -1,7 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { CalendarPlus, MapPin, Users } from "lucide-react";
+import { CalendarDays, CalendarPlus, List, MapPin, Users } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { Calendar } from "@/components/ui/calendar";
 import { sendPushNotification } from "@/lib/push";
 import { requireAdmin } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
@@ -37,6 +38,8 @@ function Rides() {
   const [myId, setMyId] = useState<string | null>(null);
   const [notice, setNotice] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [view, setView] = useState<"list" | "calendar">("list");
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const [saving, setSaving] = useState(false);
   const [followedOrganizerIds, setFollowedOrganizerIds] = useState<Set<string>>(new Set());
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -190,6 +193,65 @@ function Rides() {
     await load();
   }
 
+  const ridesForSelectedDate = selectedDate
+    ? (rides ?? []).filter((ride) => isSameLocalDay(new Date(ride.starts_at), selectedDate))
+    : [];
+
+  function RideCard({ ride }: { ride: Ride }) {
+    return (
+      <article className="rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 p-5">
+        <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="font-display text-xl">{ride.title}</h2>
+            <p className="mt-1 text-xs text-[#a99b95]">Organisée par {ride.organizerFirstName}</p>
+            <p className="mt-1 text-sm text-[#e8be6c]">
+              {new Date(ride.starts_at).toLocaleString("fr-FR", {
+                dateStyle: "long",
+                timeStyle: "short",
+              })}
+            </p>
+            {ride.location_name && (
+              <p className="mt-1 flex items-center gap-1.5 text-sm text-[#d4c6bf]">
+                <MapPin className="h-3.5 w-3.5" /> {ride.location_name}
+              </p>
+            )}
+            {ride.description && (
+              <p className="mt-2 text-sm leading-relaxed text-[#d4c6bf]">{ride.description}</p>
+            )}
+            <p className="mt-2 flex items-center gap-1.5 text-xs text-[#a99b95]">
+              <Users className="h-3.5 w-3.5" /> {ride.attendeeCount} participant(s)
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-row items-center justify-between gap-2 sm:flex-col sm:items-end">
+            <button
+              onClick={() => void toggleJoin(ride)}
+              className={`min-h-11 whitespace-nowrap rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wider ${ride.joined ? "border border-white/15 text-[#d4c6bf]" : "bg-gradient-red text-primary-foreground"}`}
+            >
+              {ride.joined ? "Se désinscrire" : "Participer"}
+            </button>
+            {ride.organizer_id === myId ? (
+              <button
+                onClick={() => void cancelRide(ride)}
+                className="min-h-11 px-3 text-xs text-[#a99b95] hover:text-[#e8be6c]"
+              >
+                Annuler
+              </button>
+            ) : (
+              <button
+                onClick={() => void toggleFollow(ride.organizer_id)}
+                className="min-h-11 whitespace-nowrap px-3 text-xs text-[#d4c6bf] hover:text-[#e8be6c]"
+              >
+                {followedOrganizerIds.has(ride.organizer_id)
+                  ? "Ne plus suivre"
+                  : "Suivre cet organisateur"}
+              </button>
+            )}
+          </div>
+        </div>
+      </article>
+    );
+  }
+
   return (
     <Layout>
       <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16">
@@ -205,6 +267,27 @@ function Rides() {
             className="flex items-center gap-2 rounded-full bg-gradient-red px-5 py-2.5 text-sm font-medium uppercase tracking-wider text-primary-foreground"
           >
             <CalendarPlus className="h-4 w-4" /> Organiser
+          </button>
+        </div>
+        <div
+          className="mb-6 inline-flex rounded-full border border-[#d6a85c]/25 bg-[#281e1f] p-1"
+          aria-label="Choisir la présentation des balades"
+        >
+          <button
+            type="button"
+            aria-pressed={view === "list"}
+            onClick={() => setView("list")}
+            className={`flex min-h-10 items-center gap-2 rounded-full px-4 text-sm transition-colors ${view === "list" ? "bg-[#d6a85c] text-[#281e1f]" : "text-[#d4c6bf] hover:text-white"}`}
+          >
+            <List className="size-4" /> Liste
+          </button>
+          <button
+            type="button"
+            aria-pressed={view === "calendar"}
+            onClick={() => setView("calendar")}
+            className={`flex min-h-10 items-center gap-2 rounded-full px-4 text-sm transition-colors ${view === "calendar" ? "bg-[#d6a85c] text-[#281e1f]" : "text-[#d4c6bf] hover:text-white"}`}
+          >
+            <CalendarDays className="size-4" /> Calendrier
           </button>
         </div>
         {notice && (
@@ -290,68 +373,65 @@ function Rides() {
             Aucune balade prévue pour le moment. Sois le premier à en organiser une !
           </div>
         )}
-        <ul className="space-y-3">
-          {(rides ?? []).map((ride) => (
-            <li
-              key={ride.id}
-              className="rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 p-5"
-            >
-              <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <h2 className="font-display text-xl">{ride.title}</h2>
-                  <p className="mt-1 text-xs text-[#a99b95]">
-                    Organisée par {ride.organizerFirstName}
+        {view === "list" ? (
+          <ul className="space-y-3">
+            {(rides ?? []).map((ride) => (
+              <li key={ride.id}>
+                <RideCard ride={ride} />
+              </li>
+            ))}
+          </ul>
+        ) : rides && rides.length > 0 ? (
+          <div className="space-y-6">
+            <div className="overflow-x-auto rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-2 sm:p-5">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                modifiers={{ hasEvents: rides.map((ride) => new Date(ride.starts_at)) }}
+                className="mx-auto w-full bg-transparent [--cell-size:2.6rem] sm:[--cell-size:3.25rem]"
+                classNames={{ root: "w-full", month: "w-full" }}
+                aria-label="Calendrier des balades"
+              />
+              <p className="mt-3 text-center text-xs text-[#a99b95]">
+                Un point doré indique qu’au moins une balade est prévue.
+              </p>
+            </div>
+            {selectedDate ? (
+              <div>
+                <h2 className="mb-3 font-display text-xl text-[#e8be6c]">
+                  Balades du {selectedDate.toLocaleDateString("fr-FR", { dateStyle: "long" })}
+                </h2>
+                {ridesForSelectedDate.length > 0 ? (
+                  <ul className="space-y-3">
+                    {ridesForSelectedDate.map((ride) => (
+                      <li key={ride.id}>
+                        <RideCard ride={ride} />
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-[#302425]/60 p-5 text-sm text-[#d4c6bf]">
+                    Aucune balade prévue ce jour-là.
                   </p>
-                  <p className="mt-1 text-sm text-[#e8be6c]">
-                    {new Date(ride.starts_at).toLocaleString("fr-FR", {
-                      dateStyle: "long",
-                      timeStyle: "short",
-                    })}
-                  </p>
-                  {ride.location_name && (
-                    <p className="mt-1 flex items-center gap-1.5 text-sm text-[#d4c6bf]">
-                      <MapPin className="h-3.5 w-3.5" /> {ride.location_name}
-                    </p>
-                  )}
-                  {ride.description && (
-                    <p className="mt-2 text-sm leading-relaxed text-[#d4c6bf]">
-                      {ride.description}
-                    </p>
-                  )}
-                  <p className="mt-2 flex items-center gap-1.5 text-xs text-[#a99b95]">
-                    <Users className="h-3.5 w-3.5" /> {ride.attendeeCount} participant(s)
-                  </p>
-                </div>
-                <div className="flex shrink-0 flex-row items-center justify-between gap-2 sm:flex-col sm:items-end">
-                  <button
-                    onClick={() => void toggleJoin(ride)}
-                    className={`whitespace-nowrap rounded-full min-h-11 px-4 py-2 text-xs font-medium uppercase tracking-wider ${ride.joined ? "border border-white/15 text-[#d4c6bf]" : "bg-gradient-red text-primary-foreground"}`}
-                  >
-                    {ride.joined ? "Se désinscrire" : "Participer"}
-                  </button>
-                  {ride.organizer_id === myId ? (
-                    <button
-                      onClick={() => void cancelRide(ride)}
-                      className="min-h-11 px-3 text-xs text-[#a99b95] hover:text-[#e8be6c]"
-                    >
-                      Annuler
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => void toggleFollow(ride.organizer_id)}
-                      className="min-h-11 whitespace-nowrap px-3 text-xs text-[#d4c6bf] hover:text-[#e8be6c]"
-                    >
-                      {followedOrganizerIds.has(ride.organizer_id)
-                        ? "Ne plus suivre"
-                        : "Suivre cet organisateur"}
-                    </button>
-                  )}
-                </div>
+                )}
               </div>
-            </li>
-          ))}
-        </ul>
+            ) : (
+              <p className="text-center text-sm text-[#d4c6bf]">
+                Sélectionne un jour pour afficher les balades correspondantes.
+              </p>
+            )}
+          </div>
+        ) : null}
       </section>
     </Layout>
+  );
+}
+
+function isSameLocalDay(first: Date, second: Date) {
+  return (
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate()
   );
 }
