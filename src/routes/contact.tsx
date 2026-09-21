@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { Mail, Send, ShieldCheck } from "lucide-react";
+import { Instagram, Mail, Send, ShieldCheck } from "lucide-react";
 
 import { SITE_URL } from "@/lib/site";
 const CONTACT_EMAIL = "contact@motardsdecoeur.com";
@@ -145,10 +145,29 @@ function Contact() {
             </div>
 
             <div className="glass rounded-2xl p-8">
-              <h3 className="font-display text-2xl mb-3">Réseaux sociaux</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Les comptes sociaux officiels ne sont pas encore confirmés. Ils seront ajoutés uniquement après validation.
-              </p>
+              <h3 className="font-display text-2xl mb-6">Réseaux sociaux</h3>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="https://www.tiktok.com/@motardsdecoeur"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 rounded-full border border-border px-4 py-3 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-primary"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 fill-current">
+                    <path d="M16.6 5.82a4.85 4.85 0 0 1-1.2-3.2h-3.5v13.93a2.94 2.94 0 1 1-2.53-2.91V10.1a6.48 6.48 0 1 0 6.03 6.47V9.5a8.3 8.3 0 0 0 4.85 1.55V7.56a4.88 4.88 0 0 1-3.65-1.74Z" />
+                  </svg>
+                  TikTok <span className="text-foreground">@motardsdecoeur</span>
+                </a>
+                <a
+                  href="https://www.instagram.com/motardsdecoeur/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 rounded-full border border-border px-4 py-3 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-primary"
+                >
+                  <Instagram className="h-5 w-5" />
+                  Instagram <span className="text-foreground">@motardsdecoeur</span>
+                </a>
+              </div>
             </div>
 
             <div className="glass-red rounded-2xl p-8">
