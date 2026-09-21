@@ -11,6 +11,7 @@ const links = [
 
 const appLinks = [
   { to: "/discover", label: "Rencontres" },
+  { to: "/discover/likes", label: "Qui m'a liké", premium: true },
   { to: "/matches/new", label: "Coup de cœur" },
   { to: "/matches", label: "Discussion" },
   { to: "/rides", label: "Balades" },
@@ -115,6 +116,11 @@ export function Navbar() {
                     <>
                       <span className="inline-flex items-center gap-1.5">
                         {l.label}
+                        {"premium" in l && l.premium && (
+                          <span className="rounded-full border border-[#d6a85c]/60 px-1.5 py-0.5 text-[9px] text-[#9a6a1f]">
+                            Premium
+                          </span>
+                        )}
                         {l.to === "/matches" && matchCount > 0 && (
                           <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
                             {matchCount}
@@ -174,6 +180,11 @@ export function Navbar() {
                 >
                   <span className="inline-flex items-center gap-2">
                     {l.label}
+                    {"premium" in l && l.premium && (
+                      <span className="rounded-full border border-[#d6a85c]/60 px-1.5 py-0.5 text-[9px] text-[#9a6a1f]">
+                        Premium
+                      </span>
+                    )}
                     {l.to === "/matches" && matchCount > 0 && (
                       <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
                         {matchCount}
