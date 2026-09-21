@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Mail, Send, ShieldCheck } from "lucide-react";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 const CONTACT_EMAIL = "contact@motardsdecoeur.com";
 const hasContactEmail = CONTACT_EMAIL.length > 0;
 

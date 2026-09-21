@@ -10,6 +10,7 @@ import {
   handleAdminForgotPassword,
   handleAdminLogin,
   handleAdminResetPassword,
+  authorizeAdminSession,
 } from "./lib/admin-auth.server";
 
 type ServerEntry = {
@@ -53,6 +54,16 @@ export default {
       if (pathname === "/api/admin/login") return handleAdminLogin(request, env);
       if (pathname === "/api/admin/forgot-password") return handleAdminForgotPassword(request, env);
       if (pathname === "/api/admin/reset-password") return handleAdminResetPassword(request, env);
+      if (pathname === "/api/admin/session") {
+        const authenticated = await authorizeAdminSession(request, env);
+        return Response.json(
+          { authenticated },
+          {
+            status: authenticated ? 200 : 401,
+            headers: { "cache-control": "no-store" },
+          },
+        );
+      }
       if (pathname === "/api/preinscriptions") return handlePreinscriptionRequest(request, env);
       if (pathname === "/api/admin/preinscriptions")
         return handleAdminPreinscriptionsRequest(request, env);

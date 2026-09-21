@@ -13,7 +13,7 @@ import {
 import appCss from "../styles.css?url";
 import { PRELAUNCH_MODE, isPathAllowedDuringPrelaunch } from "@/lib/prelaunch";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 const BRAND_LOGO_URL = `${SITE_URL}/favicon.png`;
 const BRAND_NAME = "Motards de Cœur";
 

@@ -3,7 +3,7 @@ import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
 import { Check, X, Crown, Zap, Star } from "lucide-react";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/premium")({
   // Supabase persists auth in browser storage, so authorization must run in the browser.

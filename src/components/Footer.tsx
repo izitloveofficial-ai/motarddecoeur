@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Send } from "lucide-react";
+import { Instagram, Send } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 
 export function Footer() {
@@ -48,10 +48,28 @@ export function Footer() {
           <h4 className="text-sm uppercase tracking-widest text-foreground mb-4">
             Réseaux sociaux
           </h4>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Les comptes officiels seront ajoutés ici après confirmation, avant une communication
-            publique plus large.
-          </p>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://www.tiktok.com/@motardsdecoeur"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Motards de Cœur sur TikTok"
+              className="grid h-11 w-11 place-items-center rounded-full border border-border text-muted-foreground transition hover:border-primary/50 hover:text-primary"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 fill-current">
+                <path d="M16.6 5.82a4.85 4.85 0 0 1-1.2-3.2h-3.5v13.93a2.94 2.94 0 1 1-2.53-2.91V10.1a6.48 6.48 0 1 0 6.03 6.47V9.5a8.3 8.3 0 0 0 4.85 1.55V7.56a4.88 4.88 0 0 1-3.65-1.74Z" />
+              </svg>
+            </a>
+            <a
+              href="https://www.instagram.com/motardsdecoeur/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Motards de Cœur sur Instagram"
+              className="grid h-11 w-11 place-items-center rounded-full border border-border text-muted-foreground transition hover:border-primary/50 hover:text-primary"
+            >
+              <Instagram className="h-5 w-5" />
+            </a>
+          </div>
         </div>
       </div>
       <div className="border-t border-border/40 py-6 px-6 text-center text-xs text-muted-foreground tracking-wider">

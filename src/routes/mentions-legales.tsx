@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Layout } from "@/components/Layout";
 import { FileText } from "lucide-react";
 
-const SITE_URL = "https://motarddecoeur.lovable.app";
+import { SITE_URL } from "@/lib/site";
 const CONTACT_EMAIL = "contact@motardsdecoeur.com";
 
 export const Route = createFileRoute("/mentions-legales")({
@@ -43,7 +43,7 @@ function MentionsLegales() {
             <LegalSection title="Site concerné">
               <p>
                 Le site Motards de Cœur est accessible à l'adresse
-                https://motarddecoeur.lovable.app.
+                https://motardsdecoeur-com.lovable.app.
               </p>
             </LegalSection>
 
