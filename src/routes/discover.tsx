@@ -664,7 +664,7 @@ function Discover() {
                 </button>
               </div>
               <div className="mt-5 flex items-center justify-center gap-5 text-xs text-[#a99b95]">
-                {lastPassed && (
+                {lastPassed && isPremium && (
                   <button
                     onClick={() => void undoLastPass()}
                     className="flex items-center gap-1.5 text-primary hover:underline"
