@@ -80,6 +80,14 @@ function Confidentialite() {
             </li>
           </ul>
         </LegalSection>
+        <LegalSection title="Mesure des pré-inscriptions avec le pixel TikTok">
+          <p>
+            Nous utilisons le pixel TikTok afin de mesurer si une visite provenant de TikTok aboutit
+            à une pré-inscription. Seul l'événement « pré-inscription réussie » est envoyé après
+            l'enregistrement effectif d'une nouvelle pré-inscription, sans adresse email ni aucune
+            autre donnée personnelle identifiable. La correspondance avancée n'est pas activée.
+          </p>
+        </LegalSection>
         <LegalSection title="Ce que nous ne faisons jamais">
           <ul>
             <li>Nous ne vendons aucune donnée à des tiers ;</li>
