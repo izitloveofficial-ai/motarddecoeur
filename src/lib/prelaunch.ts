@@ -14,6 +14,8 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/confidentialite",
   "/conditions-utilisation",
   "/admin/login",
+  "/admin/forgot-password",
+  "/admin/reset-password",
   "/admin/preinscriptions",
   "/admin/members",
   "/admin/reports",

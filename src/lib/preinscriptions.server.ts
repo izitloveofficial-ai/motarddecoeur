@@ -3,6 +3,7 @@ import {
   submitPreinscription,
   type PreinscriptionInput,
 } from "./preinscriptions";
+import { authorizeAdminSession } from "./admin-auth.server";
 
 type D1Result<T = unknown> = { success: boolean; results?: T[]; meta?: { changes?: number } };
 type D1Statement = {
@@ -66,6 +67,7 @@ const supabaseAnonKey = (env: RuntimeEnv) =>
 const supabaseServiceKey = (env: RuntimeEnv) => readEnv(env, "SUPABASE_SERVICE_ROLE_KEY");
 
 export async function requireAdmin(request: Request, env: RuntimeEnv): Promise<AdminAuthorization> {
+  if (await authorizeAdminSession(request, env)) return { authorized: true };
   const authorization = request.headers.get("authorization");
   const url = supabaseUrl(env);
   const anonKey = supabaseAnonKey(env);
@@ -157,6 +159,12 @@ export async function handleAdminPreinscriptionsRequest(request: Request, rawEnv
       { error: authorization.status === 401 ? "unauthenticated" : "forbidden" },
       authorization.status,
     );
+  if (request.method === "GET") {
+    const rows = await database(env)
+      .prepare("SELECT * FROM preinscriptions ORDER BY created_at DESC")
+      .all();
+    return json({ rows: rows.results ?? [] });
+  }
   const url = supabaseUrl(env);
   const serviceKey = supabaseServiceKey(env);
   if (!url || !serviceKey) return json({ error: "invitation_not_configured" }, 503);
@@ -165,14 +173,6 @@ export async function handleAdminPreinscriptionsRequest(request: Request, rawEnv
     apikey: serviceKey,
     "content-type": "application/json",
   };
-
-  if (request.method === "GET") {
-    const response = await fetch(`${url}/rest/v1/preinscriptions?select=*&order=created_at.desc`, {
-      headers: restHeaders,
-    });
-    if (!response.ok) return json({ error: "read_failed" }, 502);
-    return json({ rows: await response.json() });
-  }
 
   if (request.method === "POST") {
     const body = (await request.json()) as { ids?: unknown };
