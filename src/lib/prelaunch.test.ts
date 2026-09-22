@@ -11,7 +11,7 @@ describe("prelaunch admin routes", () => {
     (path) => expect(isPathAllowedDuringPrelaunch(path)).toBe(true),
   );
 
-  test.each(["/discover/likes", "/matches/new", "/admin/status"])(
+  test.each(["/discover/likes", "/matches/new", "/messages", "/admin/status"])(
     "lets the protected route %s reach its own access guard",
     (path) => {
       expect(isPathAllowedDuringPrelaunch(path)).toBe(true);
