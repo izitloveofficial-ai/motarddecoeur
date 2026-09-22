@@ -23,6 +23,11 @@ describe("prelaunch admin routes", () => {
     expect(isPathAllowedDuringPrelaunch("/private-unknown-page")).toBe(false);
   });
 
+  test.each(["/admin/login", "/admin/forgot-password", "/admin/reset-password"])(
+    "keeps the removed legacy admin route %s closed",
+    (path) => expect(isPathAllowedDuringPrelaunch(path)).toBe(false),
+  );
+
   test("allows public appointment share links", () => {
     expect(isPathAllowedDuringPrelaunch("/rdv/4f27d9ee-4b54-4afd-a191-76ecfbc18c0a")).toBe(true);
     expect(isPathAllowedDuringPrelaunch("/rdv/4f27d9ee-4b54-4afd-a191-76ecfbc18c0a/")).toBe(true);

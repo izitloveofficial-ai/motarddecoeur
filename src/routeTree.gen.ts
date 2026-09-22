@@ -30,12 +30,9 @@ import { Route as RidesRouteImport } from './routes/rides'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
-import { Route as AdminForgotPasswordRouteImport } from './routes/admin.forgot-password'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
-import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-password'
 import { Route as AdminStatusRouteImport } from './routes/admin.status'
 import { Route as DiscoverLikesRouteImport } from './routes/discover_.likes'
 import { Route as MatchesNewRouteImport } from './routes/matches.new'
@@ -150,16 +147,6 @@ const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
   path: '/admin/announcements',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminForgotPasswordRoute = AdminForgotPasswordRouteImport.update({
-  id: '/admin/forgot-password',
-  path: '/admin/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/admin/login',
-  path: '/admin/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminMembersRoute = AdminMembersRouteImport.update({
   id: '/admin/members',
   path: '/admin/members',
@@ -173,11 +160,6 @@ const AdminPreinscriptionsRoute = AdminPreinscriptionsRouteImport.update({
 const AdminReportsRoute = AdminReportsRouteImport.update({
   id: '/admin/reports',
   path: '/admin/reports',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
-  id: '/admin/reset-password',
-  path: '/admin/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminStatusRoute = AdminStatusRouteImport.update({
@@ -243,12 +225,9 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
-  '/admin/forgot-password': typeof AdminForgotPasswordRoute
-  '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
   '/admin/reports': typeof AdminReportsRoute
-  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/status': typeof AdminStatusRoute
   '/discover/likes': typeof DiscoverLikesRoute
   '/matches/new': typeof MatchesNewRoute
@@ -280,12 +259,9 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
-  '/admin/forgot-password': typeof AdminForgotPasswordRoute
-  '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
   '/admin/reports': typeof AdminReportsRoute
-  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/status': typeof AdminStatusRoute
   '/discover/likes': typeof DiscoverLikesRoute
   '/matches/new': typeof MatchesNewRoute
@@ -318,12 +294,9 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
-  '/admin/forgot-password': typeof AdminForgotPasswordRoute
-  '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
   '/admin/reports': typeof AdminReportsRoute
-  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/status': typeof AdminStatusRoute
   '/discover_/likes': typeof DiscoverLikesRoute
   '/matches/new': typeof MatchesNewRoute
@@ -357,12 +330,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/admin/announcements'
-    | '/admin/forgot-password'
-    | '/admin/login'
     | '/admin/members'
     | '/admin/preinscriptions'
     | '/admin/reports'
-    | '/admin/reset-password'
     | '/admin/status'
     | '/discover/likes'
     | '/matches/new'
@@ -394,12 +364,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/admin/announcements'
-    | '/admin/forgot-password'
-    | '/admin/login'
     | '/admin/members'
     | '/admin/preinscriptions'
     | '/admin/reports'
-    | '/admin/reset-password'
     | '/admin/status'
     | '/discover/likes'
     | '/matches/new'
@@ -431,12 +398,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/admin/announcements'
-    | '/admin/forgot-password'
-    | '/admin/login'
     | '/admin/members'
     | '/admin/preinscriptions'
     | '/admin/reports'
-    | '/admin/reset-password'
     | '/admin/status'
     | '/discover_/likes'
     | '/matches/new'
@@ -469,12 +433,9 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
-  AdminForgotPasswordRoute: typeof AdminForgotPasswordRoute
-  AdminLoginRoute: typeof AdminLoginRoute
   AdminMembersRoute: typeof AdminMembersRoute
   AdminPreinscriptionsRoute: typeof AdminPreinscriptionsRoute
   AdminReportsRoute: typeof AdminReportsRoute
-  AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   AdminStatusRoute: typeof AdminStatusRoute
   DiscoverLikesRoute: typeof DiscoverLikesRoute
   MessagesMatchIdRoute: typeof MessagesMatchIdRoute
@@ -633,20 +594,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnnouncementsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/forgot-password': {
-      id: '/admin/forgot-password'
-      path: '/admin/forgot-password'
-      fullPath: '/admin/forgot-password'
-      preLoaderRoute: typeof AdminForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/admin/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/members': {
       id: '/admin/members'
       path: '/admin/members'
@@ -666,13 +613,6 @@ declare module '@tanstack/react-router' {
       path: '/admin/reports'
       fullPath: '/admin/reports'
       preLoaderRoute: typeof AdminReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/reset-password': {
-      id: '/admin/reset-password'
-      path: '/admin/reset-password'
-      fullPath: '/admin/reset-password'
-      preLoaderRoute: typeof AdminResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/status': {
@@ -767,12 +707,9 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminAnnouncementsRoute: AdminAnnouncementsRoute,
-  AdminForgotPasswordRoute: AdminForgotPasswordRoute,
-  AdminLoginRoute: AdminLoginRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminPreinscriptionsRoute: AdminPreinscriptionsRoute,
   AdminReportsRoute: AdminReportsRoute,
-  AdminResetPasswordRoute: AdminResetPasswordRoute,
   AdminStatusRoute: AdminStatusRoute,
   DiscoverLikesRoute: DiscoverLikesRoute,
   MessagesMatchIdRoute: MessagesMatchIdRoute,
