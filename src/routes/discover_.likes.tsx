@@ -1,9 +1,10 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { Bike, Crown, Heart, HeartCrack } from "lucide-react";
+import { Ban, Bike, Crown, Heart, HeartCrack, KeyRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAdmin } from "@/lib/require-admin";
 import { requireDatingIntent } from "@/lib/require-dating-intent";
+import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
 
 type LikedProfile = {
@@ -50,6 +51,8 @@ function WhoLikedMe() {
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
   const [profiles, setProfiles] = useState<LikedProfile[] | null>(null);
   const [error, setError] = useState("");
+  const [matchName, setMatchName] = useState("");
+  const [swipingProfileId, setSwipingProfileId] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -113,12 +116,82 @@ function WhoLikedMe() {
     void load();
   }, []);
 
-  function prioritizeProfile(profileId: string) {
-    window.sessionStorage.setItem("discover-target-profile", profileId);
+  async function swipe(profile: LikedProfile, liked: boolean) {
+    if (!supabase || swipingProfileId) return;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    setError("");
+    setSwipingProfileId(profile.id);
+    const { error: swipeError } = await supabase
+      .from("swipes")
+      .insert({ swiper_id: user.id, swiped_id: profile.id, liked });
+    if (swipeError) {
+      setError("Ton choix n'a pas pu être enregistré.");
+      setSwipingProfileId(null);
+      return;
+    }
+
+    if (liked) {
+      const { data: match } = await supabase
+        .from("matches")
+        .select("id")
+        .or(
+          `and(profile_a_id.eq.${user.id},profile_b_id.eq.${profile.id}),and(profile_a_id.eq.${profile.id},profile_b_id.eq.${user.id})`,
+        )
+        .maybeSingle();
+      if (match) {
+        setMatchName(profile.first_name);
+        void sendPushNotification(
+          profile.id,
+          "Nouveau coup de cœur sur Motards de Cœur ! 🎉",
+          "Quelqu'un a eu un coup de cœur pour toi. Va y jeter un œil !",
+        );
+      }
+    }
+
+    setProfiles((current) => current?.filter((item) => item.id !== profile.id) ?? []);
+    setSwipingProfileId(null);
   }
 
   return (
     <Layout>
+      {matchName && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="match-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-6 backdrop-blur-sm animate-in fade-in-0"
+        >
+          <div className="w-full max-w-md rounded-3xl border border-[#e2b45f]/40 bg-[#302425] p-8 text-center shadow-[0_0_80px_rgba(226,180,95,0.22)] animate-in zoom-in-95 fade-in-0">
+            <div className="mb-6 flex items-center justify-center gap-5 text-[#e2b45f]">
+              <Heart fill="currentColor" aria-hidden="true" className="h-11 w-11 animate-pulse" />
+              <Bike aria-hidden="true" className="h-16 w-16 text-[#fff9f0]" strokeWidth={1.6} />
+              <Heart
+                fill="currentColor"
+                aria-hidden="true"
+                className="h-11 w-11 animate-pulse [animation-delay:200ms]"
+              />
+            </div>
+            <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
+              La route vous réunit
+            </span>
+            <h2 id="match-title" className="mt-3 font-display text-3xl sm:text-4xl">
+              C'est un coup de cœur avec {matchName} !
+            </h2>
+            <button
+              type="button"
+              autoFocus
+              onClick={() => setMatchName("")}
+              className="mt-8 rounded-full bg-gradient-red px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition hover:scale-105"
+            >
+              Continuer
+            </button>
+          </div>
+        </div>
+      )}
       <section className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-16">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <h1 className="mt-3 font-display text-3xl sm:text-4xl">Qui m&apos;a liké</h1>
@@ -168,11 +241,7 @@ function WhoLikedMe() {
           <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {profiles.map((profile) => (
               <li key={profile.id}>
-                <Link
-                  to="/discover"
-                  onClick={() => prioritizeProfile(profile.id)}
-                  className="group block h-full overflow-hidden rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 text-inherit no-underline transition hover:-translate-y-1 hover:border-[#d6a85c]/50"
-                >
+                <article className="group h-full overflow-hidden rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80 text-inherit transition hover:-translate-y-1 hover:border-[#d6a85c]/50">
                   <div className="aspect-[4/3] bg-[#211819]">
                     {profile.photoUrl ? (
                       <img
@@ -196,11 +265,28 @@ function WhoLikedMe() {
                         .filter(Boolean)
                         .join(" · ") || "Moto non renseignée"}
                     </p>
-                    <span className="mt-5 inline-flex min-h-11 items-center text-xs font-medium uppercase tracking-wider text-[#e8be6c]">
-                      Swiper ce profil
-                    </span>
+                    <div className="mt-5 flex justify-center gap-6">
+                      <button
+                        type="button"
+                        onClick={() => void swipe(profile, false)}
+                        disabled={swipingProfileId !== null}
+                        aria-label={`Passer ${profile.first_name}`}
+                        className="flex h-16 w-16 items-center justify-center rounded-full border border-white/15 bg-[#281e1f] text-[#d4c6bf] transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
+                      >
+                        <Ban aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void swipe(profile, true)}
+                        disabled={swipingProfileId !== null}
+                        aria-label={`J'aime ${profile.first_name}`}
+                        className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-red text-primary-foreground shadow-glow transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
+                      >
+                        <KeyRound aria-hidden="true" />
+                      </button>
+                    </div>
                   </div>
-                </Link>
+                </article>
               </li>
             ))}
           </ul>
