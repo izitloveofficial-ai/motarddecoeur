@@ -39,7 +39,7 @@ const PLANS = [
     ],
   },
   {
-    name: "Premium",
+    name: "Club",
     price: "Non actif",
     desc: "Fonctionnalités envisagées",
     features: [
@@ -55,7 +55,7 @@ const PLANS = [
     popular: true,
   },
   {
-    name: "Club",
+    name: "Premium",
     price: "Plus tard",
     desc: "Piste pour la communauté avancée",
     features: [
