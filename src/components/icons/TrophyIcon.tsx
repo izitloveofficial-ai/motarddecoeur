@@ -12,7 +12,7 @@ export function TrophyIcon({ tier, ...props }: { tier: TrophyTier } & SVGProps<S
   const { fill, stroke } = COLORS[tier];
 
   return (
-    <svg viewBox="0 0 44 60" aria-hidden="true" {...props}>
+    <svg viewBox="0 0 44 80" aria-hidden="true" {...props}>
       <path
         d="M4 4 L38 4 L36 34 C36 50, 25 58, 21 58 C17 58, 6 50, 6 34 Z"
         fill={fill}
