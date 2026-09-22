@@ -7,17 +7,24 @@ describe("prelaunch admin routes", () => {
   });
 
   test.each(["/community", "/events", "/premium", "/profiles"])(
-    "lets %s reach its strict requireAdmin guard",
+    "lets %s reach its route-specific access guard",
     (path) => expect(isPathAllowedDuringPrelaunch(path)).toBe(true),
   );
 
-  test.each(["/discover/likes", "/matches/new", "/messages", "/admin/status"])(
-    "lets the protected route %s reach its own access guard",
-    (path) => {
-      expect(isPathAllowedDuringPrelaunch(path)).toBe(true);
-      expect(isPathAllowedDuringPrelaunch(`${path}/`)).toBe(true);
-    },
-  );
+  test.each([
+    "/discover",
+    "/discover/likes",
+    "/matches",
+    "/matches/new",
+    "/messages",
+    "/profile/setup",
+    "/profile/blocked",
+    "/rides",
+    "/admin/status",
+  ])("lets the protected route %s reach its own access guard", (path) => {
+    expect(isPathAllowedDuringPrelaunch(path)).toBe(true);
+    expect(isPathAllowedDuringPrelaunch(`${path}/`)).toBe(true);
+  });
 
   test("keeps unrelated routes closed", () => {
     expect(isPathAllowedDuringPrelaunch("/private-unknown-page")).toBe(false);

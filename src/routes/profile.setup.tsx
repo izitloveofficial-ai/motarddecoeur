@@ -4,7 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { CheckCircle2, LogOut, MapPin, ShieldCheck, Trash2, Upload } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireAppAccess } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 const genderOptions = [
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/profile/setup")({
   ssr: false,
   component: ProfileSetup,
   beforeLoad: async () => {
-    await requireAdmin();
+    await requireAppAccess();
     if (!supabase) throw redirect({ to: "/signup" });
     const {
       data: { session },

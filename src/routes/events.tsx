@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireAppAccess } from "@/lib/require-admin";
 import { MapPin, Users, ArrowRight } from "lucide-react";
 import evCoast from "@/assets/event-coast.jpg";
 import evFestival from "@/assets/event-festival.jpg";
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/events")({
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/events` }],
   }),
-  beforeLoad: requireAdmin,
+  beforeLoad: requireAppAccess,
   component: Events,
 });
 

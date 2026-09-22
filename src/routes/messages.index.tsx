@@ -2,7 +2,7 @@ import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { BadgeCheck, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireAppAccess } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 type ConversationRow = {
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/messages/")({
   ssr: false,
   component: Conversations,
   beforeLoad: async () => {
-    await requireAdmin();
+    await requireAppAccess();
     if (!supabase) return;
     const {
       data: { session },

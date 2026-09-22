@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireAppAccess } from "@/lib/require-admin";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
 
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/messages/$matchId")({
   component: Conversation,
   errorComponent: ConversationError,
   beforeLoad: async () => {
-    await requireAdmin();
+    await requireAppAccess();
     if (!supabase) return;
     const {
       data: { session },

@@ -4,7 +4,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Calendar } from "@/components/ui/calendar";
 import { sendPushNotification } from "@/lib/push";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireAppAccess } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 type Ride = {
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/rides")({
   ssr: false,
   component: Rides,
   beforeLoad: async () => {
-    await requireAdmin();
+    await requireAppAccess();
     if (!supabase) return;
     const {
       data: { session },
