@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
+import { TrophyIcon } from "@/components/icons/TrophyIcon";
 import { requireAdmin } from "@/lib/require-admin";
 import { Check, X, Crown, Zap, Star } from "lucide-react";
 
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/premium")({
 const PLANS = [
   {
     name: "Découverte",
+    tier: "bronze",
     price: "À définir",
     desc: "Première expérience communautaire",
     features: [
@@ -40,6 +42,7 @@ const PLANS = [
   },
   {
     name: "Club",
+    tier: "silver",
     price: "Non actif",
     desc: "Fonctionnalités envisagées",
     features: [
@@ -56,6 +59,7 @@ const PLANS = [
   },
   {
     name: "Premium",
+    tier: "gold",
     price: "Plus tard",
     desc: "Piste pour la communauté avancée",
     features: [
@@ -99,6 +103,7 @@ function Premium() {
                 </span>
               )}
 
+              <TrophyIcon tier={p.tier} className="h-10 w-10 mb-2" />
               <h2 className="font-display text-3xl mb-2">{p.name}</h2>
               <p className="text-muted-foreground text-sm mb-6">{p.desc}</p>
 
