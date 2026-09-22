@@ -9,8 +9,8 @@ import { useAdminStatus } from "@/hooks/use-admin-status";
 const tabs = [
   { to: "/discover", label: "Rencontres", icon: CardsIcon },
   { to: "/discover/likes", label: "Qui m'a liké", icon: MirrorIcon },
-  { to: "/matches/new", label: "Coup de cœur", icon: HeartFilledIcon },
-  { to: "/matches", label: "Discussion", icon: IntercomIcon },
+  { to: "/matches", label: "Coup de cœur", icon: HeartFilledIcon },
+  { to: "/messages", label: "Discussion", icon: IntercomIcon },
   { to: "/profile/setup", label: "Mon profil", icon: HelmetIcon },
 ] as const;
 
