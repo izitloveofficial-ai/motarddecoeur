@@ -9,129 +9,45 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as RidesRouteImport } from './routes/rides'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ProfilesRouteImport } from './routes/profiles'
-import { Route as PremiumRouteImport } from './routes/premium'
-import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
-import { Route as MatchesRouteImport } from './routes/matches'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as JoinRouteImport } from './routes/join'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as EventsRouteImport } from './routes/events'
-import { Route as DiscoverRouteImport } from './routes/discover'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
-import { Route as ConditionsUtilisationRouteImport } from './routes/conditions-utilisation'
-import { Route as CommunityRouteImport } from './routes/community'
-import { Route as ActivateRouteImport } from './routes/activate'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as RdvTokenRouteImport } from './routes/rdv.$token'
-import { Route as ProfileSetupRouteImport } from './routes/profile.setup'
-import { Route as ProfileBlockedRouteImport } from './routes/profile.blocked'
-import { Route as MessagesMatchIdRouteImport } from './routes/messages.$matchId'
-import { Route as MatchesNewRouteImport } from './routes/matches.new'
-import { Route as DiscoverLikesRouteImport } from './routes/discover_.likes'
-import { Route as AdminStatusRouteImport } from './routes/admin.status'
-import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-password'
-import { Route as AdminReportsRouteImport } from './routes/admin.reports'
-import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
-import { Route as AdminMembersRouteImport } from './routes/admin.members'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
-import { Route as AdminForgotPasswordRouteImport } from './routes/admin.forgot-password'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ActivateRouteImport } from './routes/activate'
+import { Route as CommunityRouteImport } from './routes/community'
+import { Route as ConditionsUtilisationRouteImport } from './routes/conditions-utilisation'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as MatchesRouteImport } from './routes/matches'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as ProfilesRouteImport } from './routes/profiles'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RidesRouteImport } from './routes/rides'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
+import { Route as AdminForgotPasswordRouteImport } from './routes/admin.forgot-password'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminMembersRouteImport } from './routes/admin.members'
+import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
+import { Route as AdminReportsRouteImport } from './routes/admin.reports'
+import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-password'
+import { Route as AdminStatusRouteImport } from './routes/admin.status'
+import { Route as DiscoverLikesRouteImport } from './routes/discover_.likes'
+import { Route as MatchesNewRouteImport } from './routes/matches.new'
+import { Route as MessagesIndexRouteImport } from './routes/messages.index'
+import { Route as MessagesMatchIdRouteImport } from './routes/messages.$matchId'
+import { Route as ProfileBlockedRouteImport } from './routes/profile.blocked'
+import { Route as ProfileSetupRouteImport } from './routes/profile.setup'
+import { Route as RdvTokenRouteImport } from './routes/rdv.$token'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RidesRoute = RidesRouteImport.update({
-  id: '/rides',
-  path: '/rides',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfilesRoute = ProfilesRouteImport.update({
-  id: '/profiles',
-  path: '/profiles',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PremiumRoute = PremiumRouteImport.update({
-  id: '/premium',
-  path: '/premium',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
-  id: '/mentions-legales',
-  path: '/mentions-legales',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MatchesRoute = MatchesRouteImport.update({
-  id: '/matches',
-  path: '/matches',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JoinRoute = JoinRouteImport.update({
-  id: '/join',
-  path: '/join',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventsRoute = EventsRouteImport.update({
-  id: '/events',
-  path: '/events',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DiscoverRoute = DiscoverRouteImport.update({
-  id: '/discover',
-  path: '/discover',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
-  id: '/confidentialite',
-  path: '/confidentialite',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConditionsUtilisationRoute = ConditionsUtilisationRouteImport.update({
-  id: '/conditions-utilisation',
-  path: '/conditions-utilisation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CommunityRoute = CommunityRouteImport.update({
-  id: '/community',
-  path: '/community',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ActivateRoute = ActivateRouteImport.update({
-  id: '/activate',
-  path: '/activate',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -139,69 +55,99 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ActivateRoute = ActivateRouteImport.update({
+  id: '/activate',
+  path: '/activate',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RdvTokenRoute = RdvTokenRouteImport.update({
-  id: '/rdv/$token',
-  path: '/rdv/$token',
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfileSetupRoute = ProfileSetupRouteImport.update({
-  id: '/profile/setup',
-  path: '/profile/setup',
+const ConditionsUtilisationRoute = ConditionsUtilisationRouteImport.update({
+  id: '/conditions-utilisation',
+  path: '/conditions-utilisation',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfileBlockedRoute = ProfileBlockedRouteImport.update({
-  id: '/profile/blocked',
-  path: '/profile/blocked',
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MessagesMatchIdRoute = MessagesMatchIdRouteImport.update({
-  id: '/messages/$matchId',
-  path: '/messages/$matchId',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MatchesNewRoute = MatchesNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => MatchesRoute,
-} as any)
-const DiscoverLikesRoute = DiscoverLikesRouteImport.update({
-  id: '/discover_/likes',
-  path: '/discover/likes',
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminStatusRoute = AdminStatusRouteImport.update({
-  id: '/admin/status',
-  path: '/admin/status',
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
-  id: '/admin/reset-password',
-  path: '/admin/reset-password',
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminReportsRoute = AdminReportsRouteImport.update({
-  id: '/admin/reports',
-  path: '/admin/reports',
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminPreinscriptionsRoute = AdminPreinscriptionsRouteImport.update({
-  id: '/admin/preinscriptions',
-  path: '/admin/preinscriptions',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminMembersRoute = AdminMembersRouteImport.update({
-  id: '/admin/members',
-  path: '/admin/members',
+const MatchesRoute = MatchesRouteImport.update({
+  id: '/matches',
+  path: '/matches',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/admin/login',
-  path: '/admin/login',
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilesRoute = ProfilesRouteImport.update({
+  id: '/profiles',
+  path: '/profiles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RidesRoute = RidesRouteImport.update({
+  id: '/rides',
+  path: '/rides',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
+  id: '/admin/announcements',
+  path: '/admin/announcements',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminForgotPasswordRoute = AdminForgotPasswordRouteImport.update({
@@ -209,9 +155,69 @@ const AdminForgotPasswordRoute = AdminForgotPasswordRouteImport.update({
   path: '/admin/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
-  id: '/admin/announcements',
-  path: '/admin/announcements',
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminMembersRoute = AdminMembersRouteImport.update({
+  id: '/admin/members',
+  path: '/admin/members',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPreinscriptionsRoute = AdminPreinscriptionsRouteImport.update({
+  id: '/admin/preinscriptions',
+  path: '/admin/preinscriptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/admin/reports',
+  path: '/admin/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
+  id: '/admin/reset-password',
+  path: '/admin/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminStatusRoute = AdminStatusRouteImport.update({
+  id: '/admin/status',
+  path: '/admin/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverLikesRoute = DiscoverLikesRouteImport.update({
+  id: '/discover_/likes',
+  path: '/discover/likes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchesNewRoute = MatchesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => MatchesRoute,
+} as any)
+const MessagesIndexRoute = MessagesIndexRouteImport.update({
+  id: '/messages/',
+  path: '/messages/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesMatchIdRoute = MessagesMatchIdRouteImport.update({
+  id: '/messages/$matchId',
+  path: '/messages/$matchId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileBlockedRoute = ProfileBlockedRouteImport.update({
+  id: '/profile/blocked',
+  path: '/profile/blocked',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileSetupRoute = ProfileSetupRouteImport.update({
+  id: '/profile/setup',
+  path: '/profile/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RdvTokenRoute = RdvTokenRouteImport.update({
+  id: '/rdv/$token',
+  path: '/rdv/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -250,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/profile/blocked': typeof ProfileBlockedRoute
   '/profile/setup': typeof ProfileSetupRoute
   '/rdv/$token': typeof RdvTokenRoute
+  '/messages/': typeof MessagesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -286,6 +293,7 @@ export interface FileRoutesByTo {
   '/profile/blocked': typeof ProfileBlockedRoute
   '/profile/setup': typeof ProfileSetupRoute
   '/rdv/$token': typeof RdvTokenRoute
+  '/messages': typeof MessagesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -323,6 +331,7 @@ export interface FileRoutesById {
   '/profile/blocked': typeof ProfileBlockedRoute
   '/profile/setup': typeof ProfileSetupRoute
   '/rdv/$token': typeof RdvTokenRoute
+  '/messages/': typeof MessagesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -361,6 +370,7 @@ export interface FileRouteTypes {
     | '/profile/blocked'
     | '/profile/setup'
     | '/rdv/$token'
+    | '/messages/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -397,6 +407,7 @@ export interface FileRouteTypes {
     | '/profile/blocked'
     | '/profile/setup'
     | '/rdv/$token'
+    | '/messages'
   id:
     | '__root__'
     | '/'
@@ -433,6 +444,7 @@ export interface FileRouteTypes {
     | '/profile/blocked'
     | '/profile/setup'
     | '/rdv/$token'
+    | '/messages/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -469,134 +481,16 @@ export interface RootRouteChildren {
   ProfileBlockedRoute: typeof ProfileBlockedRoute
   ProfileSetupRoute: typeof ProfileSetupRoute
   RdvTokenRoute: typeof RdvTokenRoute
+  MessagesIndexRoute: typeof MessagesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rides': {
-      id: '/rides'
-      path: '/rides'
-      fullPath: '/rides'
-      preLoaderRoute: typeof RidesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profiles': {
-      id: '/profiles'
-      path: '/profiles'
-      fullPath: '/profiles'
-      preLoaderRoute: typeof ProfilesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/premium': {
-      id: '/premium'
-      path: '/premium'
-      fullPath: '/premium'
-      preLoaderRoute: typeof PremiumRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mentions-legales': {
-      id: '/mentions-legales'
-      path: '/mentions-legales'
-      fullPath: '/mentions-legales'
-      preLoaderRoute: typeof MentionsLegalesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/matches': {
-      id: '/matches'
-      path: '/matches'
-      fullPath: '/matches'
-      preLoaderRoute: typeof MatchesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/join': {
-      id: '/join'
-      path: '/join'
-      fullPath: '/join'
-      preLoaderRoute: typeof JoinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/events': {
-      id: '/events'
-      path: '/events'
-      fullPath: '/events'
-      preLoaderRoute: typeof EventsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/confidentialite': {
-      id: '/confidentialite'
-      path: '/confidentialite'
-      fullPath: '/confidentialite'
-      preLoaderRoute: typeof ConfidentialiteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/conditions-utilisation': {
-      id: '/conditions-utilisation'
-      path: '/conditions-utilisation'
-      fullPath: '/conditions-utilisation'
-      preLoaderRoute: typeof ConditionsUtilisationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/community': {
-      id: '/community'
-      path: '/community'
-      fullPath: '/community'
-      preLoaderRoute: typeof CommunityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/activate': {
-      id: '/activate'
-      path: '/activate'
-      fullPath: '/activate'
-      preLoaderRoute: typeof ActivateRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -606,95 +500,137 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/activate': {
+      id: '/activate'
+      path: '/activate'
+      fullPath: '/activate'
+      preLoaderRoute: typeof ActivateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/rdv/$token': {
-      id: '/rdv/$token'
-      path: '/rdv/$token'
-      fullPath: '/rdv/$token'
-      preLoaderRoute: typeof RdvTokenRouteImport
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profile/setup': {
-      id: '/profile/setup'
-      path: '/profile/setup'
-      fullPath: '/profile/setup'
-      preLoaderRoute: typeof ProfileSetupRouteImport
+    '/conditions-utilisation': {
+      id: '/conditions-utilisation'
+      path: '/conditions-utilisation'
+      fullPath: '/conditions-utilisation'
+      preLoaderRoute: typeof ConditionsUtilisationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profile/blocked': {
-      id: '/profile/blocked'
-      path: '/profile/blocked'
-      fullPath: '/profile/blocked'
-      preLoaderRoute: typeof ProfileBlockedRouteImport
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/messages/$matchId': {
-      id: '/messages/$matchId'
-      path: '/messages/$matchId'
-      fullPath: '/messages/$matchId'
-      preLoaderRoute: typeof MessagesMatchIdRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/matches/new': {
-      id: '/matches/new'
-      path: '/new'
-      fullPath: '/matches/new'
-      preLoaderRoute: typeof MatchesNewRouteImport
-      parentRoute: typeof MatchesRoute
-    }
-    '/discover_/likes': {
-      id: '/discover_/likes'
-      path: '/discover/likes'
-      fullPath: '/discover/likes'
-      preLoaderRoute: typeof DiscoverLikesRouteImport
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/status': {
-      id: '/admin/status'
-      path: '/admin/status'
-      fullPath: '/admin/status'
-      preLoaderRoute: typeof AdminStatusRouteImport
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/reset-password': {
-      id: '/admin/reset-password'
-      path: '/admin/reset-password'
-      fullPath: '/admin/reset-password'
-      preLoaderRoute: typeof AdminResetPasswordRouteImport
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/reports': {
-      id: '/admin/reports'
-      path: '/admin/reports'
-      fullPath: '/admin/reports'
-      preLoaderRoute: typeof AdminReportsRouteImport
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/preinscriptions': {
-      id: '/admin/preinscriptions'
-      path: '/admin/preinscriptions'
-      fullPath: '/admin/preinscriptions'
-      preLoaderRoute: typeof AdminPreinscriptionsRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/members': {
-      id: '/admin/members'
-      path: '/admin/members'
-      fullPath: '/admin/members'
-      preLoaderRoute: typeof AdminMembersRouteImport
+    '/matches': {
+      id: '/matches'
+      path: '/matches'
+      fullPath: '/matches'
+      preLoaderRoute: typeof MatchesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/admin/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profiles': {
+      id: '/profiles'
+      path: '/profiles'
+      fullPath: '/profiles'
+      preLoaderRoute: typeof ProfilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rides': {
+      id: '/rides'
+      path: '/rides'
+      fullPath: '/rides'
+      preLoaderRoute: typeof RidesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/announcements': {
+      id: '/admin/announcements'
+      path: '/admin/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AdminAnnouncementsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/forgot-password': {
@@ -704,11 +640,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/announcements': {
-      id: '/admin/announcements'
-      path: '/admin/announcements'
-      fullPath: '/admin/announcements'
-      preLoaderRoute: typeof AdminAnnouncementsRouteImport
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/members': {
+      id: '/admin/members'
+      path: '/admin/members'
+      fullPath: '/admin/members'
+      preLoaderRoute: typeof AdminMembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/preinscriptions': {
+      id: '/admin/preinscriptions'
+      path: '/admin/preinscriptions'
+      fullPath: '/admin/preinscriptions'
+      preLoaderRoute: typeof AdminPreinscriptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/admin/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/reset-password': {
+      id: '/admin/reset-password'
+      path: '/admin/reset-password'
+      fullPath: '/admin/reset-password'
+      preLoaderRoute: typeof AdminResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/status': {
+      id: '/admin/status'
+      path: '/admin/status'
+      fullPath: '/admin/status'
+      preLoaderRoute: typeof AdminStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover_/likes': {
+      id: '/discover_/likes'
+      path: '/discover/likes'
+      fullPath: '/discover/likes'
+      preLoaderRoute: typeof DiscoverLikesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/matches/new': {
+      id: '/matches/new'
+      path: '/new'
+      fullPath: '/matches/new'
+      preLoaderRoute: typeof MatchesNewRouteImport
+      parentRoute: typeof MatchesRoute
+    }
+    '/messages/': {
+      id: '/messages/'
+      path: '/messages'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof MessagesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages/$matchId': {
+      id: '/messages/$matchId'
+      path: '/messages/$matchId'
+      fullPath: '/messages/$matchId'
+      preLoaderRoute: typeof MessagesMatchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/blocked': {
+      id: '/profile/blocked'
+      path: '/profile/blocked'
+      fullPath: '/profile/blocked'
+      preLoaderRoute: typeof ProfileBlockedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/setup': {
+      id: '/profile/setup'
+      path: '/profile/setup'
+      fullPath: '/profile/setup'
+      preLoaderRoute: typeof ProfileSetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rdv/$token': {
+      id: '/rdv/$token'
+      path: '/rdv/$token'
+      fullPath: '/rdv/$token'
+      preLoaderRoute: typeof RdvTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -759,6 +779,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileBlockedRoute: ProfileBlockedRoute,
   ProfileSetupRoute: ProfileSetupRoute,
   RdvTokenRoute: RdvTokenRoute,
+  MessagesIndexRoute: MessagesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

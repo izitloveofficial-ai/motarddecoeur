@@ -36,6 +36,7 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/discover/likes",
   "/matches",
   "/matches/new",
+  "/messages",
   "/rides",
 ];
 
