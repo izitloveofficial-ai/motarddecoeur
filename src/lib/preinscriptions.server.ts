@@ -3,7 +3,6 @@ import {
   submitPreinscription,
   type PreinscriptionInput,
 } from "./preinscriptions";
-import { authorizeAdminSession } from "./admin-auth.server";
 
 type D1Result<T = unknown> = { success: boolean; results?: T[]; meta?: { changes?: number } };
 type D1Statement = {
@@ -67,7 +66,6 @@ const supabaseAnonKey = (env: RuntimeEnv) =>
 const supabaseServiceKey = (env: RuntimeEnv) => readEnv(env, "SUPABASE_SERVICE_ROLE_KEY");
 
 export async function requireAdmin(request: Request, env: RuntimeEnv): Promise<AdminAuthorization> {
-  if (await authorizeAdminSession(request, env)) return { authorized: true };
   const authorization = request.headers.get("authorization");
   const url = supabaseUrl(env);
   const anonKey = supabaseAnonKey(env);

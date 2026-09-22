@@ -66,7 +66,14 @@ function AdminPreinscriptions() {
   }
 
   async function load() {
-    const response = await fetch("/api/admin/preinscriptions");
+    const session = supabase ? (await supabase.auth.getSession()).data.session : null;
+    if (!session) {
+      setAuthenticationRequired(true);
+      return setNotice("Connexion administrateur requise");
+    }
+    const response = await fetch("/api/admin/preinscriptions", {
+      headers: { authorization: `Bearer ${session.access_token}` },
+    });
     if (response.status === 401 || response.status === 403) {
       setAuthenticationRequired(true);
       return setNotice("Connexion administrateur requise");
@@ -192,7 +199,7 @@ function AdminPreinscriptions() {
           <div className="my-8 rounded-2xl border border-primary/30 p-6" role="alert">
             <p className="font-semibold">Connexion administrateur requise</p>
             <Link
-              to="/admin/login"
+              to="/login"
               className="mt-4 inline-flex rounded-xl bg-primary px-5 py-2 text-primary-foreground"
             >
               Se connecter
