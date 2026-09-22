@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { Session } from "@supabase/supabase-js";
-import { hasAdminAccess } from "./require-admin";
+import { hasAdminAccess, hasAppAccess } from "./require-admin";
 
 function session(overrides: Partial<Session> = {}): Session {
   return {
@@ -22,19 +22,14 @@ function client(options: {
   sessionError?: object | null;
   refreshError?: object | null;
   admin?: boolean;
+  tester?: boolean;
   rpcError?: object | null;
+  testerRpcError?: object | null;
 }) {
   const authorizationHeaders: string[] = [];
   let refreshCount = 0;
   let subscriptionCount = 0;
   let unsubscribeCount = 0;
-  const rpcResult = {
-    setHeader(name: string, value: string) {
-      if (name === "Authorization") authorizationHeaders.push(value);
-      return Promise.resolve({ data: options.admin ?? true, error: options.rpcError ?? null });
-    },
-  };
-
   return {
     fake: {
       auth: {
@@ -69,7 +64,16 @@ function client(options: {
           };
         },
       },
-      rpc: () => rpcResult,
+      rpc: (functionName: string) => ({
+        setHeader(name: string, value: string) {
+          if (name === "Authorization") authorizationHeaders.push(value);
+          const isTesterCheck = functionName === "is_beta_tester";
+          return Promise.resolve({
+            data: isTesterCheck ? (options.tester ?? false) : (options.admin ?? true),
+            error: isTesterCheck ? (options.testerRpcError ?? null) : (options.rpcError ?? null),
+          });
+        },
+      }),
     } as never,
     authorizationHeaders,
     getRefreshCount: () => refreshCount,
@@ -125,5 +129,33 @@ describe("hasAdminAccess", () => {
     ).toBe(false);
     expect(await hasAdminAccess(client({ current: session(), admin: false }).fake)).toBe(false);
     expect(await hasAdminAccess(client({ current: session(), rpcError: {} }).fake)).toBe(false);
+  });
+});
+
+describe("hasAppAccess", () => {
+  test("allows admins and beta testers with the current session token", async () => {
+    const admin = client({ current: session(), admin: true, tester: false });
+    const tester = client({ current: session(), admin: false, tester: true });
+
+    expect(await hasAppAccess(admin.fake)).toBe(true);
+    expect(await hasAppAccess(tester.fake)).toBe(true);
+    expect(admin.authorizationHeaders).toEqual(["Bearer current-token", "Bearer current-token"]);
+    expect(tester.authorizationHeaders).toEqual(["Bearer current-token", "Bearer current-token"]);
+  });
+
+  test("denies users with neither role and ignores failed role checks", async () => {
+    expect(
+      await hasAppAccess(client({ current: session(), admin: false, tester: false }).fake),
+    ).toBe(false);
+    expect(
+      await hasAppAccess(
+        client({
+          current: session(),
+          admin: false,
+          tester: true,
+          testerRpcError: {},
+        }).fake,
+      ),
+    ).toBe(false);
   });
 });

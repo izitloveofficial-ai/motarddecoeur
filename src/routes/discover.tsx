@@ -3,7 +3,7 @@ import { BadgeCheck, Ban, Bike, Flag, Heart, KeyRound, RotateCcw, ShieldOff } fr
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Layout } from "@/components/Layout";
 import { Slider } from "@/components/ui/slider";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireAppAccess } from "@/lib/require-admin";
 import { requireDatingIntent } from "@/lib/require-dating-intent";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
@@ -95,7 +95,7 @@ export const Route = createFileRoute("/discover")({
   ssr: false,
   component: Discover,
   beforeLoad: async () => {
-    await requireAdmin();
+    await requireAppAccess();
     await requireDatingIntent();
     if (!supabase) return;
     const {

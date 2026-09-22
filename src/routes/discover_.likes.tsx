@@ -2,7 +2,7 @@ import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { Ban, Bike, Crown, Heart, HeartCrack, KeyRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireAppAccess } from "@/lib/require-admin";
 import { requireDatingIntent } from "@/lib/require-dating-intent";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/discover_/likes")({
   ssr: false,
   component: WhoLikedMe,
   beforeLoad: async () => {
-    await requireAdmin();
+    await requireAppAccess();
     await requireDatingIntent();
     if (!supabase) return;
     const {

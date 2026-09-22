@@ -67,6 +67,23 @@ export async function hasAdminAccess(client: AdminClient): Promise<boolean> {
   return !error && data === true;
 }
 
+/** Vérifie qu'une session appartient à un administrateur ou à un bêta-testeur. */
+export async function hasAppAccess(client: AdminClient): Promise<boolean> {
+  const session = await getFreshSession(client);
+  if (!session) return false;
+
+  const authorization = `Bearer ${session.access_token}`;
+  const [adminResult, testerResult] = await Promise.all([
+    client.rpc("is_admin").setHeader("Authorization", authorization),
+    client.rpc("is_beta_tester").setHeader("Authorization", authorization),
+  ]);
+
+  return (
+    (!adminResult.error && adminResult.data === true) ||
+    (!testerResult.error && testerResult.data === true)
+  );
+}
+
 /**
  * À utiliser dans le `beforeLoad` d'une route pour la réserver au compte admin.
  * Les routes concernées désactivent leur SSR : la session Supabase est conservée
@@ -78,6 +95,15 @@ export async function requireAdmin() {
   if (typeof window === "undefined") return;
 
   if (!supabase || !(await hasAdminAccess(supabase))) {
+    throw redirect({ to: "/join" });
+  }
+}
+
+/** Browser guard for application pages available to admins and beta testers. */
+export async function requireAppAccess() {
+  if (typeof window === "undefined") return;
+
+  if (!supabase || !(await hasAppAccess(supabase))) {
     throw redirect({ to: "/join" });
   }
 }

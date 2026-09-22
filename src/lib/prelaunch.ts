@@ -19,7 +19,7 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/admin/reports",
   "/admin/announcements",
   "/admin/status",
-  // These pages remain hidden behind their browser-side requireAdmin guard.
+  // These pages remain hidden behind their browser-side access guard.
   "/community",
   "/events",
   "/premium",
@@ -29,6 +29,7 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/forgot-password",
   "/reset-password",
   "/profile/setup",
+  "/profile/blocked",
   "/discover",
   "/discover/likes",
   "/matches",

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { TrophyIcon } from "@/components/icons/TrophyIcon";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireAppAccess } from "@/lib/require-admin";
 import { Check, X, Crown, Zap, Star } from "lucide-react";
 
 import { SITE_URL } from "@/lib/site";
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/premium")({
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/premium` }],
   }),
-  beforeLoad: requireAdmin,
+  beforeLoad: requireAppAccess,
   component: Premium,
 });
 

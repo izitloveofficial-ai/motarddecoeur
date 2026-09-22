@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireAppAccess } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
 type BlockedProfile = {
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/profile/blocked")({
   ssr: false,
   component: BlockedProfiles,
   beforeLoad: async () => {
-    await requireAdmin();
+    await requireAppAccess();
     if (!supabase) return;
     const {
       data: { session },
