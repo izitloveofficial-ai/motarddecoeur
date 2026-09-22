@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Compass, Heart, MessageCircle, User } from "lucide-react";
+import { Compass, Heart, MessageCircle } from "lucide-react";
+import { HelmetIcon } from "@/components/icons/HelmetIcon";
 import { useAdminStatus } from "@/hooks/use-admin-status";
 
 const tabs = [
   { to: "/discover", label: "Rencontres", icon: Compass },
   { to: "/matches/new", label: "Coup de cœur", icon: Heart },
   { to: "/matches", label: "Discussion", icon: MessageCircle },
-  { to: "/profile/setup", label: "Mon profil", icon: User },
+  { to: "/profile/setup", label: "Mon profil", icon: HelmetIcon },
 ] as const;
 
 export function MobileTabBar() {
