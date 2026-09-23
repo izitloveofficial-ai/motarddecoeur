@@ -153,7 +153,7 @@ function Conversations() {
 
   return (
     <Layout>
-      <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16">
+      <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <h1 className="mt-3 mb-6 font-display text-3xl sm:text-4xl">
           Mes discussions{conversations !== null && ` (${conversations.length})`}

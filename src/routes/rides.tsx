@@ -254,7 +254,7 @@ function Rides() {
 
   return (
     <Layout>
-      <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16">
+      <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
         <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
