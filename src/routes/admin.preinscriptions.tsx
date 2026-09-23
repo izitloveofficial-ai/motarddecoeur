@@ -71,17 +71,20 @@ function AdminPreinscriptions() {
       setAuthenticationRequired(true);
       return setNotice("Connexion administrateur requise");
     }
-    const response = await fetch("/api/admin/preinscriptions", {
-      headers: { authorization: `Bearer ${session.access_token}` },
-    });
-    if (response.status === 401 || response.status === 403) {
-      setAuthenticationRequired(true);
-      return setNotice("Connexion administrateur requise");
+    // Lecture directe dans la base : la règle d'accès is_admin() protège la table.
+    const { data, error } = await supabase!
+      .from("preinscriptions")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) {
+      if (error.code === "42501" || /permission|jwt/i.test(error.message)) {
+        setAuthenticationRequired(true);
+        return setNotice("Connexion administrateur requise");
+      }
+      return setNotice("Impossible de charger les préinscriptions.");
     }
-    if (!response.ok) return setNotice("Impossible de charger les préinscriptions.");
-    const payload = (await response.json()) as { rows: Registration[] };
     await loadProgressUpdates();
-    setRows(payload.rows);
+    setRows((data ?? []) as Registration[]);
     setAuthenticationRequired(false);
     setNotice("");
   }
