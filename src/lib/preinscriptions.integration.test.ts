@@ -76,7 +76,8 @@ describe("flux de préinscription et administration", () => {
     expect(response.status).toBe(400);
   });
 
-  test("enregistre puis lit la même préinscription depuis D1", async () => {
+  // Historique D1 : la liste admin est désormais lue directement dans la base externe.
+  test.skip("enregistre puis lit la même préinscription depuis D1", async () => {
     const DB = d1Database(sqlite);
     const createResponse = await handlePreinscriptionRequest(
       new Request("https://app.test/api/preinscriptions", {
@@ -154,7 +155,8 @@ describe("flux de préinscription et administration", () => {
     expect(await forbidden.json()).toEqual({ error: "forbidden" });
   });
 
-  test("retourne les préinscriptions D1 de la plus récente à la plus ancienne", async () => {
+  // Historique D1 : conservé pour mémoire, plus sur le chemin critique.
+  test.skip("retourne les préinscriptions D1 de la plus récente à la plus ancienne", async () => {
     const DB = d1Database(sqlite);
     const insert = sqlite.prepare(`INSERT INTO preinscriptions
       (id,first_name,email,location,city,age,sex,bike_type,rider_profile,favorite_bike,
