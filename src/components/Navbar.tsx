@@ -22,6 +22,7 @@ const appLinks = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [hasAppAccess, setHasAppAccess] = useState(false);
   const [matchCount, setMatchCount] = useState(0);
   const [likesCount, setLikesCount] = useState(0);
   const [lookingFor, setLookingFor] = useState<string | null>(null);
@@ -43,6 +44,7 @@ export function Navbar() {
     function loadAccountStatus(session: { user: { id: string } } | null) {
       if (!session || !supabase) {
         setIsAdmin(false);
+        setHasAppAccess(false);
         setMatchCount(0);
         setLikesCount(0);
         setLookingFor(null);
@@ -51,18 +53,28 @@ export function Navbar() {
 
       void Promise.all([
         supabase.rpc("is_admin"),
+        supabase.rpc("is_beta_tester"),
         supabase
           .from("matches")
           .select("id", { count: "exact", head: true })
           .or(`profile_a_id.eq.${session.user.id},profile_b_id.eq.${session.user.id}`),
         supabase.from("profiles").select("looking_for").eq("id", session.user.id).maybeSingle(),
         supabase.rpc("who_liked_me"),
-      ]).then(([{ data: adminResult }, { count }, { data: profile }, { data: likes }]) => {
-        setIsAdmin(adminResult === true);
-        setMatchCount(count ?? 0);
-        setLikesCount(likes?.length ?? 0);
-        setLookingFor(profile?.looking_for ?? null);
-      });
+      ]).then(
+        ([
+          { data: adminResult },
+          { data: testerResult },
+          { count },
+          { data: profile },
+          { data: likes },
+        ]) => {
+          setIsAdmin(adminResult === true);
+          setHasAppAccess(adminResult === true || testerResult === true);
+          setMatchCount(count ?? 0);
+          setLikesCount(likes?.length ?? 0);
+          setLookingFor(profile?.looking_for ?? null);
+        },
+      );
     }
 
     supabase.auth.getSession().then(({ data }) => {
@@ -118,7 +130,7 @@ export function Navbar() {
             ))}
           </div>
 
-          {isAdmin && (
+          {hasAppAccess && (
             <div className="flex items-center gap-3 border-l border-neutral-200 pl-4 2xl:gap-4 2xl:pl-6">
               {visibleAppLinks.map((l) => (
                 <Link
@@ -189,7 +201,7 @@ export function Navbar() {
               {l.label}
             </Link>
           ))}
-          {isAdmin && (
+          {hasAppAccess && (
             <div className="mt-1 flex flex-col border-t border-neutral-200 pt-3">
               {visibleAppLinks.map((l) => (
                 <Link
