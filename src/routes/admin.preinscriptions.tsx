@@ -2,6 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { requireAdminPage } from "@/lib/require-admin";
+import { loadAdminPreinscriptions } from "@/lib/admin-preinscriptions";
 
 type Registration = {
   id: string;
