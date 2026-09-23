@@ -1,5 +1,9 @@
 # Préinscriptions — base applicative
 
+> **Document historique.** La bascule D1 décrite ci-dessous n'est plus active. Source de vérité actuelle :
+> la table `public.preinscriptions` de la base Supabase existante. Voir la section « État actuel » en fin
+> de document. Les instructions D1 (liaison `DB`, import, migrations `migrations/`) ne doivent plus être appliquées.
+
 ## Cause du problème
 
 La migration `06990eb` a déplacé les préinscriptions vers D1, mais pas l'identité : le navigateur
