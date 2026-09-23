@@ -23,7 +23,16 @@ export const Route = createFileRoute("/premium")({
   component: Premium,
 });
 
-const PLANS = [
+type Plan = {
+  name: string;
+  tier: "bronze" | "silver" | "gold";
+  price: string;
+  desc: string;
+  features: { ok: boolean; text: string }[];
+  popular?: boolean;
+};
+
+const PLANS: Plan[] = [
   {
     name: "Découverte",
     tier: "bronze",
