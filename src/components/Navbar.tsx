@@ -118,7 +118,7 @@ export function Navbar() {
             ))}
           </div>
 
-          {hasAppAccess && (
+          {isLoggedIn && (
             <div className="flex items-center gap-3 border-l border-neutral-200 pl-4 2xl:gap-4 2xl:pl-6">
               {visibleAppLinks.map((l) => (
                 <Link
@@ -189,7 +189,7 @@ export function Navbar() {
               {l.label}
             </Link>
           ))}
-          {hasAppAccess && (
+          {isLoggedIn && (
             <div className="mt-1 flex flex-col border-t border-neutral-200 pt-3">
               {visibleAppLinks.map((l) => (
                 <Link
