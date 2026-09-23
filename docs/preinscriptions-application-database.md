@@ -95,3 +95,10 @@ Redéployer la version précédente de l'application sans supprimer la base D1. 
 dure, réactiver temporairement l'ancienne politique d'insertion Supabase. Avant tout nouveau
 déploiement, exporter les lignes reçues dans D1 pendant l'incident et les réimporter pour éviter
 toute perte. La migration D1 est additive et ne doit pas être supprimée lors du rollback.
+
+## État actuel (septembre 2026)
+
+- `/join` écrit directement dans `public.preinscriptions` (base externe).
+- `/admin/preinscriptions` lit directement cette table ; la règle `is_admin()` en protège l'accès.
+- `POST /api/admin/preinscriptions` reste côté serveur pour les invitations (nécessite `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY`).
+- `POST /api/preinscriptions` (D1) répond 410. Les fichiers et migrations D1 sont conservés à titre historique, hors du chemin critique.

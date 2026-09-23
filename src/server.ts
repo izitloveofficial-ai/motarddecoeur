@@ -45,7 +45,9 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const pathname = new URL(request.url).pathname;
-      if (pathname === "/api/preinscriptions") return handlePreinscriptionRequest(request, env);
+      // Ancienne route D1 (historique) : le formulaire /join écrit directement dans la base.
+      if (pathname === "/api/preinscriptions")
+        return Response.json({ error: "gone", message: "Utilisez le formulaire /join." }, { status: 410 });
       if (pathname === "/api/admin/preinscriptions")
         return handleAdminPreinscriptionsRequest(request, env);
       const handler = await getServerEntry();

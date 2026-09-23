@@ -158,10 +158,8 @@ export async function handleAdminPreinscriptionsRequest(request: Request, rawEnv
       authorization.status,
     );
   if (request.method === "GET") {
-    const rows = await database(env)
-      .prepare("SELECT * FROM preinscriptions ORDER BY created_at DESC")
-      .all();
-    return json({ rows: rows.results ?? [] });
+    // La liste est lue par la page admin directement dans la base (plus de D1).
+    return json({ error: "method_not_allowed" }, 405);
   }
   const url = supabaseUrl(env);
   const serviceKey = supabaseServiceKey(env);
