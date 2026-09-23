@@ -106,7 +106,7 @@ function NewMatches() {
 
   return (
     <Layout>
-      <section className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-16">
+      <section className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-16 md:max-w-4xl lg:max-w-5xl xl:max-w-6xl">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <h1 className="mb-6 mt-3 font-display text-3xl sm:text-4xl">
           Nouveaux coups de cœur{matches !== null && ` (${matches.length})`}

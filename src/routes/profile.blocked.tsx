@@ -116,7 +116,7 @@ function BlockedProfiles() {
 
   return (
     <Layout>
-      <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
+      <section className="mx-auto max-w-2xl px-6 py-12 sm:py-16 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <h1 className="mt-3 mb-2 font-display text-4xl">Personnes bloquées</h1>
         <p className="mb-8 text-sm text-[#a99b95]">

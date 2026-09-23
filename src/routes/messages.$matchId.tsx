@@ -380,7 +380,7 @@ function Conversation() {
   return (
     <Layout>
       <div className="h-[calc(100dvh-10rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] overflow-hidden bg-[#21191a] text-[#fff9f0] sm:h-[calc(100dvh-7rem)] md:h-[calc(100dvh-8rem)] xl:h-[calc(100dvh-9rem)]">
-        <section className="mx-auto flex h-full min-h-0 max-w-2xl flex-col px-4 py-5 sm:px-6 sm:py-8">
+        <section className="mx-auto flex h-full min-h-0 max-w-2xl flex-col px-4 py-5 sm:px-6 sm:py-8 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <Link
