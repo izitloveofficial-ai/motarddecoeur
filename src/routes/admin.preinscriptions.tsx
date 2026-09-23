@@ -2,6 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { requireAdminPage } from "@/lib/require-admin";
+import { loadAdminPreinscriptions } from "@/lib/admin-preinscriptions";
 
 type Registration = {
   id: string;
@@ -71,20 +72,15 @@ function AdminPreinscriptions() {
       setAuthenticationRequired(true);
       return setNotice("Connexion administrateur requise");
     }
-    // Lecture directe dans la base : la règle d'accès is_admin() protège la table.
-    const { data, error } = await supabase!
-      .from("preinscriptions")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) {
-      if (error.code === "42501" || /permission|jwt/i.test(error.message)) {
-        setAuthenticationRequired(true);
-        return setNotice("Connexion administrateur requise");
-      }
-      return setNotice("Impossible de charger les préinscriptions.");
+    // Lecture directe avec la session admin : la règle d'accès is_admin() protège la table.
+    const result = await loadAdminPreinscriptions<Registration>(supabase!);
+    if (result.status === "forbidden") {
+      setAuthenticationRequired(true);
+      return setNotice("Connexion administrateur requise");
     }
+    if (result.status === "error") return setNotice("Impossible de charger les préinscriptions.");
     await loadProgressUpdates();
-    setRows((data ?? []) as Registration[]);
+    setRows(result.rows);
     setAuthenticationRequired(false);
     setNotice("");
   }
