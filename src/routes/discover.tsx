@@ -158,21 +158,41 @@ function Discover() {
   }, [filters]);
 
   useEffect(() => {
-    async function loadPremiumStatus() {
-      if (!supabase) return;
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data: profile } = await supabase
+    if (!supabase) return;
+    const client = supabase;
+    let cancelled = false;
+
+    // Le statut Premium est relu à chaque changement de session : un premier
+    // appel lancé avant la restauration de la session (ou un échec réseau
+    // passager) laissait auparavant `isPremium` à false sans aucun message.
+    async function loadPremiumStatus(userId: string | undefined, attempt = 0) {
+      if (!userId) return;
+      const { data: profile, error: premiumError } = await client
         .from("profiles")
         .select("is_premium")
-        .eq("id", user.id)
+        .eq("id", userId)
         .maybeSingle();
-      setIsPremium(profile?.is_premium === true);
+      if (cancelled) return;
+      if (premiumError || !profile) {
+        console.error("Statut Premium illisible", premiumError?.message ?? "profil introuvable");
+        if (attempt < 2) setTimeout(() => void loadPremiumStatus(userId, attempt + 1), 1500);
+        return;
+      }
+      setIsPremium(profile.is_premium === true);
     }
 
-    void loadPremiumStatus();
+    void client.auth.getSession().then(({ data }) => loadPremiumStatus(data.session?.user.id));
+    const { data: listener } = client.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED") {
+        // Différé pour ne pas appeler la base depuis le rappel d'authentification.
+        setTimeout(() => void loadPremiumStatus(session?.user.id), 0);
+      }
+      if (event === "SIGNED_OUT") setIsPremium(false);
+    });
+    return () => {
+      cancelled = true;
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   async function loadCandidates() {
