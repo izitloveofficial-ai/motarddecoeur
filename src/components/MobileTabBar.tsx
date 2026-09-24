@@ -15,15 +15,37 @@ const tabs = [
 
 export function MobileTabBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [remainingSuperLikes, setRemainingSuperLikes] = useState<number | null>(null);
 
   useEffect(() => {
     if (!supabase) return;
 
+    async function loadRemainingSuperLikes(userId: string | undefined) {
+      setRemainingSuperLikes(null);
+      if (!supabase || !userId) return;
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("is_premium")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (profileError || profile?.is_premium !== true) return;
+
+      const { data: sentToday, error: quotaError } = await supabase.rpc("super_likes_sent_today");
+
+      if (!quotaError && typeof sentToday === "number") {
+        setRemainingSuperLikes(Math.max(0, 3 - sentToday));
+      }
+    }
+
     supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(Boolean(data.session));
+      void loadRemainingSuperLikes(data.session?.user.id);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(Boolean(session));
+      void loadRemainingSuperLikes(session?.user.id);
     });
     return () => sub.subscription.unsubscribe();
   }, []);
@@ -45,7 +67,14 @@ export function MobileTabBar() {
             activeProps={{ className: "text-[#e8be6c]" }}
           >
             <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
-            <span className="truncate">{label}</span>
+            <span className="flex items-center gap-1">
+              <span className="truncate">{label}</span>
+              {label === "Profil" && remainingSuperLikes !== null && remainingSuperLikes > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                  {remainingSuperLikes}
+                </span>
+              )}
+            </span>
           </Link>
         ))}
       </div>
