@@ -93,6 +93,7 @@ function Conversation() {
   const [creatingShare, setCreatingShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isOtherTyping, setIsOtherTyping] = useState(false);
+  const [matchStatus, setMatchStatus] = useState<"mutual" | "pending" | null>(null);
   const messageListRef = useRef<HTMLDivElement>(null);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const lastTypingBroadcastAtRef = useRef(0);
@@ -115,7 +116,7 @@ function Conversation() {
       setMyId(user.id);
       const { data: match, error: matchError } = await client
         .from("matches")
-        .select("profile_a_id, profile_b_id")
+        .select("profile_a_id, profile_b_id, status")
         .eq("id", matchId)
         .maybeSingle();
       if (cancelled) return;
@@ -129,6 +130,7 @@ function Conversation() {
       }
       const otherId = match.profile_a_id === user.id ? match.profile_b_id : match.profile_a_id;
       setOtherId(otherId);
+      setMatchStatus(match.status === "pending" ? "pending" : "mutual");
 
       channel = client
         .channel(`messages:${matchId}`)
@@ -149,6 +151,19 @@ function Conversation() {
                 .update({ read_at: new Date().toISOString() })
                 .eq("id", incoming.id);
             }
+          },
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "matches",
+            filter: `id=eq.${matchId}`,
+          },
+          (payload) => {
+            const updated = payload.new as { status?: string };
+            setMatchStatus(updated.status === "pending" ? "pending" : "mutual");
           },
         )
         .on(
@@ -277,9 +292,11 @@ function Conversation() {
       setError(
         sendError.message?.includes("rate_limit_exceeded")
           ? "Tu envoies des messages trop vite, patiente un instant."
-          : sendError.message?.includes("contenu_interdit")
-            ? "Ce message contient un terme non autorisé, merci de le reformuler."
-            : "Le message n'a pas pu être envoyé.",
+          : sendError.message?.includes("pending_message_limit_reached")
+            ? "Tu as atteint la limite de 2 messages sans réponse. Attends que cette personne te réponde pour continuer à discuter."
+            : sendError.message?.includes("contenu_interdit")
+              ? "Ce message contient un terme non autorisé, merci de le reformuler."
+              : "Le message n'a pas pu être envoyé.",
       );
       return;
     }
@@ -427,6 +444,11 @@ function Conversation() {
             >
               {error}
             </div>
+          )}
+          {matchStatus === "pending" && (
+            <p className="mb-4 rounded-xl border border-[#d6a85c]/25 bg-[#e8be6c]/10 px-4 py-3 text-sm text-[#ead7b1]">
+              Tu peux envoyer jusqu'à 2 messages en attendant sa réponse.
+            </p>
           )}
           <div
             ref={messageListRef}
