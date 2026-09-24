@@ -9,6 +9,7 @@ import {
   MessageCircle,
   RotateCcw,
   ShieldOff,
+  Zap,
 } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Layout } from "@/components/Layout";
@@ -145,6 +146,7 @@ function Discover() {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [justLiked, setJustLiked] = useState(false);
+  const [sendingSuperLike, setSendingSuperLike] = useState(false);
   const [openingConversation, setOpeningConversation] = useState(false);
   const cardRef = useRef<HTMLElement>(null);
   const dragStartX = useRef(0);
@@ -247,7 +249,7 @@ function Discover() {
     );
   }
 
-  async function swipe(liked: boolean) {
+  async function swipe(liked: boolean, isSuper = false) {
     if (!supabase || !candidates?.[index]) return;
     const current = candidates[index];
     const {
@@ -258,7 +260,7 @@ function Discover() {
     setError("");
     const { error: swipeError } = await supabase
       .from("swipes")
-      .insert({ swiper_id: user.id, swiped_id: current.id, liked });
+      .insert({ swiper_id: user.id, swiped_id: current.id, liked, is_super: isSuper });
     if (swipeError) {
       setError("Ton choix n'a pas pu être enregistré.");
       return;
@@ -284,6 +286,67 @@ function Discover() {
       setLastPassed(current);
     }
     setIndex((value) => value + 1);
+    return true;
+  }
+
+  async function sendSuperLike() {
+    if (!supabase || !isPremium || !candidates?.[index] || sendingSuperLike) return;
+    const current = candidates[index];
+    setError("");
+    setNotice("");
+    setSendingSuperLike(true);
+
+    const { data: sentToday, error: quotaError } = await supabase.rpc("super_likes_sent_today");
+    if (quotaError) {
+      setError("Impossible de vérifier ton quota de Super coups de cœur.");
+      setSendingSuperLike(false);
+      return;
+    }
+
+    const quotaUsed = Number(sentToday ?? 0);
+    const isChargeable = quotaUsed >= 3;
+    if (
+      isChargeable &&
+      !window.confirm(
+        "Tu as déjà envoyé tes 3 Super coups de cœur gratuits aujourd'hui. En envoyer un de plus sera facturé 3€ plus tard, dès que les paiements seront activés. Continuer ?",
+      )
+    ) {
+      setSendingSuperLike(false);
+      return;
+    }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      setSendingSuperLike(false);
+      return;
+    }
+
+    const sent = await swipe(true, true);
+    if (!sent) {
+      setSendingSuperLike(false);
+      return;
+    }
+
+    if (isChargeable) {
+      const { error: chargeError } = await supabase.from("pending_charges").insert({
+        user_id: user.id,
+        amount: 3,
+        reason: "super_coup_de_coeur_supplementaire",
+        target_profile_id: current.id,
+      });
+      if (chargeError) {
+        setError(
+          "Le Super coup de cœur est parti, mais sa facturation en attente n'a pas pu être enregistrée. Contacte l'assistance.",
+        );
+        setSendingSuperLike(false);
+        return;
+      }
+    }
+
+    setNotice(`Super coup de cœur envoyé à ${current.first_name} !`);
+    setSendingSuperLike(false);
   }
 
   async function undoLastPass() {
@@ -767,7 +830,7 @@ function Discover() {
                   ))}
                 </div>
               )}
-              <div className="mt-6 flex justify-center gap-6">
+              <div className="mt-6 flex flex-wrap justify-center gap-3 sm:gap-6">
                 <button
                   onClick={() => void swipe(false)}
                   aria-label="Passer"
@@ -784,6 +847,21 @@ function Discover() {
                     className={`transition-transform duration-300 ${justLiked ? "rotate-[20deg]" : "rotate-0"}`}
                   />
                 </button>
+                {isPremium && (
+                  <button
+                    type="button"
+                    onClick={() => void sendSuperLike()}
+                    disabled={sendingSuperLike}
+                    aria-label={`Envoyer un Super coup de cœur à ${current.first_name}`}
+                    title="3 Super coups de cœur gratuits par jour"
+                    className="flex h-16 min-w-16 items-center justify-center gap-2 rounded-full border border-[#e2b45f]/60 bg-[#e2b45f]/15 px-4 text-sm font-semibold text-[#f4cf7a] transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
+                  >
+                    <Zap className="h-5 w-5 fill-current" aria-hidden="true" />
+                    <span className="sr-only sm:not-sr-only">
+                      {sendingSuperLike ? "Envoi…" : "Super coup de cœur"}
+                    </span>
+                  </button>
+                )}
                 {isPremium && (
                   <button
                     type="button"
