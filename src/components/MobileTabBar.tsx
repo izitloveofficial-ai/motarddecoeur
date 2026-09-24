@@ -3,15 +3,13 @@ import { CardsIcon } from "@/components/icons/CardsIcon";
 import { HeartFilledIcon } from "@/components/icons/HeartFilledIcon";
 import { HelmetIcon } from "@/components/icons/HelmetIcon";
 import { IntercomIcon } from "@/components/icons/IntercomIcon";
-import { MirrorIcon } from "@/components/icons/MirrorIcon";
 import { useAdminStatus } from "@/hooks/use-admin-status";
 
 const tabs = [
   { to: "/discover", label: "Rencontres", icon: CardsIcon },
-  { to: "/discover/likes", label: "Qui m'a liké", icon: MirrorIcon },
   { to: "/matches", label: "Coup de cœur", icon: HeartFilledIcon },
   { to: "/messages", label: "Discussion", icon: IntercomIcon },
-  { to: "/profile/setup", label: "Mon profil", icon: HelmetIcon },
+  { to: "/profile/setup", label: "Profil", icon: HelmetIcon },
 ] as const;
 
 export function MobileTabBar() {
@@ -23,7 +21,7 @@ export function MobileTabBar() {
       aria-label="Navigation de l'application"
       className="safe-bottom fixed inset-x-0 bottom-0 z-50 border-t border-[#d6a85c]/30 bg-[#181112]/95 shadow-[0_-8px_30px_rgba(0,0,0,0.35)] backdrop-blur sm:hidden"
     >
-      <div className="grid h-16 grid-cols-5">
+      <div className="grid h-16 grid-cols-4">
         {tabs.map(({ to, label, icon: Icon }) => (
           <Link
             key={to}

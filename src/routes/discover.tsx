@@ -1,5 +1,15 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { BadgeCheck, Ban, Bike, Flag, Heart, KeyRound, RotateCcw, ShieldOff } from "lucide-react";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import {
+  BadgeCheck,
+  Ban,
+  Bike,
+  Flag,
+  Heart,
+  KeyRound,
+  MessageCircle,
+  RotateCcw,
+  ShieldOff,
+} from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Layout } from "@/components/Layout";
 import { Slider } from "@/components/ui/slider";
@@ -120,6 +130,7 @@ function age(value: string) {
 }
 
 function Discover() {
+  const navigate = useNavigate();
   const [candidates, setCandidates] = useState<Candidate[] | null>(null);
   const [index, setIndex] = useState(0);
   const [notice, setNotice] = useState("");
@@ -134,6 +145,7 @@ function Discover() {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [justLiked, setJustLiked] = useState(false);
+  const [openingConversation, setOpeningConversation] = useState(false);
   const cardRef = useRef<HTMLElement>(null);
   const dragStartX = useRef(0);
   const activePointerId = useRef<number | null>(null);
@@ -392,6 +404,39 @@ function Discover() {
     setJustLiked(true);
     likeAnimationTimer.current = setTimeout(() => setJustLiked(false), 300);
     void swipe(true);
+  }
+
+  async function writeBeforeMatch() {
+    if (!supabase || !candidates?.[index] || openingConversation) return;
+    setOpeningConversation(true);
+    setError("");
+    const { data, error: conversationError } = await supabase.rpc("start_pending_conversation", {
+      target_id: candidates[index].id,
+    });
+
+    if (conversationError) {
+      setOpeningConversation(false);
+      if (conversationError.message?.includes("premium_required")) {
+        const message = "Passe Premium pour écrire avant d'attendre un like en retour.";
+        window.location.assign(`/premium?message=${encodeURIComponent(message)}`);
+        return;
+      }
+      setError("Impossible d'ouvrir cette conversation pour le moment.");
+      return;
+    }
+
+    const matchId =
+      typeof data === "string"
+        ? data
+        : data && typeof data === "object" && "id" in data
+          ? String(data.id)
+          : null;
+    if (!matchId) {
+      setOpeningConversation(false);
+      setError("La conversation a été créée, mais elle n'a pas pu être ouverte.");
+      return;
+    }
+    await navigate({ to: "/messages/$matchId", params: { matchId } });
   }
 
   const current = candidates?.[index];
@@ -739,6 +784,18 @@ function Discover() {
                     className={`transition-transform duration-300 ${justLiked ? "rotate-[20deg]" : "rotate-0"}`}
                   />
                 </button>
+                {isPremium && (
+                  <button
+                    type="button"
+                    onClick={() => void writeBeforeMatch()}
+                    disabled={openingConversation}
+                    aria-label={`Écrire à ${current.first_name} avant le match`}
+                    className="flex h-16 min-w-16 items-center justify-center gap-2 rounded-full border border-[#e2b45f]/60 bg-[#302425] px-5 text-sm font-semibold text-[#e8be6c] transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
+                  >
+                    <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                    <span>{openingConversation ? "Ouverture…" : "Écrire"}</span>
+                  </button>
+                )}
               </div>
               <div className="mt-5 flex items-center justify-center gap-5 text-xs text-[#a99b95]">
                 {lastPassed && isPremium && (
