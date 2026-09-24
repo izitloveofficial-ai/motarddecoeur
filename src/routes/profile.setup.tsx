@@ -725,6 +725,7 @@ function ProfileSetup() {
   );
 
   const nextStep = getNextStep(profile.looking_for);
+  const closeGallery = useCallback(() => setGalleryIndex(null), []);
   const stepLabels = ["Identité", "Ta moto", "Ta recherche", "Photos et visibilité"];
 
   function goToNextStep() {
@@ -1407,6 +1408,13 @@ function ProfileSetup() {
           </div>
         </section>
       </div>
+      <ProfilePhotoGallery
+        open={galleryIndex !== null}
+        onClose={closeGallery}
+        initialIndex={galleryIndex ?? 0}
+        photos={existingPhotos.map(({ publicUrl }) => publicUrl)}
+        profile={{ firstName: profile.first_name || "Mon profil" }}
+      />
     </Layout>
   );
 }
