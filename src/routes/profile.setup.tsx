@@ -231,7 +231,17 @@ function ProfileSetup() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [existingPhotos, setExistingPhotos] = useState<ExistingPhoto[]>([]);
   const [deletingPhotoId, setDeletingPhotoId] = useState<string | null>(null);
+  const [reorderingPhotos, setReorderingPhotos] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
   const [photos, setPhotos] = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+
+  // Aperçus des nouvelles photos choisies, libérés quand la sélection change.
+  useEffect(() => {
+    const urls = photos.map((file) => URL.createObjectURL(file));
+    setPhotoPreviews(urls);
+    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+  }, [photos]);
   const [deleting, setDeleting] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -254,6 +264,7 @@ function ProfileSetup() {
       if (!user) {
         setStatus("error");
         setFeedback("Session expirée. Reconnecte-toi puis réessaie.");
+        setLoadingProfile(false);
         return;
       }
       const [profileResult, photosResult, promptsResult, answersResult] = await Promise.all([
@@ -274,6 +285,8 @@ function ProfileSetup() {
       if (profileResult.error || photosResult.error || promptsResult.error || answersResult.error) {
         setStatus("error");
         setFeedback("Impossible de charger ton profil. Recharge la page puis réessaie.");
+        // Sans cela, le bouton restait bloqué sur « Chargement… » indéfiniment.
+        setLoadingProfile(false);
         return;
       }
       if (profileResult.data) {
@@ -388,6 +401,50 @@ function ProfileSetup() {
       setExistingPhotos((current) => current.filter(({ id }) => id !== photo.id));
     }
     setDeletingPhotoId(null);
+  }
+
+  // Place la photo choisie en premier : toutes les photos reçoivent de nouvelles
+  // positions au-dessus des positions actuelles, ce qui évite tout conflit
+  // pendant la mise à jour et conserve l'ordre des autres photos.
+  async function makePrimaryPhoto(photo: ExistingPhoto) {
+    if (!supabase || reorderingPhotos || existingPhotos[0]?.id === photo.id) return;
+    const client = supabase;
+    setReorderingPhotos(true);
+    setFeedback("");
+    const ordered = [photo, ...existingPhotos.filter(({ id }) => id !== photo.id)];
+    const base = existingPhotos.reduce((maximum, item) => Math.max(maximum, item.position), -1) + 1;
+    const updated = ordered.map((item, index) => ({ ...item, position: base + index }));
+    const results = await Promise.all(
+      updated.map((item) =>
+        client.from("profile_photos").update({ position: item.position }).eq("id", item.id),
+      ),
+    );
+    if (results.some(({ error }) => error)) {
+      setStatus("error");
+      setFeedback("Impossible de changer la photo principale pour le moment. Réessaie plus tard.");
+      const { data } = await client
+        .from("profile_photos")
+        .select("id, storage_path, position")
+        .in(
+          "id",
+          existingPhotos.map(({ id }) => id),
+        )
+        .order("position", { ascending: true });
+      if (data) {
+        setExistingPhotos(
+          data.map((row) => ({
+            ...row,
+            publicUrl: client.storage.from("profile-photos").getPublicUrl(row.storage_path).data
+              .publicUrl,
+          })),
+        );
+      }
+    } else {
+      setExistingPhotos(updated);
+      setStatus("success");
+      setFeedback("Photo principale mise à jour.");
+    }
+    setReorderingPhotos(false);
   }
 
   async function takeNativePhoto() {
