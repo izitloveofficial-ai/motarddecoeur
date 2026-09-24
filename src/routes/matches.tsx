@@ -1,5 +1,5 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { BadgeCheck, Ban, Bike, Heart, HeartCrack, KeyRound, Trash2 } from "lucide-react";
+import { BadgeCheck, Ban, Bike, Heart, HeartCrack, KeyRound, Trash2, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAppAccess } from "@/lib/require-admin";
@@ -23,6 +23,7 @@ type LikedProfile = {
   moto_brand: string | null;
   moto_model: string | null;
   moto_type: string | null;
+  is_super: boolean;
   photoUrl: string | null;
 };
 
@@ -262,7 +263,7 @@ function Matches() {
                 {waitingProfiles.map((profile) => (
                   <li key={profile.id}>
                     <article className="h-full overflow-hidden rounded-2xl border border-[#d6a85c]/20 bg-[#302425]/80">
-                      <div className="aspect-[4/3] bg-[#211819]">
+                      <div className="relative aspect-[4/3] bg-[#211819]">
                         {profile.photoUrl ? (
                           <img
                             src={profile.photoUrl}
@@ -273,6 +274,12 @@ function Matches() {
                           <div className="grid h-full place-items-center">
                             <Heart className="h-10 w-10 text-[#e8be6c]/50" aria-hidden="true" />
                           </div>
+                        )}
+                        {profile.is_super && (
+                          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full border border-[#f4cf7a]/70 bg-[#211819]/90 px-2.5 py-1 text-xs font-semibold text-[#f4cf7a] shadow-lg">
+                            <Zap className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                            Super coup de cœur
+                          </span>
                         )}
                       </div>
                       <div className="p-5">
