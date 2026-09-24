@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { requireAppAccess } from "@/lib/require-admin";
+import { mergeMessages } from "@/lib/message-sync";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
 
@@ -141,11 +142,7 @@ function Conversation() {
           },
           (payload) => {
             const incoming = payload.new as Message;
-            setMessages((previous) =>
-              previous.some((message) => message.id === incoming.id)
-                ? previous
-                : [...previous, incoming],
-            );
+            setMessages((previous) => mergeMessages(previous, [incoming]));
             if (incoming.sender_id !== user.id) {
               void client
                 .from("messages")
@@ -164,9 +161,7 @@ function Conversation() {
           },
           (payload) => {
             const updated = payload.new as Message;
-            setMessages((previous) =>
-              previous.map((message) => (message.id === updated.id ? updated : message)),
-            );
+            setMessages((previous) => mergeMessages(previous, [updated]));
           },
         )
         .on("broadcast", { event: "typing" }, ({ payload }) => {
@@ -230,13 +225,7 @@ function Conversation() {
         // An INSERT can arrive while the initial query is in flight. Merge both sources so the
         // query cannot overwrite a realtime message (and keep the conversation chronological).
         setMessages((realtimeMessages) => {
-          const byId = new Map(
-            [...(existing ?? []), ...realtimeMessages].map((message) => [message.id, message]),
-          );
-          return [...byId.values()].sort(
-            (first, second) =>
-              new Date(first.created_at).getTime() - new Date(second.created_at).getTime(),
-          );
+          return mergeMessages(existing ?? [], realtimeMessages);
         });
         if (messagesError) setError("Impossible de charger les messages.");
         await client
@@ -296,11 +285,7 @@ function Conversation() {
     }
     // Do not depend on the realtime round trip to show a message just sent. The subscription
     // uses the same id and will therefore be ignored when it arrives a moment later.
-    setMessages((previous) =>
-      previous.some((message) => message.id === sentMessage.id)
-        ? previous
-        : [...previous, sentMessage],
-    );
+    setMessages((previous) => mergeMessages(previous, [sentMessage]));
     if (otherId) {
       void sendPushNotification(
         otherId,
