@@ -14,15 +14,27 @@ type ProfilePhotoGalleryProps = {
   onClose: () => void;
   photos: string[];
   profile: GalleryProfile;
+  initialIndex?: number;
 };
 
-export function ProfilePhotoGallery({ open, onClose, photos, profile }: ProfilePhotoGalleryProps) {
+export function ProfilePhotoGallery({
+  open,
+  onClose,
+  photos,
+  profile,
+  initialIndex = 0,
+}: ProfilePhotoGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    setActiveIndex(0);
+    const start = Math.min(Math.max(initialIndex, 0), Math.max(photos.length - 1, 0));
+    setActiveIndex(start);
+    const frame = requestAnimationFrame(() => {
+      const carousel = carouselRef.current;
+      if (carousel) carousel.scrollLeft = start * carousel.clientWidth;
+    });
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -30,9 +42,11 @@ export function ProfilePhotoGallery({ open, onClose, photos, profile }: ProfileP
     };
     window.addEventListener("keydown", closeOnEscape);
     return () => {
+      cancelAnimationFrame(frame);
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", closeOnEscape);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onClose, open]);
 
   if (!open) return null;
