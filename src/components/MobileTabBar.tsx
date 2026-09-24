@@ -1,9 +1,10 @@
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { CardsIcon } from "@/components/icons/CardsIcon";
 import { HeartFilledIcon } from "@/components/icons/HeartFilledIcon";
 import { HelmetIcon } from "@/components/icons/HelmetIcon";
 import { IntercomIcon } from "@/components/icons/IntercomIcon";
-import { useAdminStatus } from "@/hooks/use-admin-status";
+import { supabase } from "@/lib/supabase";
 
 const tabs = [
   { to: "/discover", label: "Rencontres", icon: CardsIcon },
@@ -13,8 +14,21 @@ const tabs = [
 ] as const;
 
 export function MobileTabBar() {
-  const isAdmin = useAdminStatus();
-  if (!isAdmin) return null;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (!supabase) return;
+
+    supabase.auth.getSession().then(({ data }) => {
+      setIsLoggedIn(Boolean(data.session));
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(Boolean(session));
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  if (!isLoggedIn) return null;
 
   return (
     <nav
