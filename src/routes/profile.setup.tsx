@@ -31,6 +31,110 @@ const motoTypeOptions = [
   ["autre", "Autre"],
 ] as const;
 
+const departmentOptions = [
+  ["01", "Ain"],
+  ["02", "Aisne"],
+  ["03", "Allier"],
+  ["04", "Alpes-de-Haute-Provence"],
+  ["05", "Hautes-Alpes"],
+  ["06", "Alpes-Maritimes"],
+  ["07", "Ardèche"],
+  ["08", "Ardennes"],
+  ["09", "Ariège"],
+  ["10", "Aube"],
+  ["11", "Aude"],
+  ["12", "Aveyron"],
+  ["13", "Bouches-du-Rhône"],
+  ["14", "Calvados"],
+  ["15", "Cantal"],
+  ["16", "Charente"],
+  ["17", "Charente-Maritime"],
+  ["18", "Cher"],
+  ["19", "Corrèze"],
+  ["2A", "Corse-du-Sud"],
+  ["2B", "Haute-Corse"],
+  ["21", "Côte-d'Or"],
+  ["22", "Côtes-d'Armor"],
+  ["23", "Creuse"],
+  ["24", "Dordogne"],
+  ["25", "Doubs"],
+  ["26", "Drôme"],
+  ["27", "Eure"],
+  ["28", "Eure-et-Loir"],
+  ["29", "Finistère"],
+  ["30", "Gard"],
+  ["31", "Haute-Garonne"],
+  ["32", "Gers"],
+  ["33", "Gironde"],
+  ["34", "Hérault"],
+  ["35", "Ille-et-Vilaine"],
+  ["36", "Indre"],
+  ["37", "Indre-et-Loire"],
+  ["38", "Isère"],
+  ["39", "Jura"],
+  ["40", "Landes"],
+  ["41", "Loir-et-Cher"],
+  ["42", "Loire"],
+  ["43", "Haute-Loire"],
+  ["44", "Loire-Atlantique"],
+  ["45", "Loiret"],
+  ["46", "Lot"],
+  ["47", "Lot-et-Garonne"],
+  ["48", "Lozère"],
+  ["49", "Maine-et-Loire"],
+  ["50", "Manche"],
+  ["51", "Marne"],
+  ["52", "Haute-Marne"],
+  ["53", "Mayenne"],
+  ["54", "Meurthe-et-Moselle"],
+  ["55", "Meuse"],
+  ["56", "Morbihan"],
+  ["57", "Moselle"],
+  ["58", "Nièvre"],
+  ["59", "Nord"],
+  ["60", "Oise"],
+  ["61", "Orne"],
+  ["62", "Pas-de-Calais"],
+  ["63", "Puy-de-Dôme"],
+  ["64", "Pyrénées-Atlantiques"],
+  ["65", "Hautes-Pyrénées"],
+  ["66", "Pyrénées-Orientales"],
+  ["67", "Bas-Rhin"],
+  ["68", "Haut-Rhin"],
+  ["69", "Rhône"],
+  ["70", "Haute-Saône"],
+  ["71", "Saône-et-Loire"],
+  ["72", "Sarthe"],
+  ["73", "Savoie"],
+  ["74", "Haute-Savoie"],
+  ["75", "Paris"],
+  ["76", "Seine-Maritime"],
+  ["77", "Seine-et-Marne"],
+  ["78", "Yvelines"],
+  ["79", "Deux-Sèvres"],
+  ["80", "Somme"],
+  ["81", "Tarn"],
+  ["82", "Tarn-et-Garonne"],
+  ["83", "Var"],
+  ["84", "Vaucluse"],
+  ["85", "Vendée"],
+  ["86", "Vienne"],
+  ["87", "Haute-Vienne"],
+  ["88", "Vosges"],
+  ["89", "Yonne"],
+  ["90", "Territoire de Belfort"],
+  ["91", "Essonne"],
+  ["92", "Hauts-de-Seine"],
+  ["93", "Seine-Saint-Denis"],
+  ["94", "Val-de-Marne"],
+  ["95", "Val-d'Oise"],
+  ["971", "Guadeloupe"],
+  ["972", "Martinique"],
+  ["973", "Guyane"],
+  ["974", "La Réunion"],
+  ["976", "Mayotte"],
+] as const;
+
 export const Route = createFileRoute("/profile/setup")({
   // Supabase persists auth in browser storage, so authorization must run in the browser.
   ssr: false,
@@ -51,12 +155,24 @@ function eighteenYearsAgo() {
   return date.toISOString().slice(0, 10);
 }
 
+function calculateAge(birthDate: string) {
+  const today = new Date();
+  const [year, month, day] = birthDate.split("-").map(Number);
+  if (!year || !month || !day) return null;
+  let age = today.getFullYear() - year;
+  if (today.getMonth() + 1 < month || (today.getMonth() + 1 === month && today.getDate() < day)) {
+    age--;
+  }
+  return age;
+}
+
 const fieldClass =
   "mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition placeholder:text-[#a99b95] hover:border-[#d6a85c]/35 focus:border-[#e2b45f]/70 focus:ring-2 focus:ring-[#d9a441]/20";
 
 type ProfileForm = {
   first_name: string;
   birth_date: string;
+  department: string;
   gender: string;
   looking_for: string;
   moto_type: string;
@@ -79,6 +195,7 @@ type PromptAnswer = { promptId: string; answer: string };
 const emptyProfile: ProfileForm = {
   first_name: "",
   birth_date: "",
+  department: "",
   gender: "",
   looking_for: "",
   moto_type: "",
@@ -110,6 +227,7 @@ function ProfileSetup() {
   const [profile, setProfile] = useState<ProfileForm>(emptyProfile);
   const [isPremium, setIsPremium] = useState(false);
   const [hasProfile, setHasProfile] = useState(false);
+  const [viewMode, setViewMode] = useState<"summary" | "edit">("edit");
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [existingPhotos, setExistingPhotos] = useState<ExistingPhoto[]>([]);
   const [deletingPhotoId, setDeletingPhotoId] = useState<string | null>(null);
@@ -161,10 +279,12 @@ function ProfileSetup() {
       if (profileResult.data) {
         const current = profileResult.data;
         setHasProfile(true);
+        setViewMode("summary");
         setIsPremium(current.is_premium === true);
         setProfile({
           first_name: current.first_name ?? "",
           birth_date: current.birth_date ? String(current.birth_date).slice(0, 10) : "",
+          department: current.department ?? "",
           gender: current.gender ?? "",
           looking_for: current.looking_for ?? "",
           moto_type: current.moto_type ?? "",
@@ -414,9 +534,20 @@ function ProfileSetup() {
       return;
     }
     const birthDate = profile.birth_date;
+    if (!profile.first_name.trim() || !profile.department) {
+      setStatus("error");
+      setFeedback("Renseigne ton prénom et ton département avant d'enregistrer ton profil.");
+      setCurrentStep(1);
+      return;
+    }
     if (!birthDate || birthDate > eighteenYearsAgo()) {
       setStatus("error");
       setFeedback("Tu dois avoir au moins 18 ans pour créer un profil.");
+      return;
+    }
+    if (existingPhotos.length === 0 && photos.length === 0) {
+      setStatus("error");
+      setFeedback("Ajoute au moins une photo pour pouvoir enregistrer ton profil.");
       return;
     }
     setStatus("submitting");
@@ -425,6 +556,7 @@ function ProfileSetup() {
       id: user.id,
       first_name: profile.first_name.trim(),
       birth_date: birthDate,
+      department: profile.department,
       gender: optional(profile.gender),
       looking_for: optional(profile.looking_for),
       moto_type: optional(profile.moto_type),
@@ -511,6 +643,7 @@ function ProfileSetup() {
     );
     if (!failedUploads && !promptsFailed) {
       setPhotos([]);
+      setViewMode("summary");
     }
   }
 
@@ -537,7 +670,10 @@ function ProfileSetup() {
   const stepLabels = ["Identité", "Ta moto", "Ta recherche", "Photos et visibilité"];
 
   function goToNextStep() {
-    if (currentStep === 1 && (!profile.first_name.trim() || !profile.birth_date)) {
+    if (
+      currentStep === 1 &&
+      (!profile.first_name.trim() || !profile.birth_date || !profile.department)
+    ) {
       const form = document.querySelector<HTMLFormElement>("#profile-form");
       form?.reportValidity();
       return;
@@ -573,454 +709,537 @@ function ProfileSetup() {
               Voir ou changer mon forfait
             </Link>
           </div>
-          {!hasProfile && (
-            <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
-              Dernière étape
-            </span>
-          )}
-          <h1 className="mt-3 mb-3 font-display text-3xl sm:text-4xl">
-            {hasProfile ? "Modifier mon profil" : "Complète ton profil"}
-          </h1>
-          <p className="mb-8 text-sm text-[#d4c6bf]">
-            Ces informations aident les autres motards à te trouver et à savoir ce que tu cherches.
-          </p>
-          <form id="profile-form" className="space-y-5" onSubmit={handleSubmit}>
-            <div className="mb-8" aria-label={`Étape ${currentStep} sur 4`}>
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="text-sm font-medium text-[#fff9f0]">Étape {currentStep} sur 4</p>
-                <p className="text-xs text-[#a99b95]">{stepLabels[currentStep - 1]}</p>
-              </div>
-              <ol className="grid grid-cols-4 gap-2">
-                {stepLabels.map((label, index) => {
-                  const step = index + 1;
-                  const isAccessible = step <= furthestStep;
-                  return (
-                    <li key={label}>
-                      <button
-                        type="button"
-                        onClick={() => isAccessible && setCurrentStep(step)}
-                        disabled={!isAccessible}
-                        aria-label={`Étape ${step} : ${label}`}
-                        aria-current={step === currentStep ? "step" : undefined}
-                        className="group flex w-full flex-col items-center gap-2 disabled:cursor-default"
-                      >
-                        <span
-                          className={`flex h-7 w-7 items-center justify-center rounded-full border text-xs font-semibold transition ${
-                            step <= currentStep
-                              ? "border-[#e2b45f] bg-[#e2b45f] text-[#21191a]"
-                              : "border-white/20 bg-[#302526] text-[#a99b95]"
-                          }`}
-                        >
-                          {step}
-                        </span>
-                        <span
-                          className={`h-2 w-full rounded-full transition ${
-                            step <= currentStep ? "bg-[#e2b45f]" : "bg-white/15"
-                          }`}
-                        />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-            {currentStep === 1 && (
-              <div className="space-y-5">
-                <h2 className="font-display text-2xl">Identité</h2>
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <label className="text-sm font-medium">
-                    Prénom *
-                    <input
-                      className={fieldClass}
-                      name="first_name"
-                      autoComplete="given-name"
-                      required
-                      maxLength={80}
-                      value={profile.first_name}
-                      onChange={(event) => updateField("first_name", event.target.value)}
-                    />
-                  </label>
-                  <label className="text-sm font-medium">
-                    Date de naissance *
-                    <input
-                      className={fieldClass}
-                      name="birth_date"
-                      type="date"
-                      required
-                      max={eighteenYearsAgo()}
-                      value={profile.birth_date}
-                      onChange={(event) => updateField("birth_date", event.target.value)}
-                    />
-                  </label>
+          {hasProfile && viewMode === "summary" ? (
+            <section
+              aria-labelledby="profile-summary-title"
+              className="overflow-hidden rounded-2xl border border-[#d6a85c]/30 bg-[#281e1f] shadow-lg"
+            >
+              <h1 id="profile-summary-title" className="sr-only">
+                Mon profil
+              </h1>
+              {existingPhotos[0] && (
+                <img
+                  src={existingPhotos[0].publicUrl}
+                  alt="Photo principale du profil"
+                  className="aspect-[4/5] w-full object-cover"
+                />
+              )}
+              <div className="space-y-5 p-5 sm:p-6">
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-lg font-semibold">
+                  <span>{calculateAge(profile.birth_date)} ans</span>
+                  <span className="inline-flex items-center gap-2 text-[#e8be6c]">
+                    <MapPin className="h-5 w-5" aria-hidden="true" />
+                    {departmentOptions.find(([code]) => code === profile.department)?.join(" – ") ||
+                      "Département non renseigné"}
+                  </span>
                 </div>
-                <label className="block text-sm font-medium">
-                  Genre{select("gender", genderOptions)}
-                </label>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentStep(1);
+                      setFurthestStep(4);
+                      setViewMode("edit");
+                    }}
+                    className="rounded-full bg-gradient-red px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow"
+                  >
+                    Modifier le profil
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentStep(4);
+                      setFurthestStep(4);
+                      setViewMode("edit");
+                    }}
+                    className="rounded-full border border-primary/40 px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
+                  >
+                    Ajouter des photos
+                  </button>
+                </div>
               </div>
-            )}
-            {currentStep === 3 && (
-              <div className="space-y-5">
-                <h2 className="font-display text-2xl">Ce que tu recherches</h2>
-                <label className="text-sm font-medium">
-                  Tu recherches{select("looking_for", lookingForOptions)}
-                </label>
-
-                <label className="block text-sm font-medium">
-                  Présentation
-                  <textarea
-                    className={`${fieldClass} min-h-32 resize-y`}
-                    name="bio"
-                    maxLength={1000}
-                    placeholder="Ton style de conduite, tes balades préférées, ce que tu recherches…"
-                    value={profile.bio}
-                    onChange={(event) => updateField("bio", event.target.value)}
-                  />
-                </label>
-                <fieldset className="space-y-3 rounded-2xl border border-white/10 bg-[#281e1f] p-4">
-                  <legend className="px-1 font-display text-xl">Prompts</legend>
-                  <p className="text-sm leading-relaxed text-[#d4c6bf]">
-                    <strong className="text-[#e8be6c]">Optionnel</strong>, mais ça aide à créer des
-                    conversations plus naturelles.
-                  </p>
-                  {promptAnswers.length > 0 && (
-                    <ul className="space-y-2" aria-label="Réponses déjà ajoutées">
-                      {promptAnswers.map((item) => {
-                        const prompt = availablePrompts.find(({ id }) => id === item.promptId);
-                        if (!prompt) return null;
-                        return (
-                          <li
-                            key={item.promptId}
-                            className="rounded-xl border border-[#d6a85c]/30 bg-[#302526] p-3"
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="min-w-0">
-                                <p className="text-sm font-semibold text-[#fff9f0]">
-                                  {prompt.question}
-                                </p>
-                                <p className="mt-1 whitespace-pre-wrap text-sm text-[#d4c6bf]">
-                                  {item.answer}
-                                </p>
-                              </div>
-                              <div className="flex shrink-0 items-center gap-1">
-                                <button
-                                  type="button"
-                                  onClick={() => editPromptAnswer(item.promptId)}
-                                  className="rounded-lg px-2 py-1 text-xs font-medium text-[#e8be6c] transition hover:bg-white/5 hover:text-[#f4ce7e]"
-                                >
-                                  Modifier
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => removePromptAnswer(item.promptId)}
-                                  className="rounded-lg p-2 text-[#a99b95] transition hover:bg-white/5 hover:text-[#fff9f0]"
-                                  aria-label={`Retirer la réponse à « ${prompt.question} »`}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-                              </div>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )}
-                  {(promptAnswers.length < 3 || draftPromptId) && (
-                    <div className="rounded-xl border border-white/10 bg-[#21191a]/50 p-3">
-                      <label className="block text-sm font-medium">
-                        {editingPromptId
-                          ? "Modifier la question"
-                          : promptAnswers.length === 0
-                            ? "Choisis une question"
-                            : "Ajouter une autre question"}
-                        <select
-                          className={fieldClass}
-                          value={draftPromptId}
-                          onChange={(event) => selectPrompt(event.target.value)}
-                        >
-                          <option value="">Sélectionner une question</option>
-                          {availablePrompts.map((prompt) => {
-                            const alreadyAdded = promptAnswers.some(
-                              (answer) => answer.promptId === prompt.id,
-                            );
-                            if (
-                              alreadyAdded &&
-                              prompt.id !== draftPromptId &&
-                              prompt.id !== editingPromptId
-                            )
-                              return null;
-                            return (
-                              <option key={prompt.id} value={prompt.id}>
-                                {prompt.question}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </label>
-                      {draftPromptId && (
-                        <label className="mt-3 block text-sm font-medium">
-                          Ta réponse
-                          <textarea
-                            className={`${fieldClass} min-h-24 resize-y`}
-                            maxLength={300}
-                            autoFocus
-                            placeholder="Ta réponse…"
-                            value={draftPromptAnswer}
-                            onChange={(event) => setDraftPromptAnswer(event.target.value)}
-                          />
-                          <span className="mt-1 block text-right text-xs font-normal text-[#a99b95]">
-                            {draftPromptAnswer.length}/300
-                          </span>
-                          <button
-                            type="button"
-                            onClick={validatePromptAnswer}
-                            disabled={!draftPromptAnswer.trim()}
-                            className="mt-2 w-full rounded-xl bg-[#e2b45f] px-4 py-3 text-sm font-semibold text-[#21191a] transition hover:bg-[#f4ce7e] disabled:cursor-not-allowed disabled:opacity-40"
-                          >
-                            Valider cette réponse
-                          </button>
-                        </label>
-                      )}
-                    </div>
-                  )}
-                  <div className="flex flex-col gap-2 sm:flex-row">
-                    <button
-                      type="button"
-                      onClick={skipPrompts}
-                      className="flex-1 rounded-xl border border-[#e2b45f]/60 px-4 py-3 text-sm font-semibold text-[#e8be6c] transition hover:border-[#e2b45f] hover:bg-[#d9a441]/10"
-                    >
-                      Passer cette étape
-                    </button>
-                    {promptAnswers.length > 0 && promptAnswers.length < 3 && (
-                      <button
-                        type="button"
-                        onClick={skipPrompts}
-                        className="flex-1 rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm font-medium text-[#fff9f0] transition hover:border-[#d6a85c]/50"
-                      >
-                        C'est suffisant, continuer
-                      </button>
-                    )}
+            </section>
+          ) : (
+            <>
+              {!hasProfile && (
+                <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">
+                  Dernière étape
+                </span>
+              )}
+              <h1 className="mt-3 mb-3 font-display text-3xl sm:text-4xl">
+                {hasProfile ? "Modifier mon profil" : "Complète ton profil"}
+              </h1>
+              <p className="mb-8 text-sm text-[#d4c6bf]">
+                Ces informations aident les autres motards à te trouver et à savoir ce que tu
+                cherches.
+              </p>
+              <form id="profile-form" className="space-y-5" onSubmit={handleSubmit}>
+                <div className="mb-8" aria-label={`Étape ${currentStep} sur 4`}>
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-[#fff9f0]">Étape {currentStep} sur 4</p>
+                    <p className="text-xs text-[#a99b95]">{stepLabels[currentStep - 1]}</p>
                   </div>
-                </fieldset>
-              </div>
-            )}
-            {currentStep === 2 && (
-              <div className="space-y-5">
-                <h2 className="font-display text-2xl">Ta moto</h2>
-                <div className="grid gap-5 sm:grid-cols-3">
-                  <label className="text-sm font-medium">
-                    Type de moto{select("moto_type", motoTypeOptions)}
-                  </label>
-                  <label className="text-sm font-medium">
-                    Marque
-                    <input
-                      className={fieldClass}
-                      name="moto_brand"
-                      maxLength={80}
-                      value={profile.moto_brand}
-                      onChange={(event) => updateField("moto_brand", event.target.value)}
-                    />
-                  </label>
-                  <label className="text-sm font-medium">
-                    Modèle
-                    <input
-                      className={fieldClass}
-                      name="moto_model"
-                      maxLength={80}
-                      value={profile.moto_model}
-                      onChange={(event) => updateField("moto_model", event.target.value)}
-                    />
-                  </label>
-                </div>
-              </div>
-            )}
-            {currentStep === 4 && (
-              <div className="space-y-5">
-                <h2 className="font-display text-2xl">Photos et visibilité</h2>
-                <label className="block text-sm font-medium">
-                  Photos (jusqu'à 6)
-                  {existingPhotos.length > 0 && (
-                    <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                      {existingPhotos.map((photo, index) => (
-                        <li
-                          key={photo.id}
-                          className="relative aspect-square overflow-hidden rounded-xl border border-white/15 bg-[#302526]"
-                        >
-                          <img
-                            src={photo.publicUrl}
-                            alt={`Photo de profil ${index + 1}`}
-                            className="h-full w-full object-cover"
-                          />
+                  <ol className="grid grid-cols-4 gap-2">
+                    {stepLabels.map((label, index) => {
+                      const step = index + 1;
+                      const isAccessible = step <= furthestStep;
+                      return (
+                        <li key={label}>
                           <button
                             type="button"
-                            onClick={() => void removeExistingPhoto(photo)}
-                            disabled={deletingPhotoId !== null}
-                            className="absolute top-2 right-2 rounded-full bg-[#21191a]/90 p-2 text-[#fff9f0] shadow transition hover:text-primary disabled:opacity-50"
-                            aria-label={`Supprimer la photo ${index + 1}`}
+                            onClick={() => isAccessible && setCurrentStep(step)}
+                            disabled={!isAccessible}
+                            aria-label={`Étape ${step} : ${label}`}
+                            aria-current={step === currentStep ? "step" : undefined}
+                            className="group flex w-full flex-col items-center gap-2 disabled:cursor-default"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <span
+                              className={`flex h-7 w-7 items-center justify-center rounded-full border text-xs font-semibold transition ${
+                                step <= currentStep
+                                  ? "border-[#e2b45f] bg-[#e2b45f] text-[#21191a]"
+                                  : "border-white/20 bg-[#302526] text-[#a99b95]"
+                              }`}
+                            >
+                              {step}
+                            </span>
+                            <span
+                              className={`h-2 w-full rounded-full transition ${
+                                step <= currentStep ? "bg-[#e2b45f]" : "bg-white/15"
+                              }`}
+                            />
                           </button>
                         </li>
-                      ))}
-                    </ul>
-                  )}
-                  {Capacitor.isNativePlatform() ? (
-                    <div className="mt-2 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
-                      <button
-                        type="button"
-                        onClick={() => void takeNativePhoto()}
-                        disabled={existingPhotos.length + photos.length >= 6}
-                        className="flex items-center gap-2 text-primary disabled:opacity-40"
+                      );
+                    })}
+                  </ol>
+                </div>
+                {currentStep === 1 && (
+                  <div className="space-y-5">
+                    <h2 className="font-display text-2xl">Identité</h2>
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <label className="text-sm font-medium">
+                        Prénom *
+                        <input
+                          className={fieldClass}
+                          name="first_name"
+                          autoComplete="given-name"
+                          required
+                          maxLength={80}
+                          value={profile.first_name}
+                          onChange={(event) => updateField("first_name", event.target.value)}
+                        />
+                      </label>
+                      <label className="text-sm font-medium">
+                        Date de naissance *
+                        <input
+                          className={fieldClass}
+                          name="birth_date"
+                          type="date"
+                          required
+                          max={eighteenYearsAgo()}
+                          value={profile.birth_date}
+                          onChange={(event) => updateField("birth_date", event.target.value)}
+                        />
+                      </label>
+                    </div>
+                    <label className="block text-sm font-medium">
+                      Département *
+                      <select
+                        className={fieldClass}
+                        name="department"
+                        required
+                        value={profile.department}
+                        onChange={(event) => updateField("department", event.target.value)}
                       >
-                        <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
-                        Ajouter une photo (appareil photo ou galerie)
-                      </button>
-                      {photos.length > 0 && (
-                        <ul className="mt-3 flex flex-wrap gap-2">
-                          {photos.map((file, i) => (
-                            <li
-                              key={i}
-                              className="flex items-center gap-2 rounded-full border border-white/15 bg-[#302526] px-3 py-1 text-xs"
+                        <option value="">Sélectionner un département</option>
+                        {departmentOptions.map(([code, name]) => (
+                          <option key={code} value={code}>
+                            {code} – {name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="block text-sm font-medium">
+                      Genre{select("gender", genderOptions)}
+                    </label>
+                  </div>
+                )}
+                {currentStep === 3 && (
+                  <div className="space-y-5">
+                    <h2 className="font-display text-2xl">Ce que tu recherches</h2>
+                    <label className="text-sm font-medium">
+                      Tu recherches{select("looking_for", lookingForOptions)}
+                    </label>
+
+                    <label className="block text-sm font-medium">
+                      Présentation
+                      <textarea
+                        className={`${fieldClass} min-h-32 resize-y`}
+                        name="bio"
+                        maxLength={1000}
+                        placeholder="Ton style de conduite, tes balades préférées, ce que tu recherches…"
+                        value={profile.bio}
+                        onChange={(event) => updateField("bio", event.target.value)}
+                      />
+                    </label>
+                    <fieldset className="space-y-3 rounded-2xl border border-white/10 bg-[#281e1f] p-4">
+                      <legend className="px-1 font-display text-xl">Prompts</legend>
+                      <p className="text-sm leading-relaxed text-[#d4c6bf]">
+                        <strong className="text-[#e8be6c]">Optionnel</strong>, mais ça aide à créer
+                        des conversations plus naturelles.
+                      </p>
+                      {promptAnswers.length > 0 && (
+                        <ul className="space-y-2" aria-label="Réponses déjà ajoutées">
+                          {promptAnswers.map((item) => {
+                            const prompt = availablePrompts.find(({ id }) => id === item.promptId);
+                            if (!prompt) return null;
+                            return (
+                              <li
+                                key={item.promptId}
+                                className="rounded-xl border border-[#d6a85c]/30 bg-[#302526] p-3"
+                              >
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="min-w-0">
+                                    <p className="text-sm font-semibold text-[#fff9f0]">
+                                      {prompt.question}
+                                    </p>
+                                    <p className="mt-1 whitespace-pre-wrap text-sm text-[#d4c6bf]">
+                                      {item.answer}
+                                    </p>
+                                  </div>
+                                  <div className="flex shrink-0 items-center gap-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => editPromptAnswer(item.promptId)}
+                                      className="rounded-lg px-2 py-1 text-xs font-medium text-[#e8be6c] transition hover:bg-white/5 hover:text-[#f4ce7e]"
+                                    >
+                                      Modifier
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => removePromptAnswer(item.promptId)}
+                                      className="rounded-lg p-2 text-[#a99b95] transition hover:bg-white/5 hover:text-[#fff9f0]"
+                                      aria-label={`Retirer la réponse à « ${prompt.question} »`}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+                      {(promptAnswers.length < 3 || draftPromptId) && (
+                        <div className="rounded-xl border border-white/10 bg-[#21191a]/50 p-3">
+                          <label className="block text-sm font-medium">
+                            {editingPromptId
+                              ? "Modifier la question"
+                              : promptAnswers.length === 0
+                                ? "Choisis une question"
+                                : "Ajouter une autre question"}
+                            <select
+                              className={fieldClass}
+                              value={draftPromptId}
+                              onChange={(event) => selectPrompt(event.target.value)}
                             >
-                              Photo {i + 1}
+                              <option value="">Sélectionner une question</option>
+                              {availablePrompts.map((prompt) => {
+                                const alreadyAdded = promptAnswers.some(
+                                  (answer) => answer.promptId === prompt.id,
+                                );
+                                if (
+                                  alreadyAdded &&
+                                  prompt.id !== draftPromptId &&
+                                  prompt.id !== editingPromptId
+                                )
+                                  return null;
+                                return (
+                                  <option key={prompt.id} value={prompt.id}>
+                                    {prompt.question}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </label>
+                          {draftPromptId && (
+                            <label className="mt-3 block text-sm font-medium">
+                              Ta réponse
+                              <textarea
+                                className={`${fieldClass} min-h-24 resize-y`}
+                                maxLength={300}
+                                autoFocus
+                                placeholder="Ta réponse…"
+                                value={draftPromptAnswer}
+                                onChange={(event) => setDraftPromptAnswer(event.target.value)}
+                              />
+                              <span className="mt-1 block text-right text-xs font-normal text-[#a99b95]">
+                                {draftPromptAnswer.length}/300
+                              </span>
                               <button
                                 type="button"
-                                onClick={() =>
-                                  setPhotos((prev) => prev.filter((_, idx) => idx !== i))
-                                }
-                                className="text-[#a99b95] hover:text-primary"
-                                aria-label={`Retirer la photo ${i + 1}`}
+                                onClick={validatePromptAnswer}
+                                disabled={!draftPromptAnswer.trim()}
+                                className="mt-2 w-full rounded-xl bg-[#e2b45f] px-4 py-3 text-sm font-semibold text-[#21191a] transition hover:bg-[#f4ce7e] disabled:cursor-not-allowed disabled:opacity-40"
                               >
-                                ×
+                                Valider cette réponse
+                              </button>
+                            </label>
+                          )}
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-2 sm:flex-row">
+                        <button
+                          type="button"
+                          onClick={skipPrompts}
+                          className="flex-1 rounded-xl border border-[#e2b45f]/60 px-4 py-3 text-sm font-semibold text-[#e8be6c] transition hover:border-[#e2b45f] hover:bg-[#d9a441]/10"
+                        >
+                          Passer cette étape
+                        </button>
+                        {promptAnswers.length > 0 && promptAnswers.length < 3 && (
+                          <button
+                            type="button"
+                            onClick={skipPrompts}
+                            className="flex-1 rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm font-medium text-[#fff9f0] transition hover:border-[#d6a85c]/50"
+                          >
+                            C'est suffisant, continuer
+                          </button>
+                        )}
+                      </div>
+                    </fieldset>
+                  </div>
+                )}
+                {currentStep === 2 && (
+                  <div className="space-y-5">
+                    <h2 className="font-display text-2xl">Ta moto</h2>
+                    <div className="grid gap-5 sm:grid-cols-3">
+                      <label className="text-sm font-medium">
+                        Type de moto{select("moto_type", motoTypeOptions)}
+                      </label>
+                      <label className="text-sm font-medium">
+                        Marque
+                        <input
+                          className={fieldClass}
+                          name="moto_brand"
+                          maxLength={80}
+                          value={profile.moto_brand}
+                          onChange={(event) => updateField("moto_brand", event.target.value)}
+                        />
+                      </label>
+                      <label className="text-sm font-medium">
+                        Modèle
+                        <input
+                          className={fieldClass}
+                          name="moto_model"
+                          maxLength={80}
+                          value={profile.moto_model}
+                          onChange={(event) => updateField("moto_model", event.target.value)}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                )}
+                {currentStep === 4 && (
+                  <div className="space-y-5">
+                    <h2 className="font-display text-2xl">Photos et visibilité</h2>
+                    <label className="block text-sm font-medium">
+                      Photos (jusqu'à 6)
+                      {existingPhotos.length > 0 && (
+                        <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                          {existingPhotos.map((photo, index) => (
+                            <li
+                              key={photo.id}
+                              className="relative aspect-square overflow-hidden rounded-xl border border-white/15 bg-[#302526]"
+                            >
+                              <img
+                                src={photo.publicUrl}
+                                alt={`Photo de profil ${index + 1}`}
+                                className="h-full w-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => void removeExistingPhoto(photo)}
+                                disabled={deletingPhotoId !== null}
+                                className="absolute top-2 right-2 rounded-full bg-[#21191a]/90 p-2 text-[#fff9f0] shadow transition hover:text-primary disabled:opacity-50"
+                                aria-label={`Supprimer la photo ${index + 1}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
                               </button>
                             </li>
                           ))}
                         </ul>
                       )}
+                      {Capacitor.isNativePlatform() ? (
+                        <div className="mt-2 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
+                          <button
+                            type="button"
+                            onClick={() => void takeNativePhoto()}
+                            disabled={existingPhotos.length + photos.length >= 6}
+                            className="flex items-center gap-2 text-primary disabled:opacity-40"
+                          >
+                            <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
+                            Ajouter une photo (appareil photo ou galerie)
+                          </button>
+                          {photos.length > 0 && (
+                            <ul className="mt-3 flex flex-wrap gap-2">
+                              {photos.map((file, i) => (
+                                <li
+                                  key={i}
+                                  className="flex items-center gap-2 rounded-full border border-white/15 bg-[#302526] px-3 py-1 text-xs"
+                                >
+                                  Photo {i + 1}
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setPhotos((prev) => prev.filter((_, idx) => idx !== i))
+                                    }
+                                    className="text-[#a99b95] hover:text-primary"
+                                    aria-label={`Retirer la photo ${i + 1}`}
+                                  >
+                                    ×
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="mt-2 flex items-center gap-3 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
+                          <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            multiple
+                            onChange={(event) =>
+                              setPhotos((current) =>
+                                [...current, ...Array.from(event.target.files ?? [])].slice(
+                                  0,
+                                  Math.max(0, 6 - existingPhotos.length),
+                                ),
+                              )
+                            }
+                            disabled={existingPhotos.length + photos.length >= 6}
+                            className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2"
+                          />
+                        </div>
+                      )}
+                      {photos.length > 0 && (
+                        <p className="mt-2 text-xs text-[#d4c6bf]">
+                          {photos.length} nouvelle(s) photo(s) sélectionnée(s) —{" "}
+                          {existingPhotos.length + photos.length}/6 au total
+                        </p>
+                      )}
+                    </label>
+                    <div className="rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
+                      <button
+                        type="button"
+                        onClick={captureLocation}
+                        className="flex items-center gap-2 text-primary hover:underline"
+                      >
+                        <MapPin className="h-4 w-4" />
+                        {locationStatus === "captured"
+                          ? "Position enregistrée ✓"
+                          : locationStatus === "requesting"
+                            ? "Localisation en cours…"
+                            : "Activer ma position (recommandé)"}
+                      </button>
+                      <p className="mt-2 text-xs leading-relaxed text-[#a99b95]">
+                        Utilisée uniquement pour te proposer des motards proches et calculer une
+                        distance approximative. Ta position exacte n'est jamais visible par les
+                        autres, seulement une distance arrondie.
+                      </p>
+                      {locationStatus === "error" && (
+                        <p className="mt-2 text-xs text-primary">
+                          Localisation refusée ou indisponible — tu peux continuer sans, mais le tri
+                          par distance ne fonctionnera pas.
+                        </p>
+                      )}
                     </div>
-                  ) : (
-                    <div className="mt-2 flex items-center gap-3 rounded-xl border border-dashed border-[#d6a85c]/35 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
-                      <Upload className="h-5 w-5 shrink-0 text-[#e2b45f]" />
+                    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm leading-relaxed text-[#d4c6bf]">
                       <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp"
-                        multiple
-                        onChange={(event) =>
-                          setPhotos((current) =>
-                            [...current, ...Array.from(event.target.files ?? [])].slice(
-                              0,
-                              Math.max(0, 6 - existingPhotos.length),
-                            ),
-                          )
-                        }
-                        disabled={existingPhotos.length + photos.length >= 6}
-                        className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2"
+                        type="checkbox"
+                        name="is_active"
+                        checked={profile.is_active}
+                        onChange={(event) => updateField("is_active", event.target.checked)}
+                        className="mt-1 h-4 w-4 accent-primary"
                       />
-                    </div>
+                      <span>
+                        Rendre mon profil visible dans la découverte. Décoche pour masquer
+                        temporairement ton profil sans le supprimer.
+                      </span>
+                    </label>
+                  </div>
+                )}
+                <div className="flex gap-3 pt-2">
+                  {currentStep > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setCurrentStep((step) => Math.max(1, step - 1))}
+                      className="w-full rounded-full border border-primary/40 px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
+                    >
+                      Précédent
+                    </button>
                   )}
-                  {photos.length > 0 && (
-                    <p className="mt-2 text-xs text-[#d4c6bf]">
-                      {photos.length} nouvelle(s) photo(s) sélectionnée(s) —{" "}
-                      {existingPhotos.length + photos.length}/6 au total
-                    </p>
-                  )}
-                </label>
-                <div className="rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
-                  <button
-                    type="button"
-                    onClick={captureLocation}
-                    className="flex items-center gap-2 text-primary hover:underline"
-                  >
-                    <MapPin className="h-4 w-4" />
-                    {locationStatus === "captured"
-                      ? "Position enregistrée ✓"
-                      : locationStatus === "requesting"
-                        ? "Localisation en cours…"
-                        : "Activer ma position (recommandé)"}
-                  </button>
-                  <p className="mt-2 text-xs leading-relaxed text-[#a99b95]">
-                    Utilisée uniquement pour te proposer des motards proches et calculer une
-                    distance approximative. Ta position exacte n'est jamais visible par les autres,
-                    seulement une distance arrondie.
-                  </p>
-                  {locationStatus === "error" && (
-                    <p className="mt-2 text-xs text-primary">
-                      Localisation refusée ou indisponible — tu peux continuer sans, mais le tri par
-                      distance ne fonctionnera pas.
-                    </p>
+                  {currentStep < 4 && (
+                    <button
+                      type="button"
+                      onClick={goToNextStep}
+                      className="w-full rounded-full bg-gradient-red px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow"
+                    >
+                      Suivant
+                    </button>
                   )}
                 </div>
-                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm leading-relaxed text-[#d4c6bf]">
-                  <input
-                    type="checkbox"
-                    name="is_active"
-                    checked={profile.is_active}
-                    onChange={(event) => updateField("is_active", event.target.checked)}
-                    className="mt-1 h-4 w-4 accent-primary"
-                  />
-                  <span>
-                    Rendre mon profil visible dans la découverte. Décoche pour masquer
-                    temporairement ton profil sans le supprimer.
-                  </span>
-                </label>
-              </div>
-            )}
-            <div className="flex gap-3 pt-2">
-              {currentStep > 1 && (
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep((step) => Math.max(1, step - 1))}
-                  className="w-full rounded-full border border-primary/40 px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
-                >
-                  Précédent
-                </button>
-              )}
-              {currentStep < 4 && (
-                <button
-                  type="button"
-                  onClick={goToNextStep}
-                  className="w-full rounded-full bg-gradient-red px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow"
-                >
-                  Suivant
-                </button>
-              )}
-            </div>
-            {currentStep === 4 && (
-              <button
-                disabled={status === "submitting" || loadingProfile}
-                className="w-full rounded-full bg-gradient-red px-8 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow disabled:opacity-60"
-                type="submit"
-              >
-                {loadingProfile
-                  ? "Chargement…"
-                  : status === "submitting"
-                    ? "Enregistrement…"
-                    : "Enregistrer mon profil"}
-              </button>
-            )}
-            <p className="flex items-center justify-center gap-2 text-xs text-[#e4c986]">
-              <ShieldCheck className="h-4 w-4" />
-              Ta position exacte n'est jamais affichée publiquement.
-            </p>
-            {feedback && (
-              <div
-                role="status"
-                className={`flex gap-3 rounded-xl border p-4 text-sm ${status === "success" ? "border-green-500/40 bg-green-500/10 text-green-200" : "border-primary/40 bg-primary/10"}`}
-              >
-                {status === "success" && <CheckCircle2 className="h-5 w-5 shrink-0" />}
-                <span>{feedback}</span>
-              </div>
-            )}
-            {status === "success" && (
-              <div className="space-y-3 text-center">
-                <Link
-                  to={nextStep.to}
-                  className="block w-full rounded-full border border-primary/40 px-8 py-3 text-center text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
-                >
-                  {nextStep.label}
-                </Link>
-              </div>
-            )}
-          </form>
+                {currentStep === 4 && (
+                  <div className="space-y-2">
+                    <button
+                      disabled={
+                        status === "submitting" ||
+                        loadingProfile ||
+                        (existingPhotos.length === 0 && photos.length === 0)
+                      }
+                      className="w-full rounded-full bg-gradient-red px-8 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow disabled:cursor-not-allowed disabled:opacity-60"
+                      type="submit"
+                    >
+                      {loadingProfile
+                        ? "Chargement…"
+                        : status === "submitting"
+                          ? "Enregistrement…"
+                          : "Enregistrer mon profil"}
+                    </button>
+                    {existingPhotos.length === 0 && photos.length === 0 && (
+                      <p className="text-center text-sm text-[#e8be6c]" role="alert">
+                        Ajoute au moins une photo pour pouvoir enregistrer ton profil.
+                      </p>
+                    )}
+                  </div>
+                )}
+                <p className="flex items-center justify-center gap-2 text-xs text-[#e4c986]">
+                  <ShieldCheck className="h-4 w-4" />
+                  Ta position exacte n'est jamais affichée publiquement.
+                </p>
+                {feedback && (
+                  <div
+                    role="status"
+                    className={`flex gap-3 rounded-xl border p-4 text-sm ${status === "success" ? "border-green-500/40 bg-green-500/10 text-green-200" : "border-primary/40 bg-primary/10"}`}
+                  >
+                    {status === "success" && <CheckCircle2 className="h-5 w-5 shrink-0" />}
+                    <span>{feedback}</span>
+                  </div>
+                )}
+                {status === "success" && (
+                  <div className="space-y-3 text-center">
+                    <Link
+                      to={nextStep.to}
+                      className="block w-full rounded-full border border-primary/40 px-8 py-3 text-center text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
+                    >
+                      {nextStep.label}
+                    </Link>
+                  </div>
+                )}
+              </form>
+            </>
+          )}
           <div className="mt-12 border-t border-white/10 pt-6">
             <h2 className="mb-2 text-sm font-medium text-[#d4c6bf]">Mes données</h2>
             <p className="mb-3 text-xs leading-relaxed text-[#a99b95]">
