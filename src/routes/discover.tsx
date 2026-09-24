@@ -9,9 +9,9 @@ import {
   MessageCircle,
   RotateCcw,
   ShieldOff,
-  Zap,
 } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { DoubleHeartIcon } from "@/components/icons/DoubleHeartIcon";
 import { Layout } from "@/components/Layout";
 import { Slider } from "@/components/ui/slider";
 import { requireAppAccess } from "@/lib/require-admin";
@@ -876,7 +876,7 @@ function Discover() {
                     title="3 Super coups de cœur gratuits par jour"
                     className="flex h-16 min-w-16 items-center justify-center gap-2 rounded-full border border-[#e2b45f]/60 bg-[#e2b45f]/15 px-4 text-sm font-semibold text-[#f4cf7a] transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
                   >
-                    <Zap className="h-5 w-5 fill-current" aria-hidden="true" />
+                    <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
                     <span className="sr-only sm:not-sr-only">
                       {sendingSuperLike ? "Envoi…" : "Super coup de cœur"}
                     </span>
