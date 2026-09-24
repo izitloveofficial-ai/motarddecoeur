@@ -1,9 +1,10 @@
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
-import { CheckCircle2, LogOut, MapPin, ShieldCheck, Trash2, Upload } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { CheckCircle2, LogOut, MapPin, ShieldCheck, Star, Trash2, Upload } from "lucide-react";
+import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { ProfilePhotoGallery } from "@/components/ProfilePhotoGallery";
 import { requireAppAccess } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
@@ -775,11 +776,23 @@ function ProfileSetup() {
                 Mon profil
               </h1>
               {existingPhotos[0] && (
-                <img
-                  src={existingPhotos[0].publicUrl}
-                  alt="Photo principale du profil"
-                  className="aspect-[4/5] w-full object-cover"
-                />
+                <button
+                  type="button"
+                  onClick={() => setGalleryIndex(0)}
+                  aria-label="Voir mes photos en grand"
+                  className="relative block w-full"
+                >
+                  <img
+                    src={existingPhotos[0].publicUrl}
+                    alt="Photo principale du profil"
+                    className="aspect-[4/5] w-full object-cover"
+                  />
+                  {existingPhotos.length > 1 && (
+                    <span className="absolute right-3 bottom-3 rounded-full bg-[#21191a]/85 px-3 py-1 text-xs text-[#fff9f0]">
+                      {existingPhotos.length} photos
+                    </span>
+                  )}
+                </button>
               )}
               <div className="space-y-5 p-5 sm:p-6">
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-lg font-semibold">
@@ -1099,24 +1112,54 @@ function ProfileSetup() {
                 {currentStep === 4 && (
                   <div className="space-y-5">
                     <h2 className="font-display text-2xl">Photos et visibilité</h2>
-                    <label className="block text-sm font-medium">
-                      Photos (jusqu'à 6)
+                    <div className="block text-sm font-medium">
+                      <p>Photos (jusqu'à 6)</p>
+                      {existingPhotos.length > 0 && (
+                        <p className="mt-1 text-xs font-normal text-[#a99b95]">
+                          Touche une photo pour l'agrandir. L'étoile choisit ta photo principale,
+                          affichée en premier partout.
+                        </p>
+                      )}
                       {existingPhotos.length > 0 && (
                         <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
                           {existingPhotos.map((photo, index) => (
                             <li
                               key={photo.id}
-                              className="relative aspect-square overflow-hidden rounded-xl border border-white/15 bg-[#302526]"
+                              className={`relative aspect-square overflow-hidden rounded-xl border bg-[#302526] ${index === 0 ? "border-[#e2b45f] ring-2 ring-[#e2b45f]/50" : "border-white/15"}`}
                             >
-                              <img
-                                src={photo.publicUrl}
-                                alt={`Photo de profil ${index + 1}`}
-                                className="h-full w-full object-cover"
-                              />
+                              <button
+                                type="button"
+                                onClick={() => setGalleryIndex(index)}
+                                aria-label={`Agrandir la photo ${index + 1}`}
+                                className="block h-full w-full"
+                              >
+                                <img
+                                  src={photo.publicUrl}
+                                  alt={`Photo de profil ${index + 1}`}
+                                  className="h-full w-full object-cover"
+                                />
+                              </button>
+                              {index === 0 ? (
+                                <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-[#21191a]/90 px-2 py-1 text-[11px] font-semibold text-[#f4cf7a]">
+                                  <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                                  Principale
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => void makePrimaryPhoto(photo)}
+                                  disabled={reorderingPhotos || deletingPhotoId !== null}
+                                  className="absolute top-2 left-2 rounded-full bg-[#21191a]/90 p-2 text-[#fff9f0] shadow transition hover:text-[#f4cf7a] disabled:opacity-50"
+                                  aria-label={`Choisir la photo ${index + 1} comme photo principale`}
+                                  title="Définir comme photo principale"
+                                >
+                                  <Star className="h-4 w-4" />
+                                </button>
+                              )}
                               <button
                                 type="button"
                                 onClick={() => void removeExistingPhoto(photo)}
-                                disabled={deletingPhotoId !== null}
+                                disabled={deletingPhotoId !== null || reorderingPhotos}
                                 className="absolute top-2 right-2 rounded-full bg-[#21191a]/90 p-2 text-[#fff9f0] shadow transition hover:text-primary disabled:opacity-50"
                                 aria-label={`Supprimer la photo ${index + 1}`}
                               >
@@ -1167,26 +1210,54 @@ function ProfileSetup() {
                             type="file"
                             accept="image/jpeg,image/png,image/webp"
                             multiple
-                            onChange={(event) =>
+                            onChange={(event) => {
+                              const selected = Array.from(event.target.files ?? []);
+                              event.target.value = "";
                               setPhotos((current) =>
-                                [...current, ...Array.from(event.target.files ?? [])].slice(
+                                [...current, ...selected].slice(
                                   0,
                                   Math.max(0, 6 - existingPhotos.length),
                                 ),
-                              )
-                            }
+                              );
+                            }}
                             disabled={existingPhotos.length + photos.length >= 6}
                             className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2"
                           />
                         </div>
                       )}
                       {photos.length > 0 && (
-                        <p className="mt-2 text-xs text-[#d4c6bf]">
-                          {photos.length} nouvelle(s) photo(s) sélectionnée(s) —{" "}
-                          {existingPhotos.length + photos.length}/6 au total
-                        </p>
+                        <>
+                          <ul className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
+                            {photoPreviews.map((url, i) => (
+                              <li
+                                key={url}
+                                className="relative aspect-square overflow-hidden rounded-lg border border-dashed border-[#d6a85c]/40"
+                              >
+                                <img
+                                  src={url}
+                                  alt={`Nouvelle photo ${i + 1}`}
+                                  className="h-full w-full object-cover"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setPhotos((prev) => prev.filter((_, idx) => idx !== i))
+                                  }
+                                  aria-label={`Retirer la nouvelle photo ${i + 1}`}
+                                  className="absolute top-1 right-1 rounded-full bg-[#21191a]/90 px-2 text-[#fff9f0]"
+                                >
+                                  ×
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                          <p className="mt-2 text-xs text-[#d4c6bf]">
+                            {photos.length} nouvelle(s) photo(s) sélectionnée(s), ajoutée(s) à
+                            l'enregistrement — {existingPhotos.length + photos.length}/6 au total
+                          </p>
+                        </>
                       )}
-                    </label>
+                    </div>
                     <div className="rounded-xl border border-white/10 bg-[#281e1f] p-4 text-sm text-[#d4c6bf]">
                       <button
                         type="button"
