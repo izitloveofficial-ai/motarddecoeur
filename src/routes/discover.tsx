@@ -27,15 +27,6 @@ const reportReasons = [
   ["autre", "Autre"],
 ] as const;
 
-const hairColorOptions = [
-  ["blonds", "Blonds"],
-  ["chatains", "Châtains"],
-  ["bruns", "Bruns"],
-  ["roux", "Roux"],
-  ["noirs", "Noirs"],
-  ["gris_blancs", "Gris ou blancs"],
-  ["autre", "Autre"],
-] as const;
 const smokerOptions = [
   ["non", "Non"],
   ["occasionnellement", "Occasionnellement"],
@@ -47,25 +38,6 @@ const relationshipGoalOptions = [
   ["rien_de_serieux", "Rien de sérieux"],
   ["amis", "Amitiés"],
   ["pas_sur", "Pas encore sûr(e)"],
-] as const;
-const relationshipStyleOptions = [
-  ["monogame", "Relation monogame"],
-  ["relation_libre", "Relation libre"],
-  ["polyamoureuse", "Relation polyamoureuse"],
-] as const;
-const zodiacSignOptions = [
-  ["belier", "Bélier"],
-  ["taureau", "Taureau"],
-  ["gemeaux", "Gémeaux"],
-  ["cancer", "Cancer"],
-  ["lion", "Lion"],
-  ["vierge", "Vierge"],
-  ["balance", "Balance"],
-  ["scorpion", "Scorpion"],
-  ["sagittaire", "Sagittaire"],
-  ["capricorne", "Capricorne"],
-  ["verseau", "Verseau"],
-  ["poissons", "Poissons"],
 ] as const;
 const childrenStatusOptions = [
   ["pas_denfants", "Sans enfants"],
@@ -94,11 +66,8 @@ type Filters = {
   maxKm: string;
   minHeight: string;
   maxHeight: string;
-  hairColor: string;
   smoker: string;
   relationshipGoal: string;
-  relationshipStyle: string;
-  zodiacSign: string;
   childrenStatus: string;
   drinkingHabit: string;
   sportHabit: string;
@@ -109,11 +78,8 @@ const defaultFilters: Filters = {
   maxKm: "",
   minHeight: "",
   maxHeight: "",
-  hairColor: "",
   smoker: "",
   relationshipGoal: "",
-  relationshipStyle: "",
-  zodiacSign: "",
   childrenStatus: "",
   drinkingHabit: "",
   sportHabit: "",
@@ -249,11 +215,8 @@ function Discover() {
       p_max_age: filters.maxAge ? Number(filters.maxAge) : null,
       p_min_height: filters.minHeight ? Number(filters.minHeight) : null,
       p_max_height: filters.maxHeight ? Number(filters.maxHeight) : null,
-      p_hair_color: filters.hairColor || null,
       p_smoker: filters.smoker || null,
       p_relationship_goal: filters.relationshipGoal || null,
-      p_relationship_style: filters.relationshipStyle || null,
-      p_zodiac_sign: filters.zodiacSign || null,
       p_children_status: filters.childrenStatus || null,
       p_drinking_habit: filters.drinkingHabit || null,
       p_sport_habit: filters.sportHabit || null,
@@ -734,14 +697,11 @@ function Discover() {
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              {filterSelect("hairColor", "Couleur de cheveux", hairColorOptions)}
-              {filterSelect("smoker", "Fumeur", smokerOptions)}
               {filterSelect("relationshipGoal", "Recherche une relation", relationshipGoalOptions)}
-              {filterSelect("relationshipStyle", "Ouvert(e) à", relationshipStyleOptions)}
-              {filterSelect("zodiacSign", "Signe astrologique", zodiacSignOptions)}
               {filterSelect("childrenStatus", "Enfants", childrenStatusOptions)}
-              {filterSelect("drinkingHabit", "Alcool", drinkingHabitOptions)}
               {filterSelect("sportHabit", "Sport", sportHabitOptions)}
+              {filterSelect("smoker", "Fumeur", smokerOptions)}
+              {filterSelect("drinkingHabit", "Alcool", drinkingHabitOptions)}
             </div>
             {Object.values(filters).some(Boolean) && (
               <button
