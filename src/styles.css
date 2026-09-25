@@ -201,3 +201,24 @@
     min-height: 2.75rem;
   }
 }
+
+@keyframes wheel-spin-once {
+  from {
+    transform: rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    transform: rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.animate-wheel-spin-once {
+  animation: wheel-spin-once 550ms ease-out forwards;
+}
