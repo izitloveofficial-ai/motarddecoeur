@@ -19,6 +19,7 @@ describe("prelaunch admin routes", () => {
     "/messages",
     "/profile/setup",
     "/profile/blocked",
+    "/super-likes/sent",
     "/rides",
     "/admin/status",
   ])("lets the protected route %s reach its own access guard", (path) => {
