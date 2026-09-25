@@ -30,7 +30,7 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/reset-password",
   "/profile/setup",
   "/profile/blocked",
-  "/super-coup-de-coeur/envoyes",
+  "/super-likes/sent",
   "/discover",
   "/discover/likes",
   "/matches",
