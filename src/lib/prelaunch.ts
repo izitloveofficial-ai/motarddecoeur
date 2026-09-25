@@ -50,6 +50,16 @@ export function isPathAllowedDuringPrelaunch(pathname: string) {
 
 /** Identifie le fragment d'une redirection d'authentification implicite Supabase. */
 export function isSupabaseAuthCallbackHash(hash: string) {
+  return getSupabaseAuthCallbackTokens(hash) !== null;
+}
+
+/** Extrait les jetons d'une redirection d'authentification implicite Supabase. */
+export function getSupabaseAuthCallbackTokens(hash: string) {
   const params = new URLSearchParams(hash.replace(/^#/, ""));
-  return params.has("access_token") && params.has("refresh_token");
+  const accessToken = params.get("access_token");
+  const refreshToken = params.get("refresh_token");
+
+  if (!accessToken || !refreshToken) return null;
+
+  return { access_token: accessToken, refresh_token: refreshToken };
 }
