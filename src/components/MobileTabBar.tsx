@@ -58,70 +58,37 @@ export function MobileTabBar() {
       aria-label="Navigation de l'application"
       className="safe-bottom fixed inset-x-0 bottom-0 z-50 border-t border-[#d6a85c]/30 bg-[#181112]/95 shadow-[0_-8px_30px_rgba(0,0,0,0.35)] backdrop-blur sm:hidden"
     >
-      <div className="grid h-16 grid-cols-4">
-        {tabs.map(({ to, label, icon: Icon }) =>
-          label === "Profil" ? (
-            <div
-              key={to}
-              className="flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium text-[#a99b95]"
-            >
-              <span className="flex items-center gap-6">
-                <Link
-                  to={to}
-                  activeOptions={{ exact: true }}
-                  aria-label="Ouvrir mon profil"
-                  className="inline-flex w-11 items-center justify-center p-3 text-inherit no-underline transition-colors"
-                  activeProps={{ className: "text-[#e8be6c]" }}
-                >
-                  <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
-                </Link>
-                {remainingSuperLikes !== null && (
-                  <Link
-                    to="/super-likes/sent"
-                    aria-label={`Voir mes Super coups de cœur envoyés, ${remainingSuperLikes} restant${remainingSuperLikes > 1 ? "s" : ""} aujourd'hui`}
-                    title="Voir mes Super coups de cœur envoyés"
-                    className="relative inline-flex w-11 items-center justify-center p-3 text-inherit no-underline transition-colors"
-                    activeProps={{ className: "text-[#e8be6c]" }}
-                  >
-                    <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
-                    <span className="absolute -left-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-semibold leading-none text-primary-foreground">
-                      {remainingSuperLikes}
-                    </span>
-                  </Link>
-                )}
+      <div
+        className={`grid h-16 ${remainingSuperLikes !== null && remainingSuperLikes > 0 ? "grid-cols-5" : "grid-cols-4"}`}
+      >
+        {tabs.map(({ to, label, icon: Icon }) => (
+          <Link
+            key={to}
+            to={to}
+            activeOptions={{ exact: true }}
+            className="flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium text-[#a99b95] no-underline transition-colors"
+            activeProps={{ className: "text-[#e8be6c]" }}
+          >
+            <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+            <span className="truncate">{label}</span>
+          </Link>
+        ))}
+        {remainingSuperLikes !== null && remainingSuperLikes > 0 && (
+          <Link
+            to="/super-coup-de-coeur/envoyes"
+            activeOptions={{ exact: true }}
+            aria-label={`Voir mes Super coups de cœur envoyés, ${remainingSuperLikes} restant${remainingSuperLikes > 1 ? "s" : ""} aujourd'hui`}
+            className="flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium text-[#a99b95] no-underline transition-colors"
+            activeProps={{ className: "text-[#e8be6c]" }}
+          >
+            <span className="relative">
+              <DoubleHeartIcon className="h-5 w-5 text-[#c81e1e]" aria-hidden="true" />
+              <span className="absolute -right-2 -top-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-semibold leading-none text-primary-foreground">
+                {remainingSuperLikes}
               </span>
-              <span className="flex items-center gap-6">
-                <Link
-                  to={to}
-                  activeOptions={{ exact: true }}
-                  className="w-11 truncate text-center text-inherit no-underline transition-colors"
-                  activeProps={{ className: "text-[#e8be6c]" }}
-                >
-                  {label}
-                </Link>
-                {remainingSuperLikes !== null && (
-                  <Link
-                    to="/super-likes/sent"
-                    className="w-11 truncate text-center text-inherit no-underline transition-colors"
-                    activeProps={{ className: "text-[#e8be6c]" }}
-                  >
-                    Super
-                  </Link>
-                )}
-              </span>
-            </div>
-          ) : (
-            <Link
-              key={to}
-              to={to}
-              activeOptions={{ exact: true }}
-              className="flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium text-[#a99b95] no-underline transition-colors"
-              activeProps={{ className: "text-[#e8be6c]" }}
-            >
-              <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
-              <span className="truncate">{label}</span>
-            </Link>
-          ),
+            </span>
+            <span className="truncate">Super</span>
+          </Link>
         )}
       </div>
     </nav>
