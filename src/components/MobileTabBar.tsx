@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { CardsIcon } from "@/components/icons/CardsIcon";
+import { DoubleHeartIcon } from "@/components/icons/DoubleHeartIcon";
 import { HeartFilledIcon } from "@/components/icons/HeartFilledIcon";
 import { HelmetIcon } from "@/components/icons/HelmetIcon";
 import { IntercomIcon } from "@/components/icons/IntercomIcon";
@@ -70,8 +71,11 @@ export function MobileTabBar() {
             <span className="flex items-center gap-1">
               <span className="truncate">{label}</span>
               {label === "Profil" && remainingSuperLikes !== null && remainingSuperLikes > 0 && (
-                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
-                  {remainingSuperLikes}
+                <span className="flex items-center gap-1">
+                  <DoubleHeartIcon className="h-3.5 w-3.5" />
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                    {remainingSuperLikes}
+                  </span>
                 </span>
               )}
             </span>
