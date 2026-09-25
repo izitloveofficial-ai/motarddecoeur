@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { CardsIcon } from "@/components/icons/CardsIcon";
 import { DoubleHeartIcon } from "@/components/icons/DoubleHeartIcon";
 import { HeartFilledIcon } from "@/components/icons/HeartFilledIcon";
 import { HelmetIcon } from "@/components/icons/HelmetIcon";
 import { IntercomIcon } from "@/components/icons/IntercomIcon";
+import { WheelSpinIndicator } from "@/components/icons/WheelSpinIndicator";
 import { supabase } from "@/lib/supabase";
 
 const tabs = [
@@ -17,6 +18,23 @@ const tabs = [
 export function MobileTabBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [remainingSuperLikes, setRemainingSuperLikes] = useState<number | null>(null);
+  const [justTapped, setJustTapped] = useState<{ tab: string; tap: number } | null>(null);
+  const tapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tapSequenceRef = useRef(0);
+
+  useEffect(
+    () => () => {
+      if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
+    },
+    [],
+  );
+
+  function handleTabTap(tab: string) {
+    if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
+    tapSequenceRef.current += 1;
+    setJustTapped({ tab, tap: tapSequenceRef.current });
+    tapTimeoutRef.current = setTimeout(() => setJustTapped(null), 600);
+  }
 
   useEffect(() => {
     if (!supabase) return;
@@ -65,11 +83,20 @@ export function MobileTabBar() {
           <Link
             key={to}
             to={to}
+            onClick={() => handleTabTap(to)}
             activeOptions={{ exact: true }}
             className="flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium text-[#a99b95] no-underline transition-colors"
             activeProps={{ className: "text-[#e8be6c]" }}
           >
-            <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+            <span className="relative flex h-9 w-9 items-center justify-center">
+              {justTapped?.tab === to && (
+                <WheelSpinIndicator
+                  key={justTapped.tap}
+                  className="animate-wheel-spin-once absolute inset-0 z-0 m-auto h-9 w-9 text-[#e8be6c]"
+                />
+              )}
+              <Icon className="relative z-10 h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+            </span>
             <span className="truncate">{label}</span>
           </Link>
         ))}
