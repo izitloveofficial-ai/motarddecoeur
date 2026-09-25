@@ -884,6 +884,29 @@ function ProfileSetup() {
               <h1 id="profile-summary-title" className="sr-only">
                 Mon profil
               </h1>
+              {existingPhotos.length > 0 && (
+                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {existingPhotos.map((photo, index) => (
+                    <li
+                      key={photo.id}
+                      className="aspect-square overflow-hidden rounded-xl border border-white/15 bg-[#302526]"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setGalleryIndex(index)}
+                        aria-label={`Agrandir la photo ${index + 1}`}
+                        className="block h-full w-full"
+                      >
+                        <img
+                          src={photo.publicUrl}
+                          alt={`Photo de profil ${index + 1}`}
+                          className="h-full w-full object-cover"
+                        />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
               <div className="rounded-2xl border border-[#d6a85c]/30 bg-[#281e1f] p-5 shadow-lg sm:p-6">
                 <div className="mb-3 flex items-center justify-between gap-4">
                   <h2 className="font-display text-xl">Complétude du profil</h2>
