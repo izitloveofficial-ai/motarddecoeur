@@ -47,3 +47,9 @@ export function isPathAllowedDuringPrelaunch(pathname: string) {
     clean.startsWith("/rdv/")
   );
 }
+
+/** Identifie le fragment d'une redirection d'authentification implicite Supabase. */
+export function isSupabaseAuthCallbackHash(hash: string) {
+  const params = new URLSearchParams(hash.replace(/^#/, ""));
+  return params.has("access_token") && params.has("refresh_token");
+}

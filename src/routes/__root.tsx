@@ -11,13 +11,22 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
-import { PRELAUNCH_MODE, isPathAllowedDuringPrelaunch } from "@/lib/prelaunch";
+import {
+  PRELAUNCH_MODE,
+  isPathAllowedDuringPrelaunch,
+  isSupabaseAuthCallbackHash,
+} from "@/lib/prelaunch";
+import { hasAppAccess } from "@/lib/require-admin";
+import { supabase } from "@/lib/supabase";
 import { createTikTokPixelScript } from "@/lib/tiktok-pixel";
 
 import { SITE_URL } from "@/lib/site";
 const BRAND_LOGO_URL = `${SITE_URL}/favicon.png`;
 const BRAND_NAME = "Motards de Cœur";
 const TIKTOK_PIXEL_SCRIPT = createTikTokPixelScript();
+// Capture this before supabase-js removes the tokens from the address bar.
+const SUPABASE_AUTH_CALLBACK_AT_PAGE_LOAD =
+  typeof window !== "undefined" && isSupabaseAuthCallbackHash(window.location.hash);
 
 function NotFoundComponent() {
   return (
@@ -77,7 +86,22 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  beforeLoad: ({ location }) => {
+  beforeLoad: async ({ location }) => {
+    // The server cannot see URL fragments. A magic link initially aimed at a
+    // prelaunch-blocked path is therefore redirected to /join while retaining
+    // its Supabase tokens. Wait for supabase-js to consume those tokens before
+    // deciding whether the visitor belongs in the application.
+    if (
+      PRELAUNCH_MODE &&
+      typeof window !== "undefined" &&
+      location.pathname === "/join" &&
+      SUPABASE_AUTH_CALLBACK_AT_PAGE_LOAD &&
+      supabase &&
+      (await hasAppAccess(supabase))
+    ) {
+      throw redirect({ to: "/discover" });
+    }
+
     if (PRELAUNCH_MODE && !isPathAllowedDuringPrelaunch(location.pathname)) {
       throw redirect({ to: "/join" });
     }
