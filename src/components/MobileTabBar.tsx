@@ -70,7 +70,7 @@ export function MobileTabBar() {
                   to={to}
                   activeOptions={{ exact: true }}
                   aria-label="Ouvrir mon profil"
-                  className="inline-flex items-center justify-center p-3 text-inherit no-underline transition-colors"
+                  className="inline-flex w-11 items-center justify-center p-3 text-inherit no-underline transition-colors"
                   activeProps={{ className: "text-[#e8be6c]" }}
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
@@ -80,24 +80,35 @@ export function MobileTabBar() {
                     to="/super-likes/sent"
                     aria-label={`Voir mes Super coups de cœur envoyés, ${remainingSuperLikes} restant${remainingSuperLikes > 1 ? "s" : ""} aujourd'hui`}
                     title="Voir mes Super coups de cœur envoyés"
-                    className="relative inline-flex items-center justify-center p-3 text-inherit no-underline transition-colors"
+                    className="relative inline-flex w-11 items-center justify-center p-3 text-inherit no-underline transition-colors"
                     activeProps={{ className: "text-[#e8be6c]" }}
                   >
                     <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
-                    <span className="absolute -right-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-semibold leading-none text-primary-foreground">
+                    <span className="absolute -left-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-semibold leading-none text-primary-foreground">
                       {remainingSuperLikes}
                     </span>
                   </Link>
                 )}
               </span>
-              <Link
-                to={to}
-                activeOptions={{ exact: true }}
-                className="truncate text-inherit no-underline transition-colors"
-                activeProps={{ className: "text-[#e8be6c]" }}
-              >
-                {label}
-              </Link>
+              <span className="flex items-center gap-6">
+                <Link
+                  to={to}
+                  activeOptions={{ exact: true }}
+                  className="w-11 truncate text-center text-inherit no-underline transition-colors"
+                  activeProps={{ className: "text-[#e8be6c]" }}
+                >
+                  {label}
+                </Link>
+                {remainingSuperLikes !== null && (
+                  <Link
+                    to="/super-likes/sent"
+                    className="w-11 truncate text-center text-inherit no-underline transition-colors"
+                    activeProps={{ className: "text-[#e8be6c]" }}
+                  >
+                    Super
+                  </Link>
+                )}
+              </span>
             </div>
           ) : (
             <Link
