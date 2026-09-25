@@ -75,7 +75,7 @@ export function MobileTabBar() {
         ))}
         {remainingSuperLikes !== null && remainingSuperLikes > 0 && (
           <Link
-            to="/super-coup-de-coeur/envoyes"
+            to="/super-likes/sent"
             activeOptions={{ exact: true }}
             aria-label={`Voir mes Super coups de cœur envoyés, ${remainingSuperLikes} restant${remainingSuperLikes > 1 ? "s" : ""} aujourd'hui`}
             className="flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium text-[#a99b95] no-underline transition-colors"
