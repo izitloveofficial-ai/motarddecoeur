@@ -67,18 +67,29 @@ export function MobileTabBar() {
             className="flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium text-[#a99b95] no-underline transition-colors"
             activeProps={{ className: "text-[#e8be6c]" }}
           >
-            <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
-            <span className="flex items-center gap-1">
-              <span className="truncate">{label}</span>
-              {label === "Profil" && remainingSuperLikes !== null && remainingSuperLikes > 0 && (
+            {label === "Profil" ? (
+              <>
                 <span className="flex items-center gap-1">
-                  <DoubleHeartIcon className="h-3.5 w-3.5" />
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
-                    {remainingSuperLikes}
-                  </span>
+                  <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+                  {remainingSuperLikes !== null && remainingSuperLikes > 0 && (
+                    <span className="relative">
+                      <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
+                      <span className="absolute -right-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-semibold leading-none text-primary-foreground">
+                        {remainingSuperLikes}
+                      </span>
+                    </span>
+                  )}
                 </span>
-              )}
-            </span>
+                <span className="truncate">{label}</span>
+              </>
+            ) : (
+              <>
+                <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+                <span className="flex items-center gap-1">
+                  <span className="truncate">{label}</span>
+                </span>
+              </>
+            )}
           </Link>
         ))}
       </div>
