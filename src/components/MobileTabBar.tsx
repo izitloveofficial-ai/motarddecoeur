@@ -65,12 +65,12 @@ export function MobileTabBar() {
               key={to}
               className="flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium text-[#a99b95]"
             >
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-6">
                 <Link
                   to={to}
                   activeOptions={{ exact: true }}
                   aria-label="Ouvrir mon profil"
-                  className="text-inherit no-underline transition-colors"
+                  className="inline-flex items-center justify-center p-3 text-inherit no-underline transition-colors"
                   activeProps={{ className: "text-[#e8be6c]" }}
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
@@ -80,7 +80,7 @@ export function MobileTabBar() {
                     to="/super-likes/sent"
                     aria-label={`Voir mes Super coups de cœur envoyés, ${remainingSuperLikes} restant${remainingSuperLikes > 1 ? "s" : ""} aujourd'hui`}
                     title="Voir mes Super coups de cœur envoyés"
-                    className="relative text-inherit no-underline transition-colors"
+                    className="relative inline-flex items-center justify-center p-3 text-inherit no-underline transition-colors"
                     activeProps={{ className: "text-[#e8be6c]" }}
                   >
                     <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
