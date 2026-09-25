@@ -221,17 +221,6 @@ function eighteenYearsAgo() {
   return date.toISOString().slice(0, 10);
 }
 
-function calculateAge(birthDate: string) {
-  const today = new Date();
-  const [year, month, day] = birthDate.split("-").map(Number);
-  if (!year || !month || !day) return null;
-  let age = today.getFullYear() - year;
-  if (today.getMonth() + 1 < month || (today.getMonth() + 1 === month && today.getDate() < day)) {
-    age--;
-  }
-  return age;
-}
-
 const fieldClass =
   "mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition placeholder:text-[#a99b95] hover:border-[#d6a85c]/35 focus:border-[#e2b45f]/70 focus:ring-2 focus:ring-[#d9a441]/20";
 
@@ -267,6 +256,13 @@ type ExistingPhoto = {
 
 type Prompt = { id: string; question: string };
 type PromptAnswer = { promptId: string; answer: string };
+
+const planLabels: Record<string, string> = {
+  decouverte: "Découverte",
+  découverte: "Découverte",
+  club: "Club",
+  premium: "Premium",
+};
 
 const emptyProfile: ProfileForm = {
   first_name: "",
@@ -311,7 +307,7 @@ function ProfileSetup() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [feedback, setFeedback] = useState("");
   const [profile, setProfile] = useState<ProfileForm>(emptyProfile);
-  const [isPremium, setIsPremium] = useState(false);
+  const [plan, setPlan] = useState("decouverte");
   const [hasProfile, setHasProfile] = useState(false);
   const [viewMode, setViewMode] = useState<"summary" | "edit">("edit");
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -379,7 +375,7 @@ function ProfileSetup() {
         const current = profileResult.data;
         setHasProfile(true);
         setViewMode("summary");
-        setIsPremium(current.is_premium === true);
+        setPlan(String(current.plan ?? "decouverte").toLocaleLowerCase("fr"));
         setProfile({
           first_name: current.first_name ?? "",
           birth_date: current.birth_date ? String(current.birth_date).slice(0, 10) : "",
@@ -832,6 +828,38 @@ function ProfileSetup() {
   const nextStep = getNextStep(profile.looking_for);
   const closeGallery = useCallback(() => setGalleryIndex(null), []);
   const stepLabels = ["Identité", "Ta moto", "Ta recherche", "Photos et visibilité"];
+  const completionFields = [
+    { complete: existingPhotos.length > 0, label: "au moins une photo" },
+    { complete: Boolean(profile.bio.trim()), label: "une bio" },
+    {
+      complete: Boolean(profile.moto_brand.trim() && profile.moto_model.trim()),
+      label: "la marque et le modèle de ta moto",
+    },
+    { complete: Boolean(profile.height_cm), label: "ta taille" },
+    { complete: Boolean(profile.hair_color), label: "ta couleur de cheveux" },
+    { complete: Boolean(profile.smoker), label: "si tu fumes" },
+    { complete: Boolean(profile.relationship_goal), label: "le type de relation recherché" },
+    {
+      complete: Boolean(profile.relationship_style),
+      label: "le type de relation auquel tu es ouvert",
+    },
+    { complete: Boolean(profile.zodiac_sign), label: "ton signe astrologique" },
+    { complete: Boolean(profile.children_status), label: "si tu as ou souhaites des enfants" },
+    { complete: Boolean(profile.drinking_habit), label: "tes habitudes concernant l’alcool" },
+    { complete: Boolean(profile.sport_habit), label: "tes habitudes sportives" },
+  ];
+  const completedFieldCount = completionFields.filter(({ complete }) => complete).length;
+  const completionPercentage = Math.round((completedFieldCount / completionFields.length) * 100);
+  const missingPriorities = completionFields
+    .filter(({ complete }) => !complete)
+    .slice(0, 2)
+    .map(({ label }) => label);
+  const missingPrompt =
+    missingPriorities.length === 2
+      ? `${missingPriorities[0]} et ${missingPriorities[1]}`
+      : missingPriorities[0];
+  const currentPlan = planLabels[plan] ?? "Découverte";
+  const isPremium = plan === "premium";
 
   function goToNextStep() {
     if (
@@ -851,88 +879,111 @@ function ProfileSetup() {
     <Layout>
       <div className="min-h-[calc(100vh-7rem)] bg-[#21191a] text-[#fff9f0]">
         <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16">
-          <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-[#d6a85c]/30 bg-[#281e1f] p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="mb-2 text-xs uppercase tracking-[0.25em] text-[#a99b95]">
-                Forfait actuel
-              </p>
-              <span
-                className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider ${
-                  isPremium
-                    ? "border-[#e2b45f]/60 bg-[#d9a441]/15 text-[#f4ce7e]"
-                    : "border-white/20 bg-white/5 text-[#d4c6bf]"
-                }`}
-              >
-                {loadingProfile ? "Chargement…" : isPremium ? "Premium" : "Basique"}
-              </span>
-            </div>
-            <Link
-              to="/premium"
-              className="text-sm font-medium text-[#e8be6c] underline decoration-[#e8be6c]/40 underline-offset-4 transition hover:text-[#f4ce7e]"
-            >
-              Voir ou changer mon forfait
-            </Link>
-          </div>
           {hasProfile && viewMode === "summary" ? (
-            <section
-              aria-labelledby="profile-summary-title"
-              className="overflow-hidden rounded-2xl border border-[#d6a85c]/30 bg-[#281e1f] shadow-lg"
-            >
+            <section aria-labelledby="profile-summary-title" className="space-y-4">
               <h1 id="profile-summary-title" className="sr-only">
                 Mon profil
               </h1>
-              {existingPhotos[0] && (
+              <div className="rounded-2xl border border-[#d6a85c]/30 bg-[#281e1f] p-5 shadow-lg sm:p-6">
+                <div className="mb-3 flex items-center justify-between gap-4">
+                  <h2 className="font-display text-xl">Complétude du profil</h2>
+                  <span className="font-semibold text-[#f4ce7e]">{completionPercentage} %</span>
+                </div>
+                <div
+                  className="h-3 overflow-hidden rounded-full bg-white/10"
+                  role="progressbar"
+                  aria-label="Complétude du profil"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={completionPercentage}
+                >
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-[#c43b36] to-[#e2b45f] transition-[width]"
+                    style={{ width: `${completionPercentage}%` }}
+                  />
+                </div>
+                {completionPercentage === 100 ? (
+                  <p className="mt-3 flex items-center gap-2 text-sm text-green-200">
+                    <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+                    Ton profil est complet !
+                  </p>
+                ) : (
+                  <p className="mt-3 text-sm leading-relaxed text-[#d4c6bf]">
+                    Ajoute {missingPrompt} pour compléter ton profil.{" "}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCurrentStep(1);
+                        setFurthestStep(4);
+                        setViewMode("edit");
+                      }}
+                      className="font-medium text-[#e8be6c] underline underline-offset-4 hover:text-[#f4ce7e]"
+                    >
+                      Modifier le profil
+                    </button>
+                  </p>
+                )}
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-[#281e1f] p-4 sm:p-5">
+                <h2 className="mb-3 font-display text-xl">Raccourcis</h2>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="flex flex-col items-start justify-between gap-3 rounded-xl border border-white/10 bg-[#302526] p-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-wider text-[#a99b95]">
+                        Forfait actuel
+                      </p>
+                      <p className="mt-1 font-semibold text-[#fff9f0]">
+                        {loadingProfile ? "Chargement…" : currentPlan}
+                      </p>
+                    </div>
+                    <Link
+                      to="/premium"
+                      className={`text-sm font-semibold ${isPremium ? "text-[#e8be6c] underline underline-offset-4" : "rounded-full bg-[#e2b45f] px-4 py-2 text-[#21191a] hover:bg-[#f4ce7e]"}`}
+                    >
+                      {isPremium ? "Voir le forfait" : "Passer Premium"}
+                    </Link>
+                  </div>
+                  <Link
+                    to="/profile/blocked"
+                    className="flex min-h-28 items-center justify-center rounded-xl border border-white/10 bg-[#302526] p-4 text-center text-sm font-semibold text-[#fff9f0] transition hover:border-[#d6a85c]/50 hover:text-[#e8be6c]"
+                  >
+                    Profils bloqués
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => void handleLogout()}
+                    className="flex min-h-28 items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#302526] p-4 text-sm font-semibold text-[#fff9f0] transition hover:border-[#d6a85c]/50 hover:text-[#e8be6c]"
+                  >
+                    <LogOut className="h-4 w-4" aria-hidden="true" />
+                    Déconnexion
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
                 <button
                   type="button"
-                  onClick={() => setGalleryIndex(0)}
-                  aria-label="Voir mes photos en grand"
-                  className="relative block w-full"
+                  onClick={() => {
+                    setCurrentStep(1);
+                    setFurthestStep(4);
+                    setViewMode("edit");
+                  }}
+                  className="rounded-full bg-gradient-red px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow"
                 >
-                  <img
-                    src={existingPhotos[0].publicUrl}
-                    alt="Photo principale du profil"
-                    className="aspect-[4/5] w-full object-cover"
-                  />
-                  {existingPhotos.length > 1 && (
-                    <span className="absolute right-3 bottom-3 rounded-full bg-[#21191a]/85 px-3 py-1 text-xs text-[#fff9f0]">
-                      {existingPhotos.length} photos
-                    </span>
-                  )}
+                  Modifier le profil
                 </button>
-              )}
-              <div className="space-y-5 p-5 sm:p-6">
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-lg font-semibold">
-                  <span>{calculateAge(profile.birth_date)} ans</span>
-                  <span className="inline-flex items-center gap-2 text-[#e8be6c]">
-                    <MapPin className="h-5 w-5" aria-hidden="true" />
-                    {departmentOptions.find(([code]) => code === profile.department)?.join(" – ") ||
-                      "Département non renseigné"}
-                  </span>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCurrentStep(1);
-                      setFurthestStep(4);
-                      setViewMode("edit");
-                    }}
-                    className="rounded-full bg-gradient-red px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground shadow-glow"
-                  >
-                    Modifier le profil
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCurrentStep(4);
-                      setFurthestStep(4);
-                      setViewMode("edit");
-                    }}
-                    className="rounded-full border border-primary/40 px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
-                  >
-                    Ajouter des photos
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCurrentStep(4);
+                    setFurthestStep(4);
+                    setViewMode("edit");
+                  }}
+                  className="rounded-full border border-primary/40 px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
+                >
+                  Ajouter des photos
+                </button>
               </div>
             </section>
           ) : (
@@ -1536,14 +1587,6 @@ function ProfileSetup() {
           </div>
           <div className="mt-8 border-t border-white/10 pt-6">
             <h2 className="mb-2 text-sm font-medium text-[#d4c6bf]">Zone sensible</h2>
-            <button
-              type="button"
-              onClick={() => void handleLogout()}
-              className="mb-6 flex items-center gap-2 rounded-full border border-white/15 px-5 py-2 text-xs uppercase tracking-wider text-[#d4c6bf] transition-colors hover:border-[#d6a85c]/35 hover:text-[#fff9f0]"
-            >
-              <LogOut className="h-4 w-4" />
-              Se déconnecter
-            </button>
             <p className="mb-3 text-xs leading-relaxed text-[#a99b95]">
               La suppression de ton compte efface définitivement ton profil, tes photos, tes coups
               de cœur et tes messages. Cette action est irréversible et conforme à ton droit à
