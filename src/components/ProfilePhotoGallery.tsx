@@ -1,6 +1,8 @@
 import { ChevronLeft, ChevronRight, UserRound, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+const GALLERY_HISTORY_STATE_KEY = "__profilePhotoGallery";
+
 export type GalleryProfile = {
   firstName: string;
   bio?: string | null;
@@ -47,6 +49,36 @@ export function ProfilePhotoGallery({
       window.removeEventListener("keydown", closeOnEscape);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onClose, open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const entryId = `${Date.now()}-${Math.random()}`;
+    const currentState = window.history.state;
+    const galleryState =
+      currentState && typeof currentState === "object"
+        ? { ...currentState, [GALLERY_HISTORY_STATE_KEY]: entryId }
+        : { [GALLERY_HISTORY_STATE_KEY]: entryId };
+    let entryIsActive = true;
+
+    window.history.pushState(galleryState, "");
+
+    const closeOnBack = () => {
+      entryIsActive = false;
+      onClose();
+    };
+
+    window.addEventListener("popstate", closeOnBack);
+
+    return () => {
+      window.removeEventListener("popstate", closeOnBack);
+
+      if (entryIsActive && window.history.state?.[GALLERY_HISTORY_STATE_KEY] === entryId) {
+        entryIsActive = false;
+        window.history.back();
+      }
+    };
   }, [onClose, open]);
 
   if (!open) return null;
