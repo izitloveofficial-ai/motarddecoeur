@@ -472,6 +472,13 @@ function ProfileSetup() {
 
   async function removeExistingPhoto(photo: ExistingPhoto) {
     if (!supabase || deletingPhotoId) return;
+    if (existingPhotos.length <= 1 && photos.length === 0) {
+      setStatus("error");
+      setFeedback(
+        "Tu dois garder au moins une photo. Ajoute une nouvelle photo avant de pouvoir supprimer celle-ci.",
+      );
+      return;
+    }
     setDeletingPhotoId(photo.id);
     setFeedback("");
     const { error: storageError } = await supabase.storage
@@ -1005,7 +1012,7 @@ function ProfileSetup() {
                   }}
                   className="rounded-full border border-primary/40 px-6 py-4 text-sm font-medium uppercase tracking-wider text-primary hover:bg-primary/10"
                 >
-                  Ajouter des photos
+                  Gérer mes photos
                 </button>
               </div>
             </section>
