@@ -1,5 +1,9 @@
 import { describe, expect, test } from "bun:test";
-import { isPathAllowedDuringPrelaunch, isSupabaseAuthCallbackHash } from "./prelaunch";
+import {
+  getSupabaseAuthCallbackTokens,
+  isPathAllowedDuringPrelaunch,
+  isSupabaseAuthCallbackHash,
+} from "./prelaunch";
 
 describe("prelaunch admin routes", () => {
   test("allows the sitemap to be fetched", () => {
@@ -44,16 +48,20 @@ describe("prelaunch admin routes", () => {
 
 describe("Supabase auth callback fragments", () => {
   test("recognizes an implicit magic-link session", () => {
-    expect(
-      isSupabaseAuthCallbackHash(
-        "#access_token=access&expires_in=3600&refresh_token=refresh&token_type=bearer&type=magiclink",
-      ),
-    ).toBe(true);
+    const hash =
+      "#access_token=access%2Btoken&expires_in=3600&refresh_token=refresh%2Ftoken&token_type=bearer&type=magiclink";
+
+    expect(isSupabaseAuthCallbackHash(hash)).toBe(true);
+    expect(getSupabaseAuthCallbackTokens(hash)).toEqual({
+      access_token: "access+token",
+      refresh_token: "refresh/token",
+    });
   });
 
   test("does not treat ordinary fragments or incomplete tokens as auth callbacks", () => {
     expect(isSupabaseAuthCallbackHash("#section")).toBe(false);
     expect(isSupabaseAuthCallbackHash("#access_token=access")).toBe(false);
+    expect(isSupabaseAuthCallbackHash("#access_token=&refresh_token=refresh")).toBe(false);
     expect(isSupabaseAuthCallbackHash("")).toBe(false);
   });
 });
