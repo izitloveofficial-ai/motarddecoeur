@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { isPathAllowedDuringPrelaunch } from "./prelaunch";
+import { isPathAllowedDuringPrelaunch, isSupabaseAuthCallbackHash } from "./prelaunch";
 
 describe("prelaunch admin routes", () => {
   test("allows the sitemap to be fetched", () => {
@@ -39,5 +39,21 @@ describe("prelaunch admin routes", () => {
   test("allows public appointment share links", () => {
     expect(isPathAllowedDuringPrelaunch("/rdv/4f27d9ee-4b54-4afd-a191-76ecfbc18c0a")).toBe(true);
     expect(isPathAllowedDuringPrelaunch("/rdv/4f27d9ee-4b54-4afd-a191-76ecfbc18c0a/")).toBe(true);
+  });
+});
+
+describe("Supabase auth callback fragments", () => {
+  test("recognizes an implicit magic-link session", () => {
+    expect(
+      isSupabaseAuthCallbackHash(
+        "#access_token=access&expires_in=3600&refresh_token=refresh&token_type=bearer&type=magiclink",
+      ),
+    ).toBe(true);
+  });
+
+  test("does not treat ordinary fragments or incomplete tokens as auth callbacks", () => {
+    expect(isSupabaseAuthCallbackHash("#section")).toBe(false);
+    expect(isSupabaseAuthCallbackHash("#access_token=access")).toBe(false);
+    expect(isSupabaseAuthCallbackHash("")).toBe(false);
   });
 });
