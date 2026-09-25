@@ -31,6 +31,71 @@ const motoTypeOptions = [
   ["scooter", "Scooter"],
   ["autre", "Autre"],
 ] as const;
+const hairColorOptions = [
+  ["blonds", "Blonds"],
+  ["chatains", "Châtains"],
+  ["bruns", "Bruns"],
+  ["roux", "Roux"],
+  ["noirs", "Noirs"],
+  ["gris_blancs", "Gris ou blancs"],
+  ["autre", "Autre"],
+] as const;
+const smokerOptions = [
+  ["non", "Non"],
+  ["occasionnellement", "Occasionnellement"],
+  ["oui", "Oui"],
+] as const;
+const interestedInOptions = [
+  ["homme", "Les hommes"],
+  ["femme", "Les femmes"],
+  ["tous", "Tout le monde"],
+] as const;
+const relationshipGoalOptions = [
+  ["long_terme", "Une relation à long terme"],
+  ["court_terme", "Une relation à court terme"],
+  ["rien_de_serieux", "Rien de sérieux"],
+  ["amis", "De nouvelles amitiés"],
+  ["pas_sur", "Je ne sais pas encore"],
+] as const;
+const relationshipStyleOptions = [
+  ["monogame", "Une relation monogame"],
+  ["relation_libre", "Une relation libre"],
+  ["polyamoureuse", "Une relation polyamoureuse"],
+] as const;
+const zodiacSignOptions = [
+  ["belier", "Bélier"],
+  ["taureau", "Taureau"],
+  ["gemeaux", "Gémeaux"],
+  ["cancer", "Cancer"],
+  ["lion", "Lion"],
+  ["vierge", "Vierge"],
+  ["balance", "Balance"],
+  ["scorpion", "Scorpion"],
+  ["sagittaire", "Sagittaire"],
+  ["capricorne", "Capricorne"],
+  ["verseau", "Verseau"],
+  ["poissons", "Poissons"],
+] as const;
+const childrenStatusOptions = [
+  ["pas_denfants", "Je n'ai pas d'enfants"],
+  ["a_des_enfants", "J'ai des enfants"],
+  ["veut_des_enfants", "Je veux des enfants"],
+  ["pas_sur", "Je ne sais pas encore"],
+] as const;
+const drinkingHabitOptions = [
+  ["weekend", "Le week-end"],
+  ["soirees", "En soirée"],
+  ["occasions", "Pour les grandes occasions"],
+  ["jamais", "Jamais"],
+] as const;
+const sportHabitOptions = [
+  ["tous_les_jours", "Tous les jours"],
+  ["souvent", "Souvent"],
+  ["parfois", "Parfois"],
+  ["accro", "Accro au sport"],
+  ["occasionnel", "Pratique occasionnelle"],
+  ["jamais", "Jamais"],
+] as const;
 
 const departmentOptions = [
   ["01", "Ain"],
@@ -176,6 +241,16 @@ type ProfileForm = {
   department: string;
   gender: string;
   looking_for: string;
+  height_cm: string;
+  hair_color: string;
+  smoker: string;
+  interested_in: string;
+  relationship_goal: string;
+  relationship_style: string;
+  zodiac_sign: string;
+  children_status: string;
+  drinking_habit: string;
+  sport_habit: string;
   moto_type: string;
   moto_brand: string;
   moto_model: string;
@@ -199,6 +274,16 @@ const emptyProfile: ProfileForm = {
   department: "",
   gender: "",
   looking_for: "",
+  height_cm: "",
+  hair_color: "",
+  smoker: "",
+  interested_in: "",
+  relationship_goal: "",
+  relationship_style: "",
+  zodiac_sign: "",
+  children_status: "",
+  drinking_habit: "",
+  sport_habit: "",
   moto_type: "",
   moto_brand: "",
   moto_model: "",
@@ -301,6 +386,16 @@ function ProfileSetup() {
           department: current.department ?? "",
           gender: current.gender ?? "",
           looking_for: current.looking_for ?? "",
+          height_cm: current.height_cm ? String(current.height_cm) : "",
+          hair_color: current.hair_color ?? "",
+          smoker: current.smoker ?? "",
+          interested_in: current.interested_in ?? "",
+          relationship_goal: current.relationship_goal ?? "",
+          relationship_style: current.relationship_style ?? "",
+          zodiac_sign: current.zodiac_sign ?? "",
+          children_status: current.children_status ?? "",
+          drinking_habit: current.drinking_habit ?? "",
+          sport_habit: current.sport_habit ?? "",
           moto_type: current.moto_type ?? "",
           moto_brand: current.moto_brand ?? "",
           moto_model: current.moto_model ?? "",
@@ -617,6 +712,16 @@ function ProfileSetup() {
       department: profile.department,
       gender: optional(profile.gender),
       looking_for: optional(profile.looking_for),
+      height_cm: profile.height_cm ? Number(profile.height_cm) : null,
+      hair_color: optional(profile.hair_color),
+      smoker: optional(profile.smoker),
+      interested_in: optional(profile.interested_in),
+      relationship_goal: optional(profile.relationship_goal),
+      relationship_style: optional(profile.relationship_style),
+      zodiac_sign: optional(profile.zodiac_sign),
+      children_status: optional(profile.children_status),
+      drinking_habit: optional(profile.drinking_habit),
+      sport_habit: optional(profile.sport_habit),
       moto_type: optional(profile.moto_type),
       moto_brand: optional(profile.moto_brand),
       moto_model: optional(profile.moto_model),
@@ -706,7 +811,7 @@ function ProfileSetup() {
   }
 
   const select = (
-    name: "gender" | "looking_for" | "moto_type",
+    name: Exclude<keyof ProfileForm, "is_active">,
     options: readonly (readonly [string, string])[],
   ) => (
     <select
@@ -933,6 +1038,31 @@ function ProfileSetup() {
                     <label className="block text-sm font-medium">
                       Genre{select("gender", genderOptions)}
                     </label>
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <label className="text-sm font-medium">
+                        Taille (cm)
+                        <input
+                          className={fieldClass}
+                          name="height_cm"
+                          type="number"
+                          inputMode="numeric"
+                          min={100}
+                          max={250}
+                          placeholder="Ex. 178"
+                          value={profile.height_cm}
+                          onChange={(event) => updateField("height_cm", event.target.value)}
+                        />
+                      </label>
+                      <label className="text-sm font-medium">
+                        Couleur de cheveux{select("hair_color", hairColorOptions)}
+                      </label>
+                      <label className="text-sm font-medium">
+                        Fumeur{select("smoker", smokerOptions)}
+                      </label>
+                      <label className="text-sm font-medium">
+                        Signe astrologique{select("zodiac_sign", zodiacSignOptions)}
+                      </label>
+                    </div>
                   </div>
                 )}
                 {currentStep === 3 && (
@@ -941,6 +1071,27 @@ function ProfileSetup() {
                     <label className="text-sm font-medium">
                       Tu recherches{select("looking_for", lookingForOptions)}
                     </label>
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <label className="text-sm font-medium">
+                        Intéressé(e) par{select("interested_in", interestedInOptions)}
+                      </label>
+                      <label className="text-sm font-medium">
+                        Recherche une relation
+                        {select("relationship_goal", relationshipGoalOptions)}
+                      </label>
+                      <label className="text-sm font-medium">
+                        Ouvert(e) à{select("relationship_style", relationshipStyleOptions)}
+                      </label>
+                      <label className="text-sm font-medium">
+                        Enfants{select("children_status", childrenStatusOptions)}
+                      </label>
+                      <label className="text-sm font-medium">
+                        Alcool{select("drinking_habit", drinkingHabitOptions)}
+                      </label>
+                      <label className="text-sm font-medium">
+                        Sport{select("sport_habit", sportHabitOptions)}
+                      </label>
+                    </div>
 
                     <label className="block text-sm font-medium">
                       Présentation
