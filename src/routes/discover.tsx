@@ -27,59 +27,15 @@ const reportReasons = [
   ["autre", "Autre"],
 ] as const;
 
-const lookingForOptions = [
-  ["rencontre_serieuse", "Une rencontre sérieuse"],
-  ["balades_moto", "Des balades moto"],
-  ["amitie", "De l'amitié"],
-  ["communaute_motards", "Une communauté de motards"],
-  ["indecis", "Je ne sais pas encore"],
-] as const;
-const riderRoleOptions = [
-  ["conducteur", "Conducteur"],
-  ["conductrice", "Conductrice"],
-  ["passager", "Passager"],
-  ["passagere", "Passagère"],
-] as const;
-const experienceLevelOptions = [
-  ["debutant", "Débutant"],
-  ["intermediaire", "Intermédiaire"],
-  ["experimente", "Expérimenté"],
-  ["expert", "Expert"],
-] as const;
-const ridingPaceOptions = [
-  ["tranquille", "Tranquille"],
-  ["sportif", "Sportif"],
-  ["mixte", "Mixte"],
-] as const;
-const motoTypeOptions = [
-  ["routiere", "Routière"],
-  ["sportive", "Sportive"],
-  ["roadster", "Roadster"],
-  ["trail", "Trail / Adventure"],
-  ["custom", "Custom"],
-  ["scooter", "Scooter"],
-  ["autre", "Autre"],
-] as const;
-
 type Filters = {
   minAge: string;
   maxAge: string;
-  lookingFor: string;
   maxKm: string;
-  motoType: string;
-  riderRole: string;
-  experienceLevel: string;
-  ridingPace: string;
 };
 const defaultFilters: Filters = {
   minAge: "",
   maxAge: "",
-  lookingFor: "",
   maxKm: "",
-  motoType: "",
-  riderRole: "",
-  experienceLevel: "",
-  ridingPace: "",
 };
 
 const MIN_AGE = 18;
@@ -206,14 +162,9 @@ function Discover() {
     setLastPassed(null);
     const { data: profiles, error: profilesError } = await supabase.rpc("nearby_profiles", {
       max_km: filters.maxKm ? Number(filters.maxKm) : null,
-      p_looking_for: filters.lookingFor || null,
       p_min_age: filters.minAge ? Number(filters.minAge) : null,
       p_max_age: filters.maxAge ? Number(filters.maxAge) : null,
       p_limit: 20,
-      p_moto_type: filters.motoType || null,
-      p_rider_role: filters.riderRole || null,
-      p_experience_level: filters.experienceLevel || null,
-      p_riding_pace: filters.ridingPace || null,
     });
     if (profilesError) {
       setError("Impossible de charger les profils pour le moment.");
@@ -571,8 +522,8 @@ function Discover() {
           </button>
         </div>
         {filtersOpen && (
-          <div className="mb-6 grid gap-4 rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-5 sm:grid-cols-3">
-            <div className="text-sm font-medium sm:col-span-2">
+          <div className="mb-6 grid gap-4 rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-5">
+            <div className="text-sm font-medium">
               <div className="flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2">
                   Âge {!isPremium && <PremiumLabel />}
@@ -604,21 +555,6 @@ function Discover() {
                 thumbClassName="h-5 w-5 border-[#d6a85c] bg-[#fff9f0] focus-visible:ring-[#e2b45f]"
               />
             </div>
-            <label className="text-sm font-medium">
-              Tu recherches
-              <select
-                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
-                value={filters.lookingFor}
-                onChange={(e) => setFilters((f) => ({ ...f, lookingFor: e.target.value }))}
-              >
-                <option value="">Tous</option>
-                {lookingForOptions.map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
             <div className="text-sm font-medium">
               <div className="flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2">
@@ -647,95 +583,16 @@ function Discover() {
                 thumbClassName="h-5 w-5 border-[#d6a85c] bg-[#fff9f0] focus-visible:ring-[#e2b45f]"
               />
             </div>
-            <label className="text-sm font-medium">
-              <span className="flex items-center gap-2">
-                Type de moto {!isPremium && <PremiumLabel />}
-              </span>
-              <select
-                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
-                value={filters.motoType}
-                onChange={(e) => setFilters((f) => ({ ...f, motoType: e.target.value }))}
-                disabled={!isPremium}
-              >
-                <option value="">Tous</option>
-                {motoTypeOptions.map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-sm font-medium">
-              <span className="flex items-center gap-2">
-                Profil {!isPremium && <PremiumLabel />}
-              </span>
-              <select
-                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
-                value={filters.riderRole}
-                onChange={(e) => setFilters((f) => ({ ...f, riderRole: e.target.value }))}
-                disabled={!isPremium}
-              >
-                <option value="">Tous</option>
-                {riderRoleOptions.map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-sm font-medium">
-              <span className="flex items-center gap-2">
-                Niveau {!isPremium && <PremiumLabel />}
-              </span>
-              <select
-                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
-                value={filters.experienceLevel}
-                onChange={(e) => setFilters((f) => ({ ...f, experienceLevel: e.target.value }))}
-                disabled={!isPremium}
-              >
-                <option value="">Tous</option>
-                {experienceLevelOptions.map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-sm font-medium">
-              <span className="flex items-center gap-2">
-                Style de conduite {!isPremium && <PremiumLabel />}
-              </span>
-              <select
-                className="mt-2 w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
-                value={filters.ridingPace}
-                onChange={(e) => setFilters((f) => ({ ...f, ridingPace: e.target.value }))}
-                disabled={!isPremium}
-              >
-                <option value="">Tous</option>
-                {ridingPaceOptions.map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {(filters.minAge ||
-              filters.maxAge ||
-              filters.lookingFor ||
-              filters.maxKm ||
-              filters.motoType ||
-              filters.riderRole ||
-              filters.experienceLevel ||
-              filters.ridingPace) && (
+            {(filters.minAge || filters.maxAge || filters.maxKm) && (
               <button
                 onClick={() => setFilters(defaultFilters)}
-                className="text-left text-xs text-[#a99b95] hover:text-[#e8be6c] sm:col-span-3"
+                className="text-left text-xs text-[#a99b95] hover:text-[#e8be6c]"
               >
                 Réinitialiser les filtres
               </button>
             )}
             {!isPremium && (
-              <p className="text-xs text-[#a99b95] sm:col-span-3">
+              <p className="text-xs text-[#a99b95]">
                 Filtres avancés réservés aux comptes Premium.
               </p>
             )}
