@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { CardsIcon } from "@/components/icons/CardsIcon";
-import { DoubleHeartIcon } from "@/components/icons/DoubleHeartIcon";
 import { HeartFilledIcon } from "@/components/icons/HeartFilledIcon";
 import { HelmetIcon } from "@/components/icons/HelmetIcon";
 import { IntercomIcon } from "@/components/icons/IntercomIcon";
@@ -17,7 +16,6 @@ const tabs = [
 
 export function MobileTabBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [remainingSuperLikes, setRemainingSuperLikes] = useState<number | null>(null);
   const [justTapped, setJustTapped] = useState<{ tab: string; tap: number } | null>(null);
   const tapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tapSequenceRef = useRef(0);
@@ -39,32 +37,11 @@ export function MobileTabBar() {
   useEffect(() => {
     if (!supabase) return;
 
-    async function loadRemainingSuperLikes(userId: string | undefined) {
-      setRemainingSuperLikes(null);
-      if (!supabase || !userId) return;
-
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("is_premium")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (profileError || profile?.is_premium !== true) return;
-
-      const { data: sentToday, error: quotaError } = await supabase.rpc("super_likes_sent_today");
-
-      if (!quotaError && typeof sentToday === "number") {
-        setRemainingSuperLikes(Math.max(0, 3 - sentToday));
-      }
-    }
-
     supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(Boolean(data.session));
-      void loadRemainingSuperLikes(data.session?.user.id);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(Boolean(session));
-      void loadRemainingSuperLikes(session?.user.id);
     });
     return () => sub.subscription.unsubscribe();
   }, []);
@@ -76,9 +53,7 @@ export function MobileTabBar() {
       aria-label="Navigation de l'application"
       className="safe-bottom fixed inset-x-0 bottom-0 z-50 border-t border-[#d6a85c]/30 bg-[#181112]/95 shadow-[0_-8px_30px_rgba(0,0,0,0.35)] backdrop-blur sm:hidden"
     >
-      <div
-        className={`grid h-16 ${remainingSuperLikes !== null && remainingSuperLikes > 0 ? "grid-cols-5" : "grid-cols-4"}`}
-      >
+      <div className="grid h-16 grid-cols-4">
         {tabs.map(({ to, label, icon: Icon }) => (
           <Link
             key={to}
@@ -100,23 +75,6 @@ export function MobileTabBar() {
             <span className="truncate">{label}</span>
           </Link>
         ))}
-        {remainingSuperLikes !== null && remainingSuperLikes > 0 && (
-          <Link
-            to="/super-likes/sent"
-            activeOptions={{ exact: true }}
-            aria-label={`Voir mes Super coups de cœur envoyés, ${remainingSuperLikes} restant${remainingSuperLikes > 1 ? "s" : ""} aujourd'hui`}
-            className="flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium text-[#a99b95] no-underline transition-colors"
-            activeProps={{ className: "text-[#e8be6c]" }}
-          >
-            <span className="relative">
-              <DoubleHeartIcon className="h-5 w-5 text-[#c81e1e]" aria-hidden="true" />
-              <span className="absolute -right-2 -top-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-semibold leading-none text-primary-foreground">
-                {remainingSuperLikes}
-              </span>
-            </span>
-            <span className="truncate">Super</span>
-          </Link>
-        )}
       </div>
     </nav>
   );

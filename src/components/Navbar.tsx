@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
+import { DoubleHeartIcon } from "@/components/icons/DoubleHeartIcon";
 import { supabase } from "@/lib/supabase";
 
 const links = [
@@ -23,6 +24,7 @@ export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [matchCount, setMatchCount] = useState(0);
   const [likesCount, setLikesCount] = useState(0);
+  const [remainingSuperLikes, setRemainingSuperLikes] = useState(0);
   const [lookingFor, setLookingFor] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,11 +41,15 @@ export function Navbar() {
   useEffect(() => {
     if (!supabase) return;
 
+    let currentSession: { user: { id: string } } | null = null;
+
     function loadAccountStatus(session: { user: { id: string } } | null) {
+      currentSession = session;
       if (!session || !supabase) {
         setIsLoggedIn(false);
         setMatchCount(0);
         setLikesCount(0);
+        setRemainingSuperLikes(0);
         setLookingFor(null);
         return;
       }
@@ -55,13 +61,27 @@ export function Navbar() {
           .from("matches")
           .select("id", { count: "exact", head: true })
           .or(`profile_a_id.eq.${session.user.id},profile_b_id.eq.${session.user.id}`),
-        supabase.from("profiles").select("looking_for").eq("id", session.user.id).maybeSingle(),
+        supabase
+          .from("profiles")
+          .select("looking_for, is_premium")
+          .eq("id", session.user.id)
+          .maybeSingle(),
         supabase.rpc("who_liked_me"),
-      ]).then(([{ count }, { data: profile }, { data: likes }]) => {
+        supabase.rpc("super_likes_sent_today"),
+      ]).then(([{ count }, { data: profile }, { data: likes }, { data: superLikesSentToday }]) => {
         setMatchCount(count ?? 0);
         setLikesCount(likes?.length ?? 0);
         setLookingFor(profile?.looking_for ?? null);
+        setRemainingSuperLikes(
+          profile?.is_premium === true && typeof superLikesSentToday === "number"
+            ? Math.max(0, 3 - superLikesSentToday)
+            : 0,
+        );
       });
+    }
+
+    function handleSuperLikeSent() {
+      loadAccountStatus(currentSession);
     }
 
     supabase.auth.getSession().then(({ data }) => {
@@ -70,7 +90,11 @@ export function Navbar() {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       loadAccountStatus(session);
     });
-    return () => sub.subscription.unsubscribe();
+    window.addEventListener("super-like-sent", handleSuperLikeSent);
+    return () => {
+      sub.subscription.unsubscribe();
+      window.removeEventListener("super-like-sent", handleSuperLikeSent);
+    };
   }, []);
 
   const visibleAppLinks = appLinks.filter(
@@ -161,14 +185,28 @@ export function Navbar() {
           </Link>
         </div>
 
-        <button
-          className="xl:hidden grid min-h-11 min-w-11 place-items-center rounded-full text-neutral-900 hover:bg-neutral-100"
-          onClick={() => setOpen(!open)}
-          aria-label="Menu"
-          aria-expanded={open}
-        >
-          {open ? <X /> : <Menu />}
-        </button>
+        <div className="flex items-center gap-2 xl:hidden">
+          {remainingSuperLikes > 0 && (
+            <Link
+              to="/super-likes/sent"
+              className="relative grid min-h-11 min-w-11 place-items-center rounded-full text-neutral-900 no-underline hover:bg-neutral-100"
+              aria-label={`Voir mes Super coups de cœur envoyés, ${remainingSuperLikes} restant${remainingSuperLikes > 1 ? "s" : ""} aujourd'hui`}
+            >
+              <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                {remainingSuperLikes}
+              </span>
+            </Link>
+          )}
+          <button
+            className="grid min-h-11 min-w-11 place-items-center rounded-full text-neutral-900 hover:bg-neutral-100"
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+            aria-expanded={open}
+          >
+            {open ? <X /> : <Menu />}
+          </button>
+        </div>
       </nav>
 
       {open && (
