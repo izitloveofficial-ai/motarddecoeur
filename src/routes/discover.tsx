@@ -27,15 +27,96 @@ const reportReasons = [
   ["autre", "Autre"],
 ] as const;
 
+const hairColorOptions = [
+  ["blonds", "Blonds"],
+  ["chatains", "Châtains"],
+  ["bruns", "Bruns"],
+  ["roux", "Roux"],
+  ["noirs", "Noirs"],
+  ["gris_blancs", "Gris ou blancs"],
+  ["autre", "Autre"],
+] as const;
+const smokerOptions = [
+  ["non", "Non"],
+  ["occasionnellement", "Occasionnellement"],
+  ["oui", "Oui"],
+] as const;
+const relationshipGoalOptions = [
+  ["long_terme", "Relation à long terme"],
+  ["court_terme", "Relation à court terme"],
+  ["rien_de_serieux", "Rien de sérieux"],
+  ["amis", "Amitiés"],
+  ["pas_sur", "Pas encore sûr(e)"],
+] as const;
+const relationshipStyleOptions = [
+  ["monogame", "Relation monogame"],
+  ["relation_libre", "Relation libre"],
+  ["polyamoureuse", "Relation polyamoureuse"],
+] as const;
+const zodiacSignOptions = [
+  ["belier", "Bélier"],
+  ["taureau", "Taureau"],
+  ["gemeaux", "Gémeaux"],
+  ["cancer", "Cancer"],
+  ["lion", "Lion"],
+  ["vierge", "Vierge"],
+  ["balance", "Balance"],
+  ["scorpion", "Scorpion"],
+  ["sagittaire", "Sagittaire"],
+  ["capricorne", "Capricorne"],
+  ["verseau", "Verseau"],
+  ["poissons", "Poissons"],
+] as const;
+const childrenStatusOptions = [
+  ["pas_denfants", "Sans enfants"],
+  ["a_des_enfants", "A des enfants"],
+  ["veut_des_enfants", "Veut des enfants"],
+  ["pas_sur", "Pas encore sûr(e)"],
+] as const;
+const drinkingHabitOptions = [
+  ["weekend", "Le week-end"],
+  ["soirees", "En soirée"],
+  ["occasions", "Pour les grandes occasions"],
+  ["jamais", "Jamais"],
+] as const;
+const sportHabitOptions = [
+  ["tous_les_jours", "Tous les jours"],
+  ["souvent", "Souvent"],
+  ["parfois", "Parfois"],
+  ["accro", "Accro au sport"],
+  ["occasionnel", "Pratique occasionnelle"],
+  ["jamais", "Jamais"],
+] as const;
+
 type Filters = {
   minAge: string;
   maxAge: string;
   maxKm: string;
+  minHeight: string;
+  maxHeight: string;
+  hairColor: string;
+  smoker: string;
+  relationshipGoal: string;
+  relationshipStyle: string;
+  zodiacSign: string;
+  childrenStatus: string;
+  drinkingHabit: string;
+  sportHabit: string;
 };
 const defaultFilters: Filters = {
   minAge: "",
   maxAge: "",
   maxKm: "",
+  minHeight: "",
+  maxHeight: "",
+  hairColor: "",
+  smoker: "",
+  relationshipGoal: "",
+  relationshipStyle: "",
+  zodiacSign: "",
+  childrenStatus: "",
+  drinkingHabit: "",
+  sportHabit: "",
 };
 
 const MIN_AGE = 18;
@@ -164,6 +245,16 @@ function Discover() {
       max_km: filters.maxKm ? Number(filters.maxKm) : null,
       p_min_age: filters.minAge ? Number(filters.minAge) : null,
       p_max_age: filters.maxAge ? Number(filters.maxAge) : null,
+      p_min_height: filters.minHeight ? Number(filters.minHeight) : null,
+      p_max_height: filters.maxHeight ? Number(filters.maxHeight) : null,
+      p_hair_color: filters.hairColor || null,
+      p_smoker: filters.smoker || null,
+      p_relationship_goal: filters.relationshipGoal || null,
+      p_relationship_style: filters.relationshipStyle || null,
+      p_zodiac_sign: filters.zodiacSign || null,
+      p_children_status: filters.childrenStatus || null,
+      p_drinking_habit: filters.drinkingHabit || null,
+      p_sport_habit: filters.sportHabit || null,
       p_limit: 20,
     });
     if (profilesError) {
@@ -473,6 +564,31 @@ function Discover() {
     await navigate({ to: "/messages/$matchId", params: { matchId } });
   }
 
+  const filterSelect = (
+    name: keyof Filters,
+    label: string,
+    options: readonly (readonly [string, string])[],
+  ) => (
+    <label className="text-sm font-medium">
+      <span className="flex items-center gap-2">
+        {label} {!isPremium && <PremiumLabel />}
+      </span>
+      <select
+        className="mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition focus:border-[#e2b45f]/70 disabled:cursor-not-allowed disabled:opacity-50"
+        value={filters[name]}
+        onChange={(event) => setFilters((current) => ({ ...current, [name]: event.target.value }))}
+        disabled={!isPremium}
+      >
+        <option value="">Peu importe</option>
+        {options.map(([value, optionLabel]) => (
+          <option key={value} value={value}>
+            {optionLabel}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+
   const current = candidates?.[index];
   return (
     <Layout>
@@ -583,7 +699,55 @@ function Discover() {
                 thumbClassName="h-5 w-5 border-[#d6a85c] bg-[#fff9f0] focus-visible:ring-[#e2b45f]"
               />
             </div>
-            {(filters.minAge || filters.maxAge || filters.maxKm) && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="text-sm font-medium">
+                <span className="flex items-center gap-2">
+                  Taille minimum {!isPremium && <PremiumLabel />}
+                </span>
+                <input
+                  className="mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition placeholder:text-[#a99b95] focus:border-[#e2b45f]/70 disabled:cursor-not-allowed disabled:opacity-50"
+                  type="number"
+                  inputMode="numeric"
+                  min={100}
+                  max={250}
+                  placeholder="Peu importe"
+                  value={filters.minHeight}
+                  onChange={(event) =>
+                    setFilters((current) => ({ ...current, minHeight: event.target.value }))
+                  }
+                  disabled={!isPremium}
+                  aria-label="Taille minimum en centimètres"
+                />
+              </label>
+              <label className="text-sm font-medium">
+                <span className="flex items-center gap-2">
+                  Taille maximum {!isPremium && <PremiumLabel />}
+                </span>
+                <input
+                  className="mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition placeholder:text-[#a99b95] focus:border-[#e2b45f]/70 disabled:cursor-not-allowed disabled:opacity-50"
+                  type="number"
+                  inputMode="numeric"
+                  min={100}
+                  max={250}
+                  placeholder="Peu importe"
+                  value={filters.maxHeight}
+                  onChange={(event) =>
+                    setFilters((current) => ({ ...current, maxHeight: event.target.value }))
+                  }
+                  disabled={!isPremium}
+                  aria-label="Taille maximum en centimètres"
+                />
+              </label>
+              {filterSelect("hairColor", "Couleur de cheveux", hairColorOptions)}
+              {filterSelect("smoker", "Fumeur", smokerOptions)}
+              {filterSelect("relationshipGoal", "Recherche une relation", relationshipGoalOptions)}
+              {filterSelect("relationshipStyle", "Ouvert(e) à", relationshipStyleOptions)}
+              {filterSelect("zodiacSign", "Signe astrologique", zodiacSignOptions)}
+              {filterSelect("childrenStatus", "Enfants", childrenStatusOptions)}
+              {filterSelect("drinkingHabit", "Alcool", drinkingHabitOptions)}
+              {filterSelect("sportHabit", "Sport", sportHabitOptions)}
+            </div>
+            {Object.values(filters).some(Boolean) && (
               <button
                 onClick={() => setFilters(defaultFilters)}
                 className="text-left text-xs text-[#a99b95] hover:text-[#e8be6c]"
