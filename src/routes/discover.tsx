@@ -122,6 +122,8 @@ const defaultFilters: Filters = {
 const MIN_AGE = 18;
 const MAX_AGE = 99;
 const MAX_DISTANCE_KM = 500;
+const MIN_HEIGHT_CM = 140;
+const MAX_HEIGHT_CM = 220;
 
 type Candidate = {
   id: string;
@@ -699,45 +701,39 @@ function Discover() {
                 thumbClassName="h-5 w-5 border-[#d6a85c] bg-[#fff9f0] focus-visible:ring-[#e2b45f]"
               />
             </div>
+            <div className="text-sm font-medium">
+              <div className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2">
+                  Taille {!isPremium && <PremiumLabel />}
+                </span>
+                <span className="text-[#e8be6c]">
+                  {filters.minHeight || MIN_HEIGHT_CM} — {filters.maxHeight || MAX_HEIGHT_CM} cm
+                </span>
+              </div>
+              <Slider
+                className="mt-4"
+                min={MIN_HEIGHT_CM}
+                max={MAX_HEIGHT_CM}
+                step={1}
+                value={[
+                  filters.minHeight ? Number(filters.minHeight) : MIN_HEIGHT_CM,
+                  filters.maxHeight ? Number(filters.maxHeight) : MAX_HEIGHT_CM,
+                ]}
+                onValueChange={([minHeight, maxHeight]) =>
+                  setFilters((current) => ({
+                    ...current,
+                    minHeight: minHeight === MIN_HEIGHT_CM ? "" : String(minHeight),
+                    maxHeight: maxHeight === MAX_HEIGHT_CM ? "" : String(maxHeight),
+                  }))
+                }
+                disabled={!isPremium}
+                thumbLabels={["Taille minimum", "Taille maximum"]}
+                trackClassName="bg-[#e2b45f]/20"
+                rangeClassName="bg-[#e2b45f]"
+                thumbClassName="h-5 w-5 border-[#d6a85c] bg-[#fff9f0] focus-visible:ring-[#e2b45f]"
+              />
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="text-sm font-medium">
-                <span className="flex items-center gap-2">
-                  Taille minimum {!isPremium && <PremiumLabel />}
-                </span>
-                <input
-                  className="mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition placeholder:text-[#a99b95] focus:border-[#e2b45f]/70 disabled:cursor-not-allowed disabled:opacity-50"
-                  type="number"
-                  inputMode="numeric"
-                  min={100}
-                  max={250}
-                  placeholder="Peu importe"
-                  value={filters.minHeight}
-                  onChange={(event) =>
-                    setFilters((current) => ({ ...current, minHeight: event.target.value }))
-                  }
-                  disabled={!isPremium}
-                  aria-label="Taille minimum en centimètres"
-                />
-              </label>
-              <label className="text-sm font-medium">
-                <span className="flex items-center gap-2">
-                  Taille maximum {!isPremium && <PremiumLabel />}
-                </span>
-                <input
-                  className="mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition placeholder:text-[#a99b95] focus:border-[#e2b45f]/70 disabled:cursor-not-allowed disabled:opacity-50"
-                  type="number"
-                  inputMode="numeric"
-                  min={100}
-                  max={250}
-                  placeholder="Peu importe"
-                  value={filters.maxHeight}
-                  onChange={(event) =>
-                    setFilters((current) => ({ ...current, maxHeight: event.target.value }))
-                  }
-                  disabled={!isPremium}
-                  aria-label="Taille maximum en centimètres"
-                />
-              </label>
               {filterSelect("hairColor", "Couleur de cheveux", hairColorOptions)}
               {filterSelect("smoker", "Fumeur", smokerOptions)}
               {filterSelect("relationshipGoal", "Recherche une relation", relationshipGoalOptions)}
