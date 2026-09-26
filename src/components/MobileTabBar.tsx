@@ -67,7 +67,7 @@ export function MobileTabBar() {
               {justTapped?.tab === to && (
                 <WheelSpinIndicator
                   key={justTapped.tap}
-                  className="animate-wheel-spin-once absolute inset-0 z-0 m-auto h-9 w-9 text-[#e8be6c]"
+                  className="animate-wheel-spin-once absolute inset-0 z-0 m-auto h-9 w-9 text-[#c7c9cc]"
                 />
               )}
               <Icon className="relative z-10 h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
