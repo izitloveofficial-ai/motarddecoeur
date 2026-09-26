@@ -220,5 +220,5 @@
 }
 
 .animate-wheel-spin-once {
-  animation: wheel-spin-once 550ms ease-out forwards;
+  animation: wheel-spin-once 1200ms ease-out forwards;
 }
