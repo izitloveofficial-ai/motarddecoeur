@@ -16,8 +16,11 @@ const tabs = [
 
 export function MobileTabBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [justTapped, setJustTapped] = useState<{ tab: string; tap: number } | null>(null);
   const tapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollStopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastScrollYRef = useRef(0);
   const tapSequenceRef = useRef(0);
 
   useEffect(
@@ -26,6 +29,37 @@ export function MobileTabBar() {
     },
     [],
   );
+
+  useEffect(() => {
+    const hideThreshold = 10;
+    lastScrollYRef.current = Math.max(window.scrollY, 0);
+
+    function handleScroll() {
+      const currentScrollY = Math.max(window.scrollY, 0);
+      const scrollDelta = currentScrollY - lastScrollYRef.current;
+
+      if (scrollDelta < 0 || currentScrollY === 0) {
+        setHidden(false);
+        lastScrollYRef.current = currentScrollY;
+      } else if (scrollDelta >= hideThreshold) {
+        setHidden(true);
+        lastScrollYRef.current = currentScrollY;
+      }
+
+      if (scrollStopTimeoutRef.current) clearTimeout(scrollStopTimeoutRef.current);
+      scrollStopTimeoutRef.current = setTimeout(() => {
+        setHidden(false);
+        lastScrollYRef.current = Math.max(window.scrollY, 0);
+      }, 150);
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollStopTimeoutRef.current) clearTimeout(scrollStopTimeoutRef.current);
+    };
+  }, []);
 
   function handleTabTap(tab: string) {
     if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
@@ -51,7 +85,7 @@ export function MobileTabBar() {
   return (
     <nav
       aria-label="Navigation de l'application"
-      className="safe-bottom fixed inset-x-0 bottom-0 z-50 border-t border-[#d6a85c]/30 bg-[#181112]/95 shadow-[0_-8px_30px_rgba(0,0,0,0.35)] backdrop-blur sm:hidden"
+      className={`safe-bottom fixed inset-x-0 bottom-0 z-50 border-t border-[#d6a85c]/30 bg-[#181112]/95 shadow-[0_-8px_30px_rgba(0,0,0,0.35)] backdrop-blur transition-transform duration-300 sm:hidden ${hidden ? "translate-y-full" : "translate-y-0"}`}
     >
       <div className="grid h-16 grid-cols-4">
         {tabs.map(({ to, label, icon: Icon }) => (
