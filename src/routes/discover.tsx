@@ -373,6 +373,7 @@ function Discover() {
     }
 
     setNotice(`Super coup de cœur envoyé à ${current.first_name} !`);
+    window.dispatchEvent(new CustomEvent("super-like-sent"));
     setSendingSuperLike(false);
   }
 
