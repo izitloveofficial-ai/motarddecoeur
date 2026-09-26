@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -21,6 +21,7 @@ import { supabase } from "@/lib/supabase";
 import { createTikTokPixelScript } from "@/lib/tiktok-pixel";
 
 import { SITE_URL } from "@/lib/site";
+import { SplashScreen } from "@/components/SplashScreen";
 const BRAND_LOGO_URL = `${SITE_URL}/favicon.png`;
 const BRAND_NAME = "Motards de Cœur";
 const TIKTOK_PIXEL_SCRIPT = createTikTokPixelScript();
@@ -204,11 +205,24 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [showSplash, setShowSplash] = useState(true);
+  const [renderSplash, setRenderSplash] = useState(true);
+
+  useEffect(() => {
+    const fadeTimer = window.setTimeout(() => setShowSplash(false), 1000);
+    const removeTimer = window.setTimeout(() => setRenderSplash(false), 1300);
+
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(removeTimer);
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      {renderSplash ? <SplashScreen isVisible={showSplash} /> : null}
     </QueryClientProvider>
   );
 }

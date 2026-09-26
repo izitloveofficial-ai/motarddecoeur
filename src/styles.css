@@ -222,3 +222,25 @@
 .animate-wheel-spin-once {
   animation: wheel-spin-once 1200ms ease-out forwards;
 }
+
+@keyframes splash-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 20px rgba(226, 180, 95, 0.55));
+  }
+}
+
+.animate-splash-pulse {
+  animation: splash-pulse 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-splash-pulse {
+    animation: none;
+  }
+}
