@@ -10,10 +10,18 @@ type ConversationRow = {
   otherName: string;
   isPremium: boolean;
   photoUrl: string | null;
-  lastMessage: string;
-  lastMessageAt: string;
   unreadCount: number;
-};
+} & (
+  | {
+      isNewMatch: true;
+      matchedAt: string;
+    }
+  | {
+      isNewMatch: false;
+      lastMessage: string;
+      lastMessageAt: string;
+    }
+);
 
 type MessageRow = {
   match_id: string;
@@ -97,8 +105,7 @@ function Conversations() {
       }
     }
 
-    const activeMatches = (matches ?? []).filter((match) => latestMessageByMatch.has(match.id));
-    const otherIds = activeMatches.map((match) =>
+    const otherIds = (matches ?? []).map((match) =>
       match.profile_a_id === user.id ? match.profile_b_id : match.profile_a_id,
     );
     const names = new Map<string, string>();
@@ -130,24 +137,36 @@ function Conversations() {
     }
 
     setConversations(
-      activeMatches
+      (matches ?? [])
         .map((match) => {
           const otherId = match.profile_a_id === user.id ? match.profile_b_id : match.profile_a_id;
-          const lastMessage = latestMessageByMatch.get(match.id)!;
-          return {
+          const lastMessage = latestMessageByMatch.get(match.id);
+          const conversation = {
             id: match.id,
             otherName: names.get(otherId) ?? "Motard(e)",
             isPremium: premiumStatuses.get(otherId) ?? false,
             photoUrl: photos.get(otherId) ?? null,
-            lastMessage: lastMessage.content,
-            lastMessageAt: lastMessage.created_at,
             unreadCount: unreadByMatch.get(match.id) ?? 0,
           };
+
+          return lastMessage
+            ? {
+                ...conversation,
+                isNewMatch: false as const,
+                lastMessage: lastMessage.content,
+                lastMessageAt: lastMessage.created_at,
+              }
+            : {
+                ...conversation,
+                isNewMatch: true as const,
+                matchedAt: match.matched_at,
+              };
         })
-        .sort(
-          (first, second) =>
-            new Date(second.lastMessageAt).getTime() - new Date(first.lastMessageAt).getTime(),
-        ),
+        .sort((first, second) => {
+          const firstActivityAt = first.isNewMatch ? first.matchedAt : first.lastMessageAt;
+          const secondActivityAt = second.isNewMatch ? second.matchedAt : second.lastMessageAt;
+          return new Date(secondActivityAt).getTime() - new Date(firstActivityAt).getTime();
+        }),
     );
   }
 
@@ -217,13 +236,21 @@ function Conversations() {
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 truncate text-sm text-[#d4c6bf]">{conversation.lastMessage}</p>
+                  <p className="mt-1 truncate text-sm text-[#d4c6bf]">
+                    {conversation.isNewMatch
+                      ? "Nouveau match — dis bonjour !"
+                      : conversation.lastMessage}
+                  </p>
                 </div>
                 <time
-                  dateTime={conversation.lastMessageAt}
+                  dateTime={
+                    conversation.isNewMatch ? conversation.matchedAt : conversation.lastMessageAt
+                  }
                   className="shrink-0 self-start text-right text-[11px] text-[#a99b95]"
                 >
-                  {new Date(conversation.lastMessageAt).toLocaleString("fr-FR", {
+                  {new Date(
+                    conversation.isNewMatch ? conversation.matchedAt : conversation.lastMessageAt,
+                  ).toLocaleString("fr-FR", {
                     dateStyle: "short",
                     timeStyle: "short",
                   })}
