@@ -356,6 +356,12 @@ function Discover() {
       return;
     }
 
+    void sendPushNotification(
+      current.id,
+      "Tu as reçu un Super coup de cœur ! 💛",
+      "Quelqu'un a eu un vrai coup de cœur pour toi sur Motards de Cœur. Ouvre l'app pour voir qui !",
+    );
+
     if (isChargeable) {
       const { error: chargeError } = await supabase.from("pending_charges").insert({
         user_id: user.id,
