@@ -28,6 +28,8 @@ export function ProfilePhotoGallery({
 }: ProfilePhotoGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const historyEntryIdRef = useRef<string | null>(null);
+  const pendingHistoryBackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -54,18 +56,29 @@ export function ProfilePhotoGallery({
   useEffect(() => {
     if (!open) return;
 
-    const entryId = `${Date.now()}-${Math.random()}`;
-    const currentState = window.history.state;
-    const galleryState =
-      currentState && typeof currentState === "object"
-        ? { ...currentState, [GALLERY_HISTORY_STATE_KEY]: entryId }
-        : { [GALLERY_HISTORY_STATE_KEY]: entryId };
-    let entryIsActive = true;
+    // React Strict Mode immediately runs an effect's setup/cleanup/setup cycle in development.
+    // Reuse the first history entry during that cycle instead of pushing a second entry and
+    // letting the first cleanup's history.back() close the newly opened gallery.
+    if (pendingHistoryBackRef.current !== null) {
+      clearTimeout(pendingHistoryBackRef.current);
+      pendingHistoryBackRef.current = null;
+    }
 
-    window.history.pushState(galleryState, "");
+    let entryId = historyEntryIdRef.current;
+    if (!entryId || window.history.state?.[GALLERY_HISTORY_STATE_KEY] !== entryId) {
+      entryId = `${Date.now()}-${Math.random()}`;
+      historyEntryIdRef.current = entryId;
+      const currentState = window.history.state;
+      const galleryState =
+        currentState && typeof currentState === "object"
+          ? { ...currentState, [GALLERY_HISTORY_STATE_KEY]: entryId }
+          : { [GALLERY_HISTORY_STATE_KEY]: entryId };
+
+      window.history.pushState(galleryState, "");
+    }
 
     const closeOnBack = () => {
-      entryIsActive = false;
+      historyEntryIdRef.current = null;
       onClose();
     };
 
@@ -74,9 +87,16 @@ export function ProfilePhotoGallery({
     return () => {
       window.removeEventListener("popstate", closeOnBack);
 
-      if (entryIsActive && window.history.state?.[GALLERY_HISTORY_STATE_KEY] === entryId) {
-        entryIsActive = false;
-        window.history.back();
+      if (window.history.state?.[GALLERY_HISTORY_STATE_KEY] === entryId) {
+        // Deferring lets a Strict Mode re-setup cancel this navigation. On a real close the
+        // component remains closed, so the synthetic gallery entry is removed normally.
+        pendingHistoryBackRef.current = setTimeout(() => {
+          pendingHistoryBackRef.current = null;
+          if (window.history.state?.[GALLERY_HISTORY_STATE_KEY] === entryId) {
+            historyEntryIdRef.current = null;
+            window.history.back();
+          }
+        }, 0);
       }
     };
   }, [onClose, open]);
