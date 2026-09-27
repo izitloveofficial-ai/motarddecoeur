@@ -79,6 +79,7 @@ function Conversation() {
   const [otherPhotoUrl, setOtherPhotoUrl] = useState<string | null>(null);
   const [otherPhotos, setOtherPhotos] = useState<string[]>([]);
   const [otherProfile, setOtherProfile] = useState<GalleryProfile>({ firstName: "Motard(e)" });
+  const [otherProfileLoading, setOtherProfileLoading] = useState(true);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [content, setContent] = useState("");
   const [myId, setMyId] = useState<string | null>(null);
@@ -294,6 +295,7 @@ function Conversation() {
         });
         setOtherPhotos(photoUrls);
         setOtherPhotoUrl(photoUrls[0] ?? null);
+        setOtherProfileLoading(false);
         // An INSERT can arrive while the initial query is in flight. Merge both sources so the
         // query cannot overwrite a realtime message (and keep the conversation chronological).
         setMessages((realtimeMessages) => {
@@ -464,8 +466,9 @@ function Conversation() {
               <button
                 type="button"
                 onClick={() => setGalleryOpen(true)}
+                disabled={otherProfileLoading}
                 aria-label={`Voir le profil et les photos de ${otherName || "cette personne"}`}
-                className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#d6a85c]/25 bg-[#302526] text-sm font-medium text-[#d4c6bf] shadow-md ring-1 ring-white/10 transition hover:ring-[#d6a85c]"
+                className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#d6a85c]/25 bg-[#302526] text-sm font-medium text-[#d4c6bf] shadow-md ring-1 ring-white/10 transition hover:ring-[#d6a85c] disabled:cursor-wait disabled:opacity-60 disabled:hover:ring-white/10"
               >
                 {otherPhotoUrl ? (
                   <img
@@ -479,7 +482,12 @@ function Conversation() {
                   </span>
                 )}
               </button>
-              <button type="button" onClick={() => setGalleryOpen(true)} className="text-left">
+              <button
+                type="button"
+                onClick={() => setGalleryOpen(true)}
+                disabled={otherProfileLoading}
+                className="text-left transition disabled:cursor-wait disabled:opacity-60"
+              >
                 <h1 className="font-display text-xl sm:text-2xl">{otherName || "Conversation"}</h1>
                 <span className="text-xs text-[#a99b95]">Voir le profil</span>
               </button>
