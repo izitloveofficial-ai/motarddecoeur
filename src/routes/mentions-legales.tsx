@@ -41,10 +41,7 @@ function MentionsLegales() {
 
           <div className="glass rounded-3xl p-6 md:p-10 space-y-10 text-muted-foreground leading-relaxed">
             <LegalSection title="Site concerné">
-              <p>
-                Le site Motards de Cœur est accessible à l'adresse
-                https://motardsdecoeur-com.lovable.app.
-              </p>
+              <p>Le site Motards de Cœur est accessible à l'adresse https://motardsdecoeur.com.</p>
             </LegalSection>
 
             <LegalSection title="Éditeur du site">

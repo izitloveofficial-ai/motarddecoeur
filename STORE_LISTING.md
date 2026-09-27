@@ -34,15 +34,15 @@ L'accès, l'export et la suppression des données sont disponibles à tout momen
 
 ### URL de support
 
-`https://motardsdecoeur-com.lovable.app/contact`
+`https://motardsdecoeur.com/contact`
 
 ### URL marketing
 
-`https://motardsdecoeur-com.lovable.app`
+`https://motardsdecoeur.com`
 
 ### URL politique de confidentialité
 
-`https://motardsdecoeur-com.lovable.app/confidentialite`
+`https://motardsdecoeur.com/confidentialite`
 
 ### Catégories et âge
 
@@ -62,7 +62,7 @@ L'accès, l'export et la suppression des données sont disponibles à tout momen
 - Description : `Rencontres, balades et communauté 100% motards. Trouve ta route à deux.`
 - Catégorie : **Rencontres**
 - Public cible : **18 ans et plus exclusivement**
-- Politique de confidentialité : `https://motardsdecoeur-com.lovable.app/confidentialite`
+- Politique de confidentialité : `https://motardsdecoeur.com/confidentialite`
 
 La description complète et le compte de démonstration sont identiques à ceux préparés pour Apple.
 
