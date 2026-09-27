@@ -12,7 +12,13 @@ type UnseenSuperLike = {
   first_name: string;
 };
 
-export function Layout({ children }: { children: ReactNode }) {
+export function Layout({
+  children,
+  hideMobileNavigation = false,
+}: {
+  children: ReactNode;
+  hideMobileNavigation?: boolean;
+}) {
   const [unseenSuperLike, setUnseenSuperLike] = useState<UnseenSuperLike | null>(null);
   const checkedUserId = useRef<string | null>(null);
   const closingSwipeId = useRef<string | null>(null);
@@ -70,10 +76,12 @@ export function Layout({ children }: { children: ReactNode }) {
     <div className="app-shell min-h-screen flex flex-col">
       <Navbar />
       <AnnouncementBanner />
-      <main className="app-main flex-1 pb-20 pt-24 sm:pb-0 sm:pt-28 md:pt-32 xl:pt-36">
+      <main
+        className={`app-main flex-1 pt-24 sm:pb-0 sm:pt-28 md:pt-32 xl:pt-36 ${hideMobileNavigation ? "pb-0" : "pb-20"}`}
+      >
         {children}
       </main>
-      <MobileTabBar />
+      {!hideMobileNavigation && <MobileTabBar />}
       {unseenSuperLike && (
         <SuperLikeReveal
           firstName={unseenSuperLike.first_name}
