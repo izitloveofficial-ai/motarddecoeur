@@ -106,7 +106,27 @@ function Conversation() {
     }
     const client = supabase;
     let cancelled = false;
+    let conversationReady = false;
     let channel: ReturnType<typeof client.channel> | null = null;
+    let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+    let reconnectAttempts = 0;
+    let reloadAfterSubscribe = false;
+
+    async function reloadMessages() {
+      const { data, error: messagesError } = await client
+        .from("messages")
+        .select("id, sender_id, content, created_at, read_at")
+        .eq("match_id", matchId)
+        .order("created_at", { ascending: true });
+
+      if (cancelled) return;
+      if (messagesError) {
+        setError("Impossible de charger les messages.");
+        return;
+      }
+      setMessages((current) => mergeMessages(current, data ?? []));
+    }
+
     async function init() {
       const {
         data: { user },
@@ -129,67 +149,104 @@ function Conversation() {
         return;
       }
       const otherId = match.profile_a_id === user.id ? match.profile_b_id : match.profile_a_id;
+      conversationReady = true;
       setOtherId(otherId);
       setMatchStatus(match.status === "pending" ? "pending" : "mutual");
 
-      channel = client
-        .channel(`messages:${matchId}`)
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "messages",
-            filter: `match_id=eq.${matchId}`,
-          },
-          (payload) => {
-            const incoming = payload.new as Message;
-            setMessages((previous) => mergeMessages(previous, [incoming]));
-            if (incoming.sender_id !== user.id) {
-              void client
-                .from("messages")
-                .update({ read_at: new Date().toISOString() })
-                .eq("id", incoming.id);
+      const subscribeToMessages = () => {
+        if (cancelled) return;
+
+        const nextChannel = client
+          .channel(`messages:${matchId}`)
+          .on(
+            "postgres_changes",
+            {
+              event: "INSERT",
+              schema: "public",
+              table: "messages",
+              filter: `match_id=eq.${matchId}`,
+            },
+            (payload) => {
+              const incoming = payload.new as Message;
+              setMessages((previous) => mergeMessages(previous, [incoming]));
+              if (incoming.sender_id !== user.id) {
+                void client
+                  .from("messages")
+                  .update({ read_at: new Date().toISOString() })
+                  .eq("id", incoming.id);
+              }
+            },
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "UPDATE",
+              schema: "public",
+              table: "matches",
+              filter: `id=eq.${matchId}`,
+            },
+            (payload) => {
+              const updated = payload.new as { status?: string };
+              setMatchStatus(updated.status === "pending" ? "pending" : "mutual");
+            },
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "UPDATE",
+              schema: "public",
+              table: "messages",
+              filter: `match_id=eq.${matchId}`,
+            },
+            (payload) => {
+              const updated = payload.new as Message;
+              setMessages((previous) => mergeMessages(previous, [updated]));
+            },
+          )
+          .on("broadcast", { event: "typing" }, ({ payload }) => {
+            if (payload?.userId === user.id) return;
+            setIsOtherTyping(true);
+            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+            typingTimeoutRef.current = setTimeout(() => {
+              setIsOtherTyping(false);
+              typingTimeoutRef.current = null;
+            }, 3000);
+          })
+          .subscribe((status) => {
+            if (status === "SUBSCRIBED") {
+              reconnectAttempts = 0;
+              if (reloadAfterSubscribe) {
+                reloadAfterSubscribe = false;
+                void reloadMessages();
+              }
+              return;
             }
-          },
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "matches",
-            filter: `id=eq.${matchId}`,
-          },
-          (payload) => {
-            const updated = payload.new as { status?: string };
-            setMatchStatus(updated.status === "pending" ? "pending" : "mutual");
-          },
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "messages",
-            filter: `match_id=eq.${matchId}`,
-          },
-          (payload) => {
-            const updated = payload.new as Message;
-            setMessages((previous) => mergeMessages(previous, [updated]));
-          },
-        )
-        .on("broadcast", { event: "typing" }, ({ payload }) => {
-          if (payload?.userId === user.id) return;
-          setIsOtherTyping(true);
-          if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-          typingTimeoutRef.current = setTimeout(() => {
-            setIsOtherTyping(false);
-            typingTimeoutRef.current = null;
-          }, 3000);
-        })
-        .subscribe();
-      channelRef.current = channel;
+            if (
+              cancelled ||
+              channelRef.current !== nextChannel ||
+              !["CHANNEL_ERROR", "CLOSED", "TIMED_OUT"].includes(status)
+            ) {
+              return;
+            }
+
+            reloadAfterSubscribe = true;
+            channelRef.current = null;
+            if (reconnectTimeout) clearTimeout(reconnectTimeout);
+            const reconnectDelay = Math.min(1000 * 2 ** reconnectAttempts, 30_000);
+            reconnectAttempts += 1;
+            reconnectTimeout = setTimeout(() => {
+              reconnectTimeout = null;
+              void client.removeChannel(nextChannel).finally(() => {
+                if (!cancelled && !channelRef.current) subscribeToMessages();
+              });
+            }, reconnectDelay);
+          });
+
+        channel = nextChannel;
+        channelRef.current = nextChannel;
+      };
+
+      subscribeToMessages();
 
       const [
         { data: profile },
@@ -251,9 +308,18 @@ function Conversation() {
           .is("read_at", null);
       }
     }
+
+    const handleVisibilityChange = () => {
+      if (!conversationReady || document.visibilityState !== "visible") return;
+      void reloadMessages();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     void init();
     return () => {
       cancelled = true;
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
       channelRef.current = null;
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       if (channel) void client.removeChannel(channel);
