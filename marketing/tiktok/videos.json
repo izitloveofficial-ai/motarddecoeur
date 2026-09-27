@@ -1,0 +1,225 @@
+{
+  "url": "motardsdecoeur-com.lovable.app/join",
+  "videos": [
+    {
+      "id": "01-ca-arrive",
+      "caption": "Motards de Cœur arrive bientôt. L'appli de rencontre pensée pour les motards et les motardes. Préinscription gratuite, lien en bio ❤️🏍️",
+      "hashtags": "#motard #motarde #moto #rencontre #célibataire #bikerlife #motardsdecoeur",
+      "scenes": [
+        {
+          "bg": "hero-sunset.jpg",
+          "kicker": "Bientôt",
+          "title": "Tu roules *seul* ?",
+          "text": "Et si ta prochaine balade se faisait à deux…",
+          "duration": 3.2
+        },
+        {
+          "bg": "cta-road.jpg",
+          "kicker": "Nouvelle appli",
+          "title": "Motards de *Cœur*",
+          "text": "L'appli de rencontre 100 % motards et motardes.",
+          "duration": 3.4
+        },
+        {
+          "bg": "community-ride.jpg",
+          "title": "Ouverture *très bientôt*",
+          "text": "Les premiers inscrits seront prévenus en priorité.",
+          "duration": 3.2
+        },
+        {
+          "bg": "bike-dark.jpg",
+          "cta": true,
+          "kicker": "Préinscriptions ouvertes",
+          "title": "Réserve ta *place*",
+          "titleSize": 96,
+          "perks": ["100 % gratuit", "Sans engagement", "Prévenu(e) en priorité"],
+          "button": "Lien en bio",
+          "duration": 4.8
+        }
+      ]
+    },
+    {
+      "id": "02-pour-qui",
+      "caption": "Motard, motarde, passager, permis en cours… tu as ta place chez Motards de Cœur ❤️ Préinscription gratuite, lien en bio.",
+      "hashtags": "#motarde #motard #passagère #permismoto #rencontremotard #moto #motardsdecoeur",
+      "scenes": [
+        {
+          "bg": "group-touring.jpg",
+          "kicker": "Pour qui ?",
+          "title": "*Motard* ?",
+          "duration": 1.8
+        },
+        {
+          "bg": "event-coast.jpg",
+          "kicker": "Pour qui ?",
+          "title": "*Motarde* ?",
+          "duration": 1.8
+        },
+        {
+          "bg": "group-travel.jpg",
+          "kicker": "Pour qui ?",
+          "title": "*Passager·ère* ?",
+          "duration": 1.8
+        },
+        {
+          "bg": "cta-road.jpg",
+          "kicker": "Pour qui ?",
+          "title": "Permis *en cours* ?",
+          "duration": 1.9
+        },
+        {
+          "bg": "hero-sunset.jpg",
+          "title": "Tu as ta *place*.",
+          "text": "Une appli de rencontre qui partage ta passion.",
+          "duration": 3
+        },
+        {
+          "bg": "bike-dark.jpg",
+          "cta": true,
+          "kicker": "Motards de Cœur",
+          "title": "Préinscris-*toi*",
+          "titleSize": 96,
+          "perks": ["100 % gratuit", "Sans engagement"],
+          "button": "Lien en bio",
+          "duration": 4.6
+        }
+      ]
+    },
+    {
+      "id": "03-marre-des-applis",
+      "caption": "Marre d'expliquer pourquoi tu pars rouler tous les dimanches ? Ici, tout le monde comprend 😅🏍️ Préinscription gratuite, lien en bio.",
+      "hashtags": "#motard #humourmotard #rencontre #applirencontre #moto #bikerlife #motardsdecoeur",
+      "scenes": [
+        {
+          "bg": "event-night.jpg",
+          "kicker": "Sur les autres applis",
+          "title": "« Encore la *moto* ? »",
+          "duration": 2.8
+        },
+        {
+          "bg": "event-alps.jpg",
+          "kicker": "Sur les autres applis",
+          "title": "« Tu pars *encore* rouler ? »",
+          "titleSize": 96,
+          "duration": 2.8
+        },
+        {
+          "bg": "community-ride.jpg",
+          "kicker": "Chez Motards de Cœur",
+          "title": "« On part *ensemble* ? »",
+          "text": "Ici, ta passion n'est pas un défaut. C'est un point commun.",
+          "duration": 3.6
+        },
+        {
+          "bg": "bike-dark.jpg",
+          "cta": true,
+          "kicker": "Bientôt disponible",
+          "title": "Rejoins les *premiers*",
+          "titleSize": 92,
+          "perks": ["Préinscription gratuite", "Sans engagement"],
+          "button": "Lien en bio",
+          "duration": 4.6
+        }
+      ]
+    },
+    {
+      "id": "04-ce-que-tu-pourras-faire",
+      "caption": "Ce que tu pourras faire sur Motards de Cœur 👇 Rencontrer des motards près de chez toi, organiser des balades, partager ta passion. Préinscription gratuite, lien en bio.",
+      "hashtags": "#motard #motarde #balademoto #roadtrip #rencontre #moto #motardsdecoeur",
+      "scenes": [
+        {
+          "bg": "cta-road.jpg",
+          "kicker": "Motards de Cœur",
+          "title": "Ce que tu pourras *faire*",
+          "duration": 2.8
+        },
+        {
+          "bg": "group-touring.jpg",
+          "kicker": "1",
+          "title": "Rencontrer des motards *près de chez toi*",
+          "titleSize": 92,
+          "duration": 3
+        },
+        {
+          "bg": "event-coast.jpg",
+          "kicker": "2",
+          "title": "Organiser des *balades* à deux ou en groupe",
+          "titleSize": 92,
+          "duration": 3
+        },
+        {
+          "bg": "home-solidaire.jpg",
+          "kicker": "3",
+          "title": "Partager ta *passion* sans te justifier",
+          "titleSize": 92,
+          "duration": 3
+        },
+        {
+          "bg": "bike-dark.jpg",
+          "cta": true,
+          "kicker": "Ouverture prochaine",
+          "title": "Sois *prévenu(e)*",
+          "titleSize": 96,
+          "perks": ["100 % gratuit", "Accès prioritaire"],
+          "button": "Lien en bio",
+          "duration": 4.6
+        }
+      ]
+    },
+    {
+      "id": "05-casque-et-coeur",
+      "caption": "Un casque. Une moto. Et peut-être quelqu'un à qui tenir la main aux feux rouges ❤️ Motards de Cœur, bientôt. Préinscription gratuite, lien en bio.",
+      "hashtags": "#motard #amour #couplemotard #moto #rencontre #romantique #motardsdecoeur",
+      "scenes": [
+        { "bg": "hero-sunset.jpg", "title": "Un *casque*.", "duration": 2 },
+        { "bg": "bike-dark.jpg", "title": "Une *moto*.", "duration": 2 },
+        {
+          "bg": "event-coast.jpg",
+          "title": "Et quelqu'un pour *partager* la route.",
+          "titleSize": 96,
+          "duration": 3.4
+        },
+        {
+          "bg": "cta-road.jpg",
+          "cta": true,
+          "kicker": "Motards de Cœur",
+          "title": "Bientôt sur ton *téléphone*",
+          "titleSize": 84,
+          "perks": ["Préinscription gratuite", "Sans engagement"],
+          "button": "Lien en bio",
+          "duration": 4.8
+        }
+      ]
+    },
+    {
+      "id": "06-rappel-preinscription",
+      "caption": "Rappel : les préinscriptions Motards de Cœur sont ouvertes 🏍️❤️ Gratuit, sans engagement, et tu seras prévenu(e) en premier. Lien en bio.",
+      "hashtags": "#motard #motarde #moto #préinscription #applimoto #rencontre #motardsdecoeur",
+      "scenes": [
+        {
+          "bg": "group-travel.jpg",
+          "kicker": "Rappel",
+          "title": "Les préinscriptions sont *ouvertes*",
+          "titleSize": 96,
+          "duration": 3.2
+        },
+        {
+          "bg": "community-ride.jpg",
+          "title": "Quelques *clics* pour t'inscrire",
+          "text": "Un prénom, un e-mail, ta région… et c'est parti.",
+          "duration": 3.4
+        },
+        {
+          "bg": "bike-dark.jpg",
+          "cta": true,
+          "kicker": "Motards de Cœur",
+          "title": "On t'attend",
+          "titleSize": 104,
+          "perks": ["100 % gratuit", "Sans engagement", "Prévenu(e) en priorité"],
+          "button": "Lien en bio",
+          "duration": 4.8
+        }
+      ]
+    }
+  ]
+}

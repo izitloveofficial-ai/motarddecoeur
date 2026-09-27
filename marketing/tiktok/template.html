@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Motards de Cœur — gabarit vidéo TikTok</title>
+    <style>
+      /* Polices du site (licence SIL OFL), embarquées pour un rendu identique hors ligne. */
+      @font-face {
+        font-family: "Inter";
+        font-weight: 100 900;
+        src: url("assets/fonts/inter.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Playfair Display";
+        font-weight: 400 900;
+        src: url("assets/fonts/playfair-display.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Playfair Display";
+        font-style: italic;
+        font-weight: 400 900;
+        src: url("assets/fonts/playfair-display-italic.woff2") format("woff2");
+      }
+      :root {
+        --noir: #120b0b;
+        --rouge: #a3222b;
+        --braise: #d4333c;
+        --or: #e2b45f;
+        --or-clair: #f6d98d;
+        --creme: #f7efe6;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--noir);
+        font-family: "Inter", system-ui, sans-serif;
+        color: var(--creme);
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        overflow: hidden;
+      }
+      .bg {
+        position: absolute;
+        inset: -4%;
+        background-size: cover;
+        background-position: center;
+        will-change: transform;
+      }
+      .shade {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(18, 11, 11, 0.55) 0%,
+            rgba(18, 11, 11, 0.1) 30%,
+            rgba(18, 11, 11, 0.35) 55%,
+            rgba(18, 11, 11, 0.92) 100%
+          ),
+          radial-gradient(ellipse at 50% 60%, rgba(163, 34, 43, 0.18), transparent 70%);
+      }
+      /* Zone sûre TikTok : ni en haut (onglets), ni à droite (boutons), ni en bas (légende). */
+      .copy {
+        position: absolute;
+        left: 80px;
+        right: 170px;
+        top: 520px;
+        bottom: 560px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 34px;
+      }
+      .kicker {
+        align-self: flex-start;
+        padding: 16px 30px;
+        border-radius: 999px;
+        border: 2px solid rgba(226, 180, 95, 0.6);
+        background: rgba(226, 180, 95, 0.16);
+        color: var(--or-clair);
+        font-weight: 800;
+        font-size: 34px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .title {
+        font-family: "Playfair Display", Georgia, serif;
+        font-weight: 900;
+        font-size: 112px;
+        line-height: 1.02;
+        text-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
+      }
+      .title .w {
+        display: inline-block;
+        white-space: pre;
+      }
+      .title em {
+        font-style: italic;
+        color: var(--or);
+      }
+      .text {
+        font-size: 50px;
+        line-height: 1.3;
+        font-weight: 700;
+        color: #f1e3d3;
+        text-shadow: 0 3px 18px rgba(0, 0, 0, 0.75);
+      }
+      /* Logo toujours présent. Son fond blanc est transparent : un halo clair garde le texte lisible. */
+      .logo {
+        filter: drop-shadow(0 0 1.5px rgba(255, 246, 235, 0.95))
+          drop-shadow(0 0 3px rgba(255, 246, 235, 0.7)) drop-shadow(0 8px 26px rgba(0, 0, 0, 0.55));
+      }
+      .brand {
+        position: absolute;
+        top: 150px;
+        left: 70px;
+        width: 230px;
+      }
+      .cta-logo {
+        width: 420px;
+        align-self: center;
+      }
+      .progress {
+        position: absolute;
+        top: 120px;
+        left: 80px;
+        right: 80px;
+        height: 8px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.18);
+        overflow: hidden;
+      }
+      .progress i {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--rouge), var(--or));
+      }
+      /* Écran final (appel à l'action) */
+      .cta .copy {
+        align-items: center;
+        text-align: center;
+        right: 80px;
+      }
+      .cta .kicker {
+        align-self: center;
+      }
+      .button {
+        padding: 34px 56px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--braise), var(--rouge));
+        font-weight: 800;
+        font-size: 50px;
+        box-shadow:
+          0 0 0 4px rgba(226, 180, 95, 0.55),
+          0 18px 50px rgba(163, 34, 43, 0.6);
+      }
+      .perks {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        font-size: 42px;
+        font-weight: 700;
+        color: var(--or-clair);
+      }
+      .url {
+        font-size: 34px;
+        color: #d8cbc4;
+        letter-spacing: 0.02em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script>
+      // Rendu déterministe : render.mjs appelle window.renderAt(t) pour chaque image.
+      const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+      const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+      const esc = (s) =>
+        String(s ?? "").replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      // *mot* → mot en italique doré
+      const rich = (s) => esc(s).replace(/\*(.+?)\*/g, "<em>$1</em>");
+
+      let scenes = [];
+      let total = 0;
+      const FADE = 0.45;
+
+      window.setup = (video, opts) => {
+        const stage = document.getElementById("stage");
+        let start = 0;
+        scenes = video.scenes.map((s, i) => {
+          const el = document.createElement("section");
+          el.className = "scene" + (s.cta ? " cta" : "");
+          const words = rich(s.title)
+            .split(/(\s+)/)
+            .map((w) => (w.trim() ? `<span class="w">${w}</span>` : w))
+            .join("");
+          el.innerHTML = `
+            <div class="bg" style="background-image:url('${opts.assets}/${s.bg}')"></div>
+            <div class="shade"></div>
+            <div class="copy">
+              ${s.cta ? `<img class="logo cta-logo" src="${opts.logo}" alt="Motards de Cœur">` : ""}
+              ${s.kicker ? `<div class="kicker">${esc(s.kicker)}</div>` : ""}
+              <h1 class="title" style="${s.titleSize ? `font-size:${s.titleSize}px` : ""}">${words}</h1>
+              ${s.text ? `<p class="text">${rich(s.text)}</p>` : ""}
+              ${s.cta ? `<div class="perks">${(s.perks || []).map((p) => `<span>✓ ${esc(p)}</span>`).join("")}</div>` : ""}
+              ${s.cta ? `<div class="button">${esc(s.button || "Préinscription gratuite")}</div>` : ""}
+              ${s.cta && opts.url ? `<div class="url">${esc(opts.url)}</div>` : ""}
+            </div>`;
+          stage.appendChild(el);
+          const scene = { ...s, el, start, dir: i % 2 ? -1 : 1 };
+          start += s.duration;
+          return scene;
+        });
+        total = start;
+        stage.insertAdjacentHTML(
+          "beforeend",
+          `<div class="progress"><i></i></div>
+           <img class="logo brand" src="${opts.logo}" alt="Motards de Cœur">`,
+        );
+        return total;
+      };
+
+      window.renderAt = (t) => {
+        for (const s of scenes) {
+          const local = t - s.start;
+          const end = s.duration;
+          const visible = local > -FADE && local < end;
+          const fadeIn = s.start === 0 ? 1 : clamp((local + FADE) / FADE);
+          const fadeOut = s.start + s.duration >= total ? 1 : clamp((end - local) / FADE);
+          s.el.style.opacity = visible ? Math.min(fadeIn, fadeOut) : 0;
+          if (!visible) continue;
+          const p = clamp(local / end);
+          s.el.querySelector(".bg").style.transform =
+            `scale(${1.04 + 0.12 * p}) translateX(${s.dir * (p - 0.5) * 40}px)`;
+          const kicker = s.el.querySelector(".kicker");
+          if (kicker) {
+            const k = ease(local / 0.5);
+            kicker.style.opacity = k;
+            kicker.style.transform = `translateY(${(1 - k) * 30}px)`;
+          }
+          s.el.querySelectorAll(".title .w").forEach((w, i) => {
+            const k = ease((local - 0.15 - i * 0.09) / 0.45);
+            w.style.opacity = k;
+            w.style.transform = `translateY(${(1 - k) * 60}px)`;
+          });
+          const text = s.el.querySelector(".text");
+          if (text) {
+            const k = ease((local - 0.7) / 0.6);
+            text.style.opacity = k;
+            text.style.transform = `translateY(${(1 - k) * 40}px)`;
+          }
+          if (s.cta) {
+            const beat = 1 + 0.04 * Math.max(0, Math.sin(local * Math.PI * 2 * 1.2));
+            s.el.querySelector(".cta-logo").style.transform =
+              `scale(${(0.6 + 0.4 * ease(local / 0.6)) * beat})`;
+            s.el.querySelectorAll(".perks span").forEach((el, i) => {
+              const k = ease((local - 0.9 - i * 0.25) / 0.4);
+              el.style.opacity = k;
+              el.style.transform = `translateX(${(1 - k) * -40}px)`;
+            });
+            const b = s.el.querySelector(".button");
+            const kb = ease((local - 1.6) / 0.5);
+            b.style.opacity = kb;
+            b.style.transform = `scale(${(0.8 + 0.2 * kb) * (1 + 0.03 * Math.sin(local * 5))})`;
+            const u = s.el.querySelector(".url");
+            if (u) u.style.opacity = ease((local - 2) / 0.5);
+          }
+        }
+        // Pendant l'écran final, le grand logo central prend le relais du petit logo.
+        const last = scenes[scenes.length - 1];
+        document.querySelector(".brand").style.opacity = last.cta
+          ? 1 - clamp((t - last.start + FADE) / FADE)
+          : 1;
+        document.querySelector(".progress i").style.width = `${clamp(t / total) * 100}%`;
+      };
+    </script>
+  </body>
+</html>

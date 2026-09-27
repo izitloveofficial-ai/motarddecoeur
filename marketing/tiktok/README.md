@@ -1,0 +1,68 @@
+# Vidéos TikTok — lancement de Motards de Cœur
+
+Kit pour publier régulièrement sur TikTok jusqu'à l'ouverture de l'application, avec un seul objectif :
+**faire remplir la préinscription gratuite** (`/join`).
+
+## Contenu du dossier
+
+| Fichier | Rôle |
+| --- | --- |
+| `videos.json` | Texte, images, durées, légende et hashtags de chaque vidéo générée |
+| `render.mjs` | Fabrique les vidéos MP4 verticales (1080×1920, 30 i/s) dans `out/` |
+| `logo.mjs` | Rend transparent le blanc du logo → `assets/logo-transparent.png` |
+| `template.html` | Mise en page animée (couleurs, polices et logo du site) |
+| `idees-videos.md` | Calendrier et scripts de vidéos à filmer soi-même |
+
+Le logo figure sur **toutes** les vidéos : en haut à gauche pendant la vidéo, puis en grand sur
+l'écran final. Le texte reste hors des zones masquées par l'interface TikTok (onglets en haut, boutons à
+droite, légende en bas).
+
+## Générer les vidéos
+
+Prérequis : Node 20+, [Playwright](https://playwright.dev) (`npm i -g playwright && npx playwright install chromium`)
+et [ffmpeg](https://ffmpeg.org).
+
+```bash
+node marketing/tiktok/logo.mjs               # une fois, ou après changement de logo
+node marketing/tiktok/render.mjs --preview   # aperçu PNG de chaque scène
+node marketing/tiktok/render.mjs             # toutes les vidéos → marketing/tiktok/out/
+node marketing/tiktok/render.mjs 03          # seulement la vidéo 03
+```
+
+Si ffmpeg n'est pas dans le PATH : `FFMPEG=/chemin/vers/ffmpeg node marketing/tiktok/render.mjs`.
+Les MP4 ne sont pas versionnés (`out/` est ignoré par git).
+
+### Changer le logo (version haute définition)
+
+Le logo actuel provient du site et ne fait que 160 px : ses bords sont un peu flous une fois agrandi.
+Pour une vidéo nette, déposer le fichier original (PNG ou JPG, idéalement 1000 px ou plus) sous
+`marketing/tiktok/assets/logo-source.png`, puis relancer `logo.mjs` et `render.mjs`. Toute la partie
+blanche devient transparente automatiquement ; un léger halo clair garde le texte gris lisible sur
+les fonds sombres.
+
+### Créer une nouvelle vidéo
+
+Copier un bloc de `videos.json`, changer l'`id` et les scènes :
+
+- `bg` : image de `src/assets/` (fond animé) ;
+- `kicker` : petite étiquette dorée ; `title` : texte principal (`*mot*` = italique doré) ;
+- `text` : sous-titre facultatif ; `duration` : secondes ; `titleSize` : taille du titre (112 par défaut) ;
+- dernière scène `"cta": true` avec `perks` (avantages) et `button`.
+
+N'utiliser que des images de décor, de groupes ou de motos : ne pas présenter les photos de profil
+d'exemple comme de vrais membres. Ne pas annoncer de chiffres (inscrits, date d'ouverture)
+qui n'aient pas été vérifiés.
+
+## Publier sur TikTok
+
+1. Importer le MP4, **ajouter une musique** tendance dans TikTok (la vidéo contient une piste
+   silencieuse). Compte professionnel : choisir dans la bibliothèque de musique commerciale.
+2. Coller la légende et les hashtags de `videos.json`.
+3. Mettre le lien de préinscription dans la bio :
+   `https://motardsdecoeur-com.lovable.app/join`.
+4. Épingler la vidéo 01 en haut du profil.
+5. Répondre aux commentaires dans l'heure, idéalement en vidéo (« Réponse à @… »).
+
+Rythme conseillé : **3 à 5 vidéos par semaine**, en alternant vidéos générées et vidéos filmées
+(voir `idees-videos.md`). Heures qui fonctionnent souvent : 12 h–13 h et 18 h–21 h, dimanche matin
+pour le public motard. Regarder les statistiques TikTok après deux semaines et doubler ce qui marche.
