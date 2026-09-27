@@ -2,8 +2,8 @@
 // Usage : node marketing/tiktok/render.mjs            → toutes les vidéos
 //         node marketing/tiktok/render.mjs 03 07      → seulement les vidéos dont l'id commence par 03 ou 07
 //         node marketing/tiktok/render.mjs --preview  → une image PNG par scène (vérification rapide)
-import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync } from "node:fs";
+import { execFileSync, spawn } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { FFMPEG, HERE, loadChromium } from "./lib.mjs";
 
@@ -23,6 +23,90 @@ if (!existsSync(`${HERE}/assets/logo-transparent.png`)) {
   process.exit(1);
 }
 
+// Voix off : Piper (synthèse vocale libre, hors ligne) et sa voix française « siwis ».
+const PIPER = process.env.PIPER || "piper";
+const VOICE = process.env.PIPER_VOICE || `${HERE}/assets/voix/fr-siwis-medium.onnx`;
+const VOICE_LEAD = 0.25; // silence avant chaque réplique
+const VOICE_TAIL = 0.45; // respiration après chaque réplique
+const hasVoice = existsSync(VOICE);
+if (!hasVoice) console.warn(`Voix introuvable (${VOICE}) : vidéos rendues sans voix off.`);
+
+/** WAV PCM 16 bits → { rate, samples } (mono attendu, comme Piper). */
+function readWav(file) {
+  const buf = readFileSync(file);
+  let rate = 22050;
+  for (let o = 12; o < buf.length - 8; ) {
+    const id = buf.toString("ascii", o, o + 4);
+    const size = buf.readUInt32LE(o + 4);
+    if (id === "fmt ") rate = buf.readUInt32LE(o + 12);
+    if (id === "data")
+      return {
+        rate,
+        samples: new Int16Array(
+          buf.buffer.slice(buf.byteOffset + o + 8, buf.byteOffset + o + 8 + size),
+        ),
+      };
+    o += 8 + size + (size % 2);
+  }
+  throw new Error(`WAV invalide : ${file}`);
+}
+
+function writeWav(file, rate, samples) {
+  const head = Buffer.alloc(44);
+  head.write("RIFF", 0);
+  head.writeUInt32LE(36 + samples.byteLength, 4);
+  head.write("WAVEfmt ", 8);
+  head.writeUInt32LE(16, 16);
+  head.writeUInt16LE(1, 20);
+  head.writeUInt16LE(1, 22);
+  head.writeUInt32LE(rate, 24);
+  head.writeUInt32LE(rate * 2, 28);
+  head.writeUInt16LE(2, 32);
+  head.writeUInt16LE(16, 34);
+  head.write("data", 36);
+  head.writeUInt32LE(samples.byteLength, 40);
+  writeFileSync(file, Buffer.concat([head, Buffer.from(samples.buffer)]));
+}
+
+/** Synthétise chaque réplique, allonge les scènes trop courtes et renvoie la piste voix (ou null). */
+function buildVoiceTrack(video) {
+  if (!hasVoice || !video.scenes.some((s) => s.voice)) return null;
+  const clips = video.scenes.map((s, i) => {
+    if (!s.voice) return null;
+    const file = `${outDir}/.voix-${video.id}-${i}.wav`;
+    execFileSync(
+      PIPER,
+      ["-m", VOICE, "-f", file, "--length-scale", "0.95", "--sentence-silence", "0.2"],
+      {
+        input: s.voice,
+        stdio: ["pipe", "ignore", "pipe"],
+      },
+    );
+    const clip = readWav(file);
+    rmSync(file);
+    return clip;
+  });
+  const rate = clips.find(Boolean).rate;
+  video.scenes.forEach((s, i) => {
+    if (clips[i])
+      s.duration = Math.max(s.duration, VOICE_LEAD + clips[i].samples.length / rate + VOICE_TAIL);
+  });
+  const total = video.scenes.reduce((sum, s) => sum + s.duration, 0);
+  const track = new Int16Array(Math.ceil(total * rate));
+  let start = 0;
+  video.scenes.forEach((s, i) => {
+    if (clips[i])
+      track.set(
+        clips[i].samples.subarray(0, track.length - Math.round((start + VOICE_LEAD) * rate)),
+        Math.round((start + VOICE_LEAD) * rate),
+      );
+    start += s.duration;
+  });
+  const file = `${outDir}/.voix-${video.id}.wav`;
+  writeWav(file, rate, track);
+  return file;
+}
+
 const chromium = await loadChromium();
 const browser = await chromium.launch();
 const page = await browser.newPage({
@@ -31,6 +115,7 @@ const page = await browser.newPage({
 });
 
 for (const video of videos) {
+  const voiceFile = buildVoiceTrack(video);
   await page.goto(pathToFileURL(`${HERE}/template.html`).href);
   const total = await page.evaluate(
     ([v, o]) => window.setup(v, o),
@@ -63,6 +148,7 @@ for (const video of videos) {
       start += s.duration;
     }
     console.log(`✓ aperçu ${video.id}`);
+    if (voiceFile) rmSync(voiceFile);
     continue;
   }
 
@@ -79,10 +165,9 @@ for (const video of videos) {
       String(FPS),
       "-i",
       "-",
-      "-f",
-      "lavfi",
-      "-i",
-      "anullsrc=r=44100:cl=stereo",
+      ...(voiceFile ? ["-i", voiceFile] : ["-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo"]),
+      "-af",
+      "apad",
       "-shortest",
       "-c:v",
       "libx264",
@@ -94,6 +179,8 @@ for (const video of videos) {
       "yuv420p",
       "-c:a",
       "aac",
+      "-ar",
+      "44100",
       "-b:a",
       "128k",
       "-movflags",
@@ -113,6 +200,7 @@ for (const video of videos) {
   }
   ffmpeg.stdin.end();
   await done;
+  if (voiceFile) rmSync(voiceFile);
   console.log(`✓ ${file} (${total.toFixed(1)} s)`);
 }
 

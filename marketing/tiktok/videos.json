@@ -1,5 +1,5 @@
 {
-  "url": "motardsdecoeur-com.lovable.app/join",
+  "url": "motardsdecoeur.com/join",
   "videos": [
     {
       "id": "01-ca-arrive",
@@ -11,20 +11,23 @@
           "kicker": "Bientôt",
           "title": "Tu roules *seul* ?",
           "text": "Et si ta prochaine balade se faisait à deux…",
-          "duration": 3.2
+          "duration": 3.2,
+          "voice": "Tu roules seul ? Et si ta prochaine balade se faisait à deux..."
         },
         {
           "bg": "cta-road.jpg",
           "kicker": "Nouvelle appli",
           "title": "Motards de *Cœur*",
           "text": "L'appli de rencontre 100 % motards et motardes.",
-          "duration": 3.4
+          "duration": 3.4,
+          "voice": "Motards de Cœur, c'est la nouvelle appli de rencontre, cent pour cent motards et motardes."
         },
         {
           "bg": "community-ride.jpg",
           "title": "Ouverture *très bientôt*",
           "text": "Les premiers inscrits seront prévenus en priorité.",
-          "duration": 3.2
+          "duration": 3.2,
+          "voice": "L'ouverture, c'est très bientôt. Les premiers inscrits seront prévenus en priorité."
         },
         {
           "bg": "bike-dark.jpg",
@@ -34,7 +37,8 @@
           "titleSize": 96,
           "perks": ["100 % gratuit", "Sans engagement", "Prévenu(e) en priorité"],
           "button": "Lien en bio",
-          "duration": 4.8
+          "duration": 4.8,
+          "voice": "Alors réserve ta place : la préinscription est gratuite et sans engagement. Le lien est dans la bio !"
         }
       ]
     },
@@ -47,31 +51,36 @@
           "bg": "group-touring.jpg",
           "kicker": "Pour qui ?",
           "title": "*Motard* ?",
-          "duration": 1.8
+          "duration": 1.8,
+          "voice": "Tu es motard ?"
         },
         {
           "bg": "event-coast.jpg",
           "kicker": "Pour qui ?",
           "title": "*Motarde* ?",
-          "duration": 1.8
+          "duration": 1.8,
+          "voice": "Motarde ?"
         },
         {
           "bg": "group-travel.jpg",
           "kicker": "Pour qui ?",
           "title": "*Passager·ère* ?",
-          "duration": 1.8
+          "duration": 1.8,
+          "voice": "Passager ou passagère ?"
         },
         {
           "bg": "cta-road.jpg",
           "kicker": "Pour qui ?",
           "title": "Permis *en cours* ?",
-          "duration": 1.9
+          "duration": 1.9,
+          "voice": "Ou tu passes ton permis ?"
         },
         {
           "bg": "hero-sunset.jpg",
           "title": "Tu as ta *place*.",
           "text": "Une appli de rencontre qui partage ta passion.",
-          "duration": 3
+          "duration": 3,
+          "voice": "Chez Motards de Cœur, tu as ta place. Une appli de rencontre qui partage ta passion."
         },
         {
           "bg": "bike-dark.jpg",
@@ -81,7 +90,8 @@
           "titleSize": 96,
           "perks": ["100 % gratuit", "Sans engagement"],
           "button": "Lien en bio",
-          "duration": 4.6
+          "duration": 4.6,
+          "voice": "Préinscris-toi gratuitement, sans engagement. Lien en bio !"
         }
       ]
     },
@@ -94,21 +104,24 @@
           "bg": "event-night.jpg",
           "kicker": "Sur les autres applis",
           "title": "« Encore la *moto* ? »",
-          "duration": 2.8
+          "duration": 2.8,
+          "voice": "Sur les autres applis : encore la moto ?"
         },
         {
           "bg": "event-alps.jpg",
           "kicker": "Sur les autres applis",
           "title": "« Tu pars *encore* rouler ? »",
           "titleSize": 96,
-          "duration": 2.8
+          "duration": 2.8,
+          "voice": "Tu pars encore rouler ?"
         },
         {
           "bg": "community-ride.jpg",
           "kicker": "Chez Motards de Cœur",
           "title": "« On part *ensemble* ? »",
           "text": "Ici, ta passion n'est pas un défaut. C'est un point commun.",
-          "duration": 3.6
+          "duration": 3.6,
+          "voice": "Chez Motards de Cœur : on part ensemble ? Ici, ta passion n'est pas un défaut, c'est un point commun."
         },
         {
           "bg": "bike-dark.jpg",
@@ -118,7 +131,8 @@
           "titleSize": 92,
           "perks": ["Préinscription gratuite", "Sans engagement"],
           "button": "Lien en bio",
-          "duration": 4.6
+          "duration": 4.6,
+          "voice": "L'appli arrive bientôt. Rejoins les premiers, c'est gratuit. Lien en bio !"
         }
       ]
     },
@@ -131,28 +145,32 @@
           "bg": "cta-road.jpg",
           "kicker": "Motards de Cœur",
           "title": "Ce que tu pourras *faire*",
-          "duration": 2.8
+          "duration": 2.8,
+          "voice": "Voici ce que tu pourras faire sur Motards de Cœur."
         },
         {
           "bg": "group-touring.jpg",
           "kicker": "1",
           "title": "Rencontrer des motards *près de chez toi*",
           "titleSize": 92,
-          "duration": 3
+          "duration": 3,
+          "voice": "Un : rencontrer des motards près de chez toi."
         },
         {
           "bg": "event-coast.jpg",
           "kicker": "2",
           "title": "Organiser des *balades* à deux ou en groupe",
           "titleSize": 92,
-          "duration": 3
+          "duration": 3,
+          "voice": "Deux : organiser des balades, à deux ou en groupe."
         },
         {
           "bg": "home-solidaire.jpg",
           "kicker": "3",
           "title": "Partager ta *passion* sans te justifier",
           "titleSize": 92,
-          "duration": 3
+          "duration": 3,
+          "voice": "Trois : partager ta passion, sans jamais te justifier."
         },
         {
           "bg": "bike-dark.jpg",
@@ -162,7 +180,8 @@
           "titleSize": 96,
           "perks": ["100 % gratuit", "Accès prioritaire"],
           "button": "Lien en bio",
-          "duration": 4.6
+          "duration": 4.6,
+          "voice": "L'ouverture approche. Préinscris-toi pour être prévenu en priorité. Lien en bio !"
         }
       ]
     },
@@ -171,13 +190,24 @@
       "caption": "Un casque. Une moto. Et peut-être quelqu'un à qui tenir la main aux feux rouges ❤️ Motards de Cœur, bientôt. Préinscription gratuite, lien en bio.",
       "hashtags": "#motard #amour #couplemotard #moto #rencontre #romantique #motardsdecoeur",
       "scenes": [
-        { "bg": "hero-sunset.jpg", "title": "Un *casque*.", "duration": 2 },
-        { "bg": "bike-dark.jpg", "title": "Une *moto*.", "duration": 2 },
+        {
+          "bg": "hero-sunset.jpg",
+          "title": "Un *casque*.",
+          "duration": 2,
+          "voice": "Un casque."
+        },
+        {
+          "bg": "bike-dark.jpg",
+          "title": "Une *moto*.",
+          "duration": 2,
+          "voice": "Une moto."
+        },
         {
           "bg": "event-coast.jpg",
           "title": "Et quelqu'un pour *partager* la route.",
           "titleSize": 96,
-          "duration": 3.4
+          "duration": 3.4,
+          "voice": "Et quelqu'un pour partager la route."
         },
         {
           "bg": "cta-road.jpg",
@@ -187,7 +217,8 @@
           "titleSize": 84,
           "perks": ["Préinscription gratuite", "Sans engagement"],
           "button": "Lien en bio",
-          "duration": 4.8
+          "duration": 4.8,
+          "voice": "Motards de Cœur, bientôt sur ton téléphone. Préinscription gratuite, lien en bio !"
         }
       ]
     },
@@ -201,13 +232,15 @@
           "kicker": "Rappel",
           "title": "Les préinscriptions sont *ouvertes*",
           "titleSize": 96,
-          "duration": 3.2
+          "duration": 3.2,
+          "voice": "Petit rappel : les préinscriptions Motards de Cœur sont ouvertes !"
         },
         {
           "bg": "community-ride.jpg",
           "title": "Quelques *clics* pour t'inscrire",
           "text": "Un prénom, un e-mail, ta région… et c'est parti.",
-          "duration": 3.4
+          "duration": 3.4,
+          "voice": "Quelques clics suffisent : un prénom, un e-mail, ta région, et c'est parti."
         },
         {
           "bg": "bike-dark.jpg",
@@ -217,7 +250,8 @@
           "titleSize": 104,
           "perks": ["100 % gratuit", "Sans engagement", "Prévenu(e) en priorité"],
           "button": "Lien en bio",
-          "duration": 4.8
+          "duration": 4.8,
+          "voice": "C'est gratuit et sans engagement. On t'attend ! Le lien est dans la bio."
         }
       ]
     }

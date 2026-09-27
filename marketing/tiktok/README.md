@@ -19,8 +19,17 @@ droite, légende en bas).
 
 ## Générer les vidéos
 
-Prérequis : Node 20+, [Playwright](https://playwright.dev) (`npm i -g playwright && npx playwright install chromium`)
-et [ffmpeg](https://ffmpeg.org).
+Prérequis : Node 20+, [Playwright](https://playwright.dev) (`npm i -g playwright && npx playwright install chromium`),
+[ffmpeg](https://ffmpeg.org) et, pour la voix off, [Piper](https://github.com/OHF-Voice/piper1-gpl)
+(`pip install piper-tts`) avec la voix française « siwis » (licence CC BY 4.0) :
+
+```bash
+mkdir -p marketing/tiktok/assets/voix
+curl -L https://github.com/rhasspy/piper/releases/download/v0.0.2/voice-fr-siwis-medium.tar.gz \
+  | tar xz -C marketing/tiktok/assets/voix
+```
+
+Sans la voix, les vidéos sont rendues avec une piste silencieuse.
 
 ```bash
 node marketing/tiktok/logo.mjs               # une fois, ou après changement de logo
@@ -29,8 +38,19 @@ node marketing/tiktok/render.mjs             # toutes les vidéos → marketing/
 node marketing/tiktok/render.mjs 03          # seulement la vidéo 03
 ```
 
-Si ffmpeg n'est pas dans le PATH : `FFMPEG=/chemin/vers/ffmpeg node marketing/tiktok/render.mjs`.
-Les MP4 ne sont pas versionnés (`out/` est ignoré par git).
+Si ffmpeg ou piper ne sont pas dans le PATH : variables `FFMPEG`, `PIPER` et `PIPER_VOICE`.
+Les MP4 et le modèle de voix (70 Mo) ne sont pas versionnés.
+
+### Voix off
+
+Chaque scène a un champ `voice` : la phrase lue par la voix de synthèse. La scène s'allonge
+automatiquement si la phrase est plus longue que sa durée. Écrire les nombres en toutes lettres
+(« cent pour cent ») et l'adresse comme elle se prononce. Limite connue : cette voix prononce
+imparfaitement les sons nasals (« an », « on », « in »). Pour un rendu plus naturel, utiliser l'option
+« Texte en voix » de TikTok ou enregistrer sa propre voix.
+
+Crédit de la voix : modèle Piper « fr_FR siwis » entraîné sur la SIWIS French Speech Synthesis
+Database (University of Edinburgh), licence CC BY 4.0.
 
 ### Changer le logo (version haute définition)
 
@@ -46,7 +66,7 @@ Copier un bloc de `videos.json`, changer l'`id` et les scènes :
 
 - `bg` : image de `src/assets/` (fond animé) ;
 - `kicker` : petite étiquette dorée ; `title` : texte principal (`*mot*` = italique doré) ;
-- `text` : sous-titre facultatif ; `duration` : secondes ; `titleSize` : taille du titre (112 par défaut) ;
+- `text` : sous-titre facultatif ; `voice` : texte de la voix off ; `duration` : secondes ; `titleSize` : taille du titre (112 par défaut) ;
 - dernière scène `"cta": true` avec `perks` (avantages) et `button`.
 
 N'utiliser que des images de décor, de groupes ou de motos : ne pas présenter les photos de profil
@@ -55,11 +75,11 @@ qui n'aient pas été vérifiés.
 
 ## Publier sur TikTok
 
-1. Importer le MP4, **ajouter une musique** tendance dans TikTok (la vidéo contient une piste
-   silencieuse). Compte professionnel : choisir dans la bibliothèque de musique commerciale.
+1. Importer le MP4. Pour ajouter une musique, baisser son volume sous la voix
+   (« Sons » → « Volume »). Compte professionnel : bibliothèque de musique commerciale uniquement.
 2. Coller la légende et les hashtags de `videos.json`.
 3. Mettre le lien de préinscription dans la bio :
-   `https://motardsdecoeur-com.lovable.app/join`.
+   `https://motardsdecoeur.com/join` (vérifier que ce lien ouvre bien la page de préinscription).
 4. Épingler la vidéo 01 en haut du profil.
 5. Répondre aux commentaires dans l'heure, idéalement en vidéo (« Réponse à @… »).
 
