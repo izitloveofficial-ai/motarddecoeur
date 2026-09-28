@@ -239,7 +239,27 @@
   animation: splash-pulse 2.2s ease-in-out infinite;
 }
 
+@keyframes splash-auto-hide {
+  0%,
+  70% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.animate-splash-auto-hide {
+  animation: splash-auto-hide 1.3s ease-out forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .animate-splash-auto-hide {
+    animation-duration: 0.01s;
+  }
+
   .animate-splash-pulse {
     animation: none;
   }

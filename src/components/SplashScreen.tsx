@@ -1,15 +1,9 @@
 import { BrandLogo } from "@/components/BrandLogo";
 
-type SplashScreenProps = {
-  isVisible: boolean;
-};
-
-export function SplashScreen({ isVisible }: SplashScreenProps) {
+export function SplashScreen() {
   return (
     <div
-      className={`pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-[#21191a] transition-opacity duration-300 ease-out ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
+      className="animate-splash-auto-hide pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-[#21191a]"
       aria-hidden="true"
     >
       <BrandLogo

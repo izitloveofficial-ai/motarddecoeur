@@ -205,15 +205,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const [showSplash, setShowSplash] = useState(true);
   const [renderSplash, setRenderSplash] = useState(true);
 
   useEffect(() => {
-    const fadeTimer = window.setTimeout(() => setShowSplash(false), 1000);
     const removeTimer = window.setTimeout(() => setRenderSplash(false), 1300);
 
     return () => {
-      window.clearTimeout(fadeTimer);
       window.clearTimeout(removeTimer);
     };
   }, []);
@@ -222,7 +219,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      {renderSplash ? <SplashScreen isVisible={showSplash} /> : null}
+      {renderSplash ? <SplashScreen /> : null}
     </QueryClientProvider>
   );
 }
