@@ -45,7 +45,7 @@ Les MP4 et le modèle de voix (70 Mo) ne sont pas versionnés.
 
 Chaque scène a un champ `voice` : la phrase lue par la voix de synthèse. La scène s'allonge
 automatiquement si la phrase est plus longue que sa durée. Écrire les nombres en toutes lettres
-(« cent pour cent ») et l'adresse comme elle se prononce. Limite connue : cette voix prononce
+(« cent pour cent »), l'adresse comme elle se prononce, et « email » en « i-mèle ». Limite connue : cette voix prononce
 imparfaitement les sons nasals (« an », « on », « in »). Pour un rendu plus naturel, utiliser l'option
 « Texte en voix » de TikTok ou enregistrer sa propre voix.
 
