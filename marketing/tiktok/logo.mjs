@@ -39,21 +39,24 @@ const dataUrl = await page.evaluate(async (src) => {
   canvas.height = img.naturalHeight * scale;
   const ctx = canvas.getContext("2d");
   ctx.imageSmoothingQuality = "high";
+  // Léger flou proportionnel à l'agrandissement : efface les blocs de compression JPEG.
+  if (scale > 1) ctx.filter = `blur(${(scale * 0.35).toFixed(2)}px)`;
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  ctx.filter = "none";
   const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const px = data.data;
   let [x0, y0, x1, y1] = [canvas.width, canvas.height, 0, 0];
   for (let i = 0; i < px.length; i += 4) {
-    const [r, g, b] = [px[i], px[i + 1], px[i + 2]];
-    const lo = Math.min(r, g, b);
-    const sat = Math.max(r, g, b) - lo;
-    // Blanc et gris très clair peu saturé → transparent, avec un fondu pour éviter le liseré.
-    const white = sat < 45 ? Math.min(1, Math.max(0, (lo - 185) / 50)) : 0;
-    const alpha = (1 - white) * (px[i + 3] / 255);
+    // « Couleur vers transparence » par rapport au blanc : chaque pixel est vu comme un mélange
+    // de blanc et d'une couleur pure ; la part de blanc devient transparente. Le seuil supprime
+    // le bruit clair (points parasites) et le gain rend les gris foncés et le rouge bien opaques.
+    const lo = Math.min(px[i], px[i + 1], px[i + 2]);
+    const raw = (255 - lo) / 255;
+    const alpha = Math.min(1, Math.max(0, (raw - 0.2) * 2.4)) * (px[i + 3] / 255);
     if (alpha > 0 && alpha < 1) {
-      // Retire la part de blanc mélangée aux bords.
+      // Couleur qui, posée à cette opacité sur du blanc, redonne le pixel d'origine.
       for (let c = 0; c < 3; c++)
-        px[i + c] = Math.max(0, Math.min(255, (px[i + c] - 255 * white) / (1 - white)));
+        px[i + c] = Math.max(0, Math.min(255, (px[i + c] - 255 * (1 - alpha)) / alpha));
     }
     px[i + 3] = Math.round(alpha * 255);
     if (alpha > 0.08) {
