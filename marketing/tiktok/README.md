@@ -54,8 +54,8 @@ Database (University of Edinburgh), licence CC BY 4.0.
 
 ### Changer le logo (version haute définition)
 
-Le logo actuel provient du site et ne fait que 160 px : ses bords sont un peu flous une fois agrandi.
-Pour une vidéo nette, déposer le fichier original (PNG ou JPG, idéalement 1000 px ou plus) sous
+Le logo utilisé est `assets/logo-source.png` (original 1080 × 1080). Sans ce fichier, `logo.mjs` se rabat sur le logo du site (160 px, plus flou).
+Pour changer de logo, remplacer ce fichier (PNG ou JPG, idéalement 1000 px ou plus) :
 `marketing/tiktok/assets/logo-source.png`, puis relancer `logo.mjs` et `render.mjs`. Toute la partie
 blanche devient transparente automatiquement ; un léger halo clair garde le texte gris lisible sur
 les fonds sombres.
