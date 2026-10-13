@@ -1,0 +1,29 @@
+name: Déployer les fonctions Supabase
+
+# Lancement manuel uniquement : on choisit la fonction à déployer.
+on:
+  workflow_dispatch:
+    inputs:
+      function:
+        description: "Nom de la fonction (ex : ai-assistant, send-push)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Déploiement
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: supabase functions deploy "${{ inputs.function }}" --project-ref "$SUPABASE_PROJECT_REF"

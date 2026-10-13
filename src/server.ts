@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { healthResponse } from "./lib/health";
 import {
   handleAdminPreinscriptionsRequest,
   handlePreinscriptionRequest,
@@ -45,6 +46,7 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const pathname = new URL(request.url).pathname;
+      if (pathname === "/healthz") return healthResponse();
       // Ancienne route D1 (historique) : le formulaire /join écrit directement dans la base.
       if (pathname === "/api/preinscriptions")
         return Response.json(
