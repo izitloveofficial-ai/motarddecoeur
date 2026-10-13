@@ -314,10 +314,10 @@
   animation: splash-auto-hide 1.3s ease-out forwards;
 }
 
-/* Animation d'ouverture de l'application mobile (≈ 3,2 s), calée sur le bruit de moto :
-   0-1,4 s : un filet de lumière monte avec le moteur ;
-   1,1-1,8 s : des traits de lumière traversent l'écran (la moto passe) ;
-   1,4 s : le logo surgit dans un éclat de lumière, puis un reflet le traverse ; fondu final. */
+/* Animation d'ouverture de l'application mobile (≈ 4,3 s), calée sur le bruit de moto :
+   0-1,9 s : un filet de lumière monte avec le moteur ;
+   1,5-2,4 s : des traits de lumière traversent l'écran (la moto passe) ;
+   1,85 s : le logo surgit dans un éclat de lumière, puis un reflet le traverse ; fondu final. */
 @keyframes splash-native-hide {
   0%,
   78% {
@@ -397,23 +397,23 @@
 }
 
 .animate-splash-native-hide {
-  animation: splash-native-hide 3.2s ease-out forwards;
+  animation: splash-native-hide 4.3s ease-out forwards;
 }
 
 .splash-line {
-  animation: splash-line 1.5s ease-in both;
+  animation: splash-line 2s ease-in both;
 }
 
 .splash-streak {
-  animation: splash-streak 0.45s cubic-bezier(0.6, 0, 0.35, 1) both;
+  animation: splash-streak 0.6s cubic-bezier(0.6, 0, 0.35, 1) both;
 }
 
 .splash-logo {
-  animation: splash-logo-hit 1s cubic-bezier(0.22, 1, 0.36, 1) 1.4s both;
+  animation: splash-logo-hit 1.3s cubic-bezier(0.22, 1, 0.36, 1) 1.85s both;
 }
 
 .splash-shine {
-  animation: splash-shine-pass 0.9s ease-in-out 2.2s both;
+  animation: splash-shine-pass 1.2s ease-in-out 2.9s both;
 }
 
 @media (prefers-reduced-motion: reduce) {

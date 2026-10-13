@@ -7,14 +7,14 @@ import { useIsNativeApp } from "@/lib/native";
 
 /** Traits de lumière qui traversent l'écran quand la moto « passe » (position, retard). */
 const STREAKS = [
-  { top: "42%", delay: "1.1s" },
-  { top: "51%", delay: "1.18s" },
-  { top: "58%", delay: "1.26s" },
+  { top: "42%", delay: "1.47s" },
+  { top: "51%", delay: "1.57s" },
+  { top: "58%", delay: "1.68s" },
 ] as const;
 
 /**
  * Ouverture de l'application mobile : sur fond sombre, des traits de lumière
- * traversent l'écran pendant qu'une moto passe (son de 3 s), puis le logo officiel
+ * traversent l'écran pendant qu'une moto passe (son de 4 s), puis le logo officiel
  * surgit dans un éclat de lumière, et l'écran s'efface. Si le téléphone refuse
  * de lancer le son tout seul, l'animation se déroule simplement sans bruit.
  */
