@@ -2,11 +2,17 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 type AdminLink = {
-  to: "/admin/members" | "/admin/preinscriptions" | "/admin/reports" | "/admin/announcements";
+  to:
+    | "/admin"
+    | "/admin/members"
+    | "/admin/preinscriptions"
+    | "/admin/reports"
+    | "/admin/announcements";
   label: string;
 };
 
 const ADMIN_LINKS: AdminLink[] = [
+  { to: "/admin", label: "Tableau de bord" },
   { to: "/admin/members", label: "Voir les membres" },
   { to: "/admin/preinscriptions", label: "Voir les pré-inscriptions" },
   { to: "/admin/reports", label: "Voir les signalements" },

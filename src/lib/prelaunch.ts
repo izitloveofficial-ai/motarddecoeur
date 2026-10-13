@@ -15,6 +15,7 @@ export const PRELAUNCH_ALLOWED_PATHS = [
   "/mentions-legales",
   "/confidentialite",
   "/conditions-utilisation",
+  "/admin",
   "/admin/preinscriptions",
   "/admin/members",
   "/admin/reports",
