@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 import { DoubleHeartIcon } from "@/components/icons/DoubleHeartIcon";
 import { supabase } from "@/lib/supabase";
+import { useIsNativeApp } from "@/lib/native";
 
 const links = [
   { to: "/about", label: "À propos" },
@@ -20,6 +21,7 @@ const appLinks = [
 ] as const;
 
 export function Navbar() {
+  const native = useIsNativeApp();
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [matchCount, setMatchCount] = useState(0);
@@ -102,6 +104,91 @@ export function Navbar() {
       link.to !== "/discover" ||
       (lookingFor !== "balades_moto" && lookingFor !== "communaute_motards"),
   );
+
+  function renderMenu(panelClassName: string) {
+    return (
+      <div className={panelClassName}>
+        {links.map((l) => (
+          <Link
+            key={l.to}
+            to={l.to}
+            onClick={() => setOpen(false)}
+            className="flex min-h-11 items-center py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
+          >
+            {l.label}
+          </Link>
+        ))}
+        {isLoggedIn && (
+          <div className="mt-1 flex flex-col border-t border-neutral-200 pt-3">
+            {visibleAppLinks.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                onClick={() => setOpen(false)}
+                className="flex min-h-11 items-center py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
+              >
+                <span className="inline-flex items-center gap-2">
+                  {l.label}
+                  {l.to === "/matches" && likesCount > 0 && (
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                      {likesCount}
+                    </span>
+                  )}
+                  {l.to === "/messages" && matchCount > 0 && (
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                      {matchCount}
+                    </span>
+                  )}
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
+        <Link
+          to="/join"
+          onClick={() => setOpen(false)}
+          className="mt-2 flex min-h-11 items-center justify-center px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground no-underline rounded-full"
+        >
+          Pré-inscription gratuite
+        </Link>
+      </div>
+    );
+  }
+
+  if (native) {
+    // Application mobile : pas de bandeau, seulement un bouton menu flottant
+    // (le menu garde tous ses liens : balades, événements, communauté, etc.).
+    return (
+      <>
+        <div className="pointer-events-none fixed right-3 top-[calc(env(safe-area-inset-top)+0.5rem)] z-[60] flex items-center gap-2">
+          {remainingSuperLikes > 0 && (
+            <Link
+              to="/super-likes/sent"
+              className="pointer-events-auto relative grid h-11 w-11 place-items-center rounded-full bg-white/90 text-neutral-900 no-underline shadow-md ring-1 ring-neutral-200 backdrop-blur"
+              aria-label={`Voir mes Super coups de cœur envoyés, ${remainingSuperLikes} restant${remainingSuperLikes > 1 ? "s" : ""} aujourd'hui`}
+            >
+              <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
+                {remainingSuperLikes}
+              </span>
+            </Link>
+          )}
+          <button
+            className="pointer-events-auto grid h-11 w-11 place-items-center rounded-full bg-white/90 text-neutral-900 shadow-md ring-1 ring-neutral-200 backdrop-blur"
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+            aria-expanded={open}
+          >
+            {open ? <X /> : <Menu />}
+          </button>
+        </div>
+        {open &&
+          renderMenu(
+            "fixed inset-0 z-40 flex flex-col gap-3 overflow-y-auto bg-white px-6 pb-24 pt-[calc(env(safe-area-inset-top)+4rem)] animate-fade-in",
+          )}
+      </>
+    );
+  }
 
   return (
     <header className="safe-top fixed top-0 z-[60] w-full bg-white border-b-2 border-primary/60 shadow-sm xl:z-50">
@@ -209,53 +296,10 @@ export function Navbar() {
         </div>
       </nav>
 
-      {open && (
-        <div className="fixed inset-x-0 bottom-0 top-[calc(4.125rem+env(safe-area-inset-top))] z-40 flex flex-col gap-3 overflow-y-auto bg-white px-6 py-4 animate-fade-in sm:top-[calc(4.625rem+env(safe-area-inset-top))] md:top-[calc(5.125rem+env(safe-area-inset-top))] xl:hidden">
-          {links.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              onClick={() => setOpen(false)}
-              className="flex min-h-11 items-center py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
-            >
-              {l.label}
-            </Link>
-          ))}
-          {isLoggedIn && (
-            <div className="mt-1 flex flex-col border-t border-neutral-200 pt-3">
-              {visibleAppLinks.map((l) => (
-                <Link
-                  key={l.to}
-                  to={l.to}
-                  onClick={() => setOpen(false)}
-                  className="flex min-h-11 items-center py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
-                >
-                  <span className="inline-flex items-center gap-2">
-                    {l.label}
-                    {l.to === "/matches" && likesCount > 0 && (
-                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
-                        {likesCount}
-                      </span>
-                    )}
-                    {l.to === "/messages" && matchCount > 0 && (
-                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">
-                        {matchCount}
-                      </span>
-                    )}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          )}
-          <Link
-            to="/join"
-            onClick={() => setOpen(false)}
-            className="mt-2 flex min-h-11 items-center justify-center px-5 py-2.5 text-sm uppercase tracking-wider bg-gradient-red text-primary-foreground no-underline rounded-full"
-          >
-            Pré-inscription gratuite
-          </Link>
-        </div>
-      )}
+      {open &&
+        renderMenu(
+          "fixed inset-x-0 bottom-0 top-[calc(4.125rem+env(safe-area-inset-top))] z-40 flex flex-col gap-3 overflow-y-auto bg-white px-6 py-4 animate-fade-in sm:top-[calc(4.625rem+env(safe-area-inset-top))] md:top-[calc(5.125rem+env(safe-area-inset-top))] xl:hidden",
+        )}
     </header>
   );
 }

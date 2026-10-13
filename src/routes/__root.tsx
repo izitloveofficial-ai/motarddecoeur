@@ -22,6 +22,7 @@ import { createTikTokPixelScript } from "@/lib/tiktok-pixel";
 
 import { SITE_URL } from "@/lib/site";
 import { SplashScreen } from "@/components/SplashScreen";
+import { SPLASH_NATIVE_MS, SPLASH_WEB_MS, isNativeApp } from "@/lib/native";
 const BRAND_LOGO_URL = `${SITE_URL}/favicon.png`;
 const BRAND_NAME = "Motards de Cœur";
 const TIKTOK_PIXEL_SCRIPT = createTikTokPixelScript();
@@ -208,7 +209,10 @@ function RootComponent() {
   const [renderSplash, setRenderSplash] = useState(true);
 
   useEffect(() => {
-    const removeTimer = window.setTimeout(() => setRenderSplash(false), 1300);
+    const removeTimer = window.setTimeout(
+      () => setRenderSplash(false),
+      isNativeApp() ? SPLASH_NATIVE_MS : SPLASH_WEB_MS,
+    );
 
     return () => {
       window.clearTimeout(removeTimer);

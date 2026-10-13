@@ -7,6 +7,7 @@ import { SuperLikeReveal } from "./SuperLikeReveal";
 import { AssistantWidget } from "./AssistantWidget";
 import { registerForPushNotifications } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
+import { useIsNativeApp } from "@/lib/native";
 
 type UnseenSuperLike = {
   swipe_id: string;
@@ -20,6 +21,7 @@ export function Layout({
   children: ReactNode;
   hideMobileNavigation?: boolean;
 }) {
+  const native = useIsNativeApp();
   const [unseenSuperLike, setUnseenSuperLike] = useState<UnseenSuperLike | null>(null);
   const checkedUserId = useRef<string | null>(null);
   const closingSwipeId = useRef<string | null>(null);
@@ -74,11 +76,11 @@ export function Layout({
   }
 
   return (
-    <div className="app-shell min-h-screen flex flex-col">
+    <div className={`app-shell min-h-screen flex flex-col ${native ? "safe-top" : ""}`}>
       <Navbar />
       <AnnouncementBanner />
       <main
-        className={`app-main flex-1 pt-24 sm:pb-0 sm:pt-28 md:pt-32 xl:pt-36 ${hideMobileNavigation ? "pb-0" : "pb-20"}`}
+        className={`app-main ${native ? "app-main-native" : ""} flex-1 pt-24 sm:pb-0 sm:pt-28 md:pt-32 xl:pt-36 ${hideMobileNavigation ? "pb-0" : "pb-20"}`}
       >
         {children}
       </main>
