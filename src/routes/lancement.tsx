@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Heart, MapPin, ShieldCheck, Users } from "lucide-react";
-import { HelmetCta } from "@/components/HelmetCta";
+import { RideCta } from "@/components/RideCta";
 import { PrelaunchLayout } from "@/components/PrelaunchLayout";
 import heroImg from "@/assets/hero-sunset.jpg";
 import communityImg from "@/assets/community-ride.jpg";
@@ -211,7 +211,7 @@ function Landing() {
 
       {/* APPEL FINAL */}
       <section className="px-6 pb-28 pt-8 sm:pb-24">
-        <HelmetCta
+        <RideCta
           title={["Prêt(e) à prendre", "la route ?"]}
           subtitle="Pré-inscription gratuite"
           label="Je me pré-inscris"
