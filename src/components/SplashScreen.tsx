@@ -5,11 +5,18 @@ import logoOfficiel from "@/assets/logo-officiel.webp";
 import motoPassage from "@/assets/moto-passage.mp3";
 import { useIsNativeApp } from "@/lib/native";
 
+/** Traits de lumière qui traversent l'écran quand la moto « passe » (position, retard). */
+const STREAKS = [
+  { top: "42%", delay: "1.1s" },
+  { top: "51%", delay: "1.18s" },
+  { top: "58%", delay: "1.26s" },
+] as const;
+
 /**
- * Ouverture de l'application mobile : le logo officiel apparaît en douceur sur
- * fond sombre, avec un fin reflet qui le traverse, pendant qu'une moto passe
- * (son de 3 s), puis l'écran s'efface. Si le téléphone refuse de lancer le son
- * tout seul, l'animation se déroule simplement sans bruit.
+ * Ouverture de l'application mobile : sur fond sombre, des traits de lumière
+ * traversent l'écran pendant qu'une moto passe (son de 3 s), puis le logo officiel
+ * surgit dans un éclat de lumière, et l'écran s'efface. Si le téléphone refuse
+ * de lancer le son tout seul, l'animation se déroule simplement sans bruit.
  */
 function NativeSplash() {
   useEffect(() => {
@@ -21,10 +28,18 @@ function NativeSplash() {
 
   return (
     <div
-      className="animate-splash-native-hide pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-[#1a1112]"
+      className="animate-splash-native-hide pointer-events-none fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[#1a1112]"
       aria-hidden="true"
     >
-      <div className="splash-logo relative h-56 w-56 overflow-hidden rounded-[2rem] bg-white shadow-[0_0_48px_6px_rgba(226,180,95,0.18)] sm:h-64 sm:w-64">
+      <span className="splash-line absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 bg-gradient-to-r from-transparent via-[#ffd9a0] to-transparent shadow-[0_0_14px_3px_rgba(200,40,58,0.6)]" />
+      {STREAKS.map((streak) => (
+        <span
+          key={streak.top}
+          className="splash-streak absolute left-0 h-[3px] w-[85%] rounded-full bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_10px_2px_rgba(255,214,150,0.7)]"
+          style={{ top: streak.top, animationDelay: streak.delay }}
+        />
+      ))}
+      <div className="splash-logo relative h-56 w-56 overflow-hidden rounded-[2rem] bg-white sm:h-64 sm:w-64">
         <img
           src={logoOfficiel}
           alt=""
