@@ -4,6 +4,7 @@ import { Navbar } from "./Navbar";
 import { AnnouncementBanner } from "./AnnouncementBanner";
 import { MobileTabBar } from "./MobileTabBar";
 import { SuperLikeReveal } from "./SuperLikeReveal";
+import { AssistantWidget } from "./AssistantWidget";
 import { registerForPushNotifications } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
 
@@ -82,6 +83,7 @@ export function Layout({
         {children}
       </main>
       {!hideMobileNavigation && <MobileTabBar />}
+      {!hideMobileNavigation && <AssistantWidget />}
       {unseenSuperLike && (
         <SuperLikeReveal
           firstName={unseenSuperLike.first_name}
