@@ -62,7 +62,11 @@ function Conversations() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) {
+      setError("Ta session a expiré, reconnecte-toi.");
+      setConversations([]);
+      return;
+    }
 
     const { data: matches, error: matchesError } = await supabase
       .from("matches")

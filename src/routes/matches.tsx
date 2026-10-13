@@ -67,7 +67,12 @@ function Matches() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) {
+      setError("Ta session a expiré, reconnecte-toi.");
+      setMatches([]);
+      setWaitingProfiles([]);
+      return;
+    }
 
     const [{ data: account, error: accountError }, { data: rows, error: rowsError }] =
       await Promise.all([

@@ -150,6 +150,8 @@ function Discover() {
   const dragStartX = useRef(0);
   const activePointerId = useRef<number | null>(null);
   const likeAnimationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const swipeInFlight = useRef(false);
+  const loadRequestId = useRef(0);
 
   useEffect(() => {
     void loadCandidates();
@@ -195,13 +197,22 @@ function Discover() {
 
   async function loadCandidates() {
     if (!supabase) return setError("Supabase n'est pas configuré.");
+    // Chaque chargement a un numéro : si les filtres changent pendant qu'une requête est
+    // en cours, la réponse devenue obsolète est ignorée au lieu d'écraser la plus récente.
+    const requestId = ++loadRequestId.current;
+    const isStale = () => requestId !== loadRequestId.current;
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return;
+    if (isStale()) return;
+    if (!user) {
+      setCandidates([]);
+      return;
+    }
     setCandidates(null);
     setIndex(0);
     setLastPassed(null);
+    setError("");
     const { data: profiles, error: profilesError } = await supabase.rpc("nearby_profiles", {
       max_km: filters.maxKm ? Number(filters.maxKm) : null,
       p_min_age: filters.minAge ? Number(filters.minAge) : null,
@@ -215,6 +226,7 @@ function Discover() {
       p_sport_habit: filters.sportHabit || null,
       p_limit: 20,
     });
+    if (isStale()) return;
     if (profilesError) {
       setError("Impossible de charger les profils pour le moment.");
       setCandidates([]);
@@ -246,6 +258,7 @@ function Discover() {
           .in("profile_id", profileIds)
           .order("position", { ascending: true }),
       ]);
+      if (isStale()) return;
       for (const photo of photos ?? [])
         if (!photosByProfile.has(photo.profile_id)) {
           const { data } = supabase.storage.from("profile-photos").getPublicUrl(photo.storage_path);
@@ -270,6 +283,17 @@ function Discover() {
   }
 
   async function swipe(liked: boolean, isSuper = false) {
+    if (!supabase || !candidates?.[index] || swipeInFlight.current) return;
+    // Verrou : un double appui ou un glissement suivi d'un clic ne doit enregistrer qu'un seul choix.
+    swipeInFlight.current = true;
+    try {
+      return await recordSwipe(liked, isSuper);
+    } finally {
+      swipeInFlight.current = false;
+    }
+  }
+
+  async function recordSwipe(liked: boolean, isSuper: boolean) {
     if (!supabase || !candidates?.[index]) return;
     const current = candidates[index];
     const {

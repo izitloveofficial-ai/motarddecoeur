@@ -84,8 +84,11 @@ function AdminMembers() {
       ),
     );
   }
-  async function load() {
-    if (!supabase) return setNotice("Supabase n'est pas configuré.");
+  async function load(): Promise<boolean> {
+    if (!supabase) {
+      setNotice("Supabase n'est pas configuré.");
+      return false;
+    }
     const { data: profiles, error } = await supabase
       .from("profiles")
       .select(
@@ -94,7 +97,7 @@ function AdminMembers() {
       .order("created_at", { ascending: false });
     if (error) {
       setNotice("Accès refusé : un compte administrateur est requis.");
-      return;
+      return false;
     }
     const counts = new Map<string, number>();
     const ids = (profiles ?? []).map((profile) => profile.id);
@@ -110,6 +113,7 @@ function AdminMembers() {
       (profiles ?? []).map((profile) => ({ ...profile, photoCount: counts.get(profile.id) ?? 0 })),
     );
     setNotice(profiles?.length ? "" : "Aucun membre inscrit pour le moment.");
+    return true;
   }
   async function toggle(member: Member) {
     if (!supabase) return;
@@ -118,8 +122,9 @@ function AdminMembers() {
       .from("profiles")
       .update({ is_active: !member.is_active })
       .eq("id", member.id);
-    setNotice(error ? "Le statut n'a pas pu être modifié." : "");
-    await load();
+    // Le rechargement efface le message d'état : on le remet ensuite pour que l'échec reste visible.
+    const reloaded = await load();
+    if (error && reloaded) setNotice("Le statut n'a pas pu être modifié.");
     setPendingId(null);
   }
   async function ban(member: Member) {
@@ -138,8 +143,10 @@ function AdminMembers() {
       body: { profile_id: member.id },
       headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
     });
-    setNotice(error ? "Le bannissement a échoué." : "Compte banni et supprimé définitivement.");
-    await load();
+    const reloaded = await load();
+    if (reloaded) {
+      setNotice(error ? "Le bannissement a échoué." : "Compte banni et supprimé définitivement.");
+    }
     setPendingId(null);
   }
   const shown = useMemo(

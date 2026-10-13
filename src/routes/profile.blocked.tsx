@@ -40,7 +40,11 @@ function BlockedProfiles() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) {
+      setError("Ta session a expiré, reconnecte-toi.");
+      setProfiles([]);
+      return;
+    }
 
     const { data: blocks, error: blocksError } = await supabase
       .from("blocks")
