@@ -315,7 +315,7 @@
 }
 
 /* Animation d'ouverture de l'application mobile : le logo apparaît en douceur,
-   un fin reflet le traverse une fois, puis l'écran s'efface (≈ 2,6 s). */
+   un fin reflet le traverse une fois, puis l'écran s'efface (≈ 3,2 s). */
 @keyframes splash-native-hide {
   0%,
   78% {
@@ -349,7 +349,7 @@
 }
 
 .animate-splash-native-hide {
-  animation: splash-native-hide 2.6s ease-out forwards;
+  animation: splash-native-hide 3.2s ease-out forwards;
 }
 
 .splash-logo {

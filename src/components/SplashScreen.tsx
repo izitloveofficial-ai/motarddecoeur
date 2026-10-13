@@ -1,12 +1,24 @@
+import { useEffect } from "react";
+
 import { BrandLogo } from "@/components/BrandLogo";
 import logoOfficiel from "@/assets/logo-officiel.webp";
+import motoPassage from "@/assets/moto-passage.mp3";
 import { useIsNativeApp } from "@/lib/native";
 
 /**
  * Ouverture de l'application mobile : le logo officiel apparaît en douceur sur
- * fond sombre, avec un fin reflet qui le traverse, puis l'écran s'efface.
+ * fond sombre, avec un fin reflet qui le traverse, pendant qu'une moto passe
+ * (son de 3 s), puis l'écran s'efface. Si le téléphone refuse de lancer le son
+ * tout seul, l'animation se déroule simplement sans bruit.
  */
 function NativeSplash() {
+  useEffect(() => {
+    const sound = new Audio(motoPassage);
+    sound.volume = 0.9;
+    sound.play().catch(() => {});
+    return () => sound.pause();
+  }, []);
+
   return (
     <div
       className="animate-splash-native-hide pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-[#1a1112]"
