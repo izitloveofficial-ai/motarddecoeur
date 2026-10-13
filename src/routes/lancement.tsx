@@ -210,21 +210,14 @@ function Landing() {
 
       {/* APPEL FINAL */}
       <section className="px-6 pb-28 sm:pb-24">
-        <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-red p-10 text-center text-primary-foreground shadow-glow">
-          <h2 className="font-display text-4xl sm:text-5xl">
-            Ta prochaine rencontre t'attend sur la route.
-          </h2>
-          <p className="mx-auto mt-4 max-w-md opacity-90">
-            Pré-inscris-toi en 1 minute. C'est gratuit, et tu seras prévenu(e) dès l'ouverture.
+        <div className="glass mx-auto max-w-2xl rounded-3xl border border-primary/30 p-8 text-center">
+          <h2 className="font-display text-3xl sm:text-4xl">Prêt(e) à prendre la route ?</h2>
+          <p className="mx-auto mt-3 max-w-md text-muted-foreground">
+            Pré-inscris-toi en 1 minute, gratuitement. Tu seras prévenu(e) dès l'ouverture.
           </p>
-          <Link
-            to="/join"
-            onClick={() => trackCta("final")}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-background px-8 py-4 text-sm font-semibold uppercase tracking-wider text-foreground transition hover:scale-105"
-          >
-            Je rejoins les premiers motards
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="mt-6 flex justify-center">
+            <CtaButton location="final" label="Je me pré-inscris" />
+          </div>
         </div>
       </section>
 
