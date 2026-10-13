@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Heart, MapPin, ShieldCheck, Users } from "lucide-react";
+import { HelmetCta } from "@/components/HelmetCta";
 import { PrelaunchLayout } from "@/components/PrelaunchLayout";
 import heroImg from "@/assets/hero-sunset.jpg";
 import communityImg from "@/assets/community-ride.jpg";
@@ -209,16 +210,13 @@ function Landing() {
       </section>
 
       {/* APPEL FINAL */}
-      <section className="px-6 pb-28 sm:pb-24">
-        <div className="glass mx-auto max-w-2xl rounded-3xl border border-primary/30 p-8 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl">Prêt(e) à prendre la route ?</h2>
-          <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-            Pré-inscris-toi en 1 minute, gratuitement. Tu seras prévenu(e) dès l'ouverture.
-          </p>
-          <div className="mt-6 flex justify-center">
-            <CtaButton location="final" label="Je me pré-inscris" />
-          </div>
-        </div>
+      <section className="px-6 pb-28 pt-8 sm:pb-24">
+        <HelmetCta
+          title={["Prêt(e) à prendre", "la route ?"]}
+          subtitle="Pré-inscription gratuite"
+          label="Je me pré-inscris"
+          onClick={() => trackCta("final")}
+        />
       </section>
 
       {/* Barre d'action fixe sur mobile */}
