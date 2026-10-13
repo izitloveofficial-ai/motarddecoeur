@@ -1,7 +1,9 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { ageFromBirthDate, formatDateFr } from "@/lib/format";
 import { requireAdminPage } from "@/lib/require-admin";
+import { AdminNotice, AdminShell } from "@/components/admin/AdminShell";
 
 type Member = {
   id: string;
@@ -26,13 +28,6 @@ export const Route = createFileRoute("/admin/members")({
   component: AdminMembers,
   beforeLoad: requireAdminPage,
 });
-function age(value: string) {
-  const birth = new Date(value);
-  const now = new Date();
-  let result = now.getFullYear() - birth.getFullYear();
-  if (now < new Date(now.getFullYear(), birth.getMonth(), birth.getDate())) result--;
-  return result;
-}
 function AdminMembers() {
   const [rows, setRows] = useState<Member[]>([]);
   const [query, setQuery] = useState("");
@@ -152,147 +147,124 @@ function AdminMembers() {
     [rows, query],
   );
   return (
-    <main className="min-h-screen bg-background px-6 py-12 text-foreground">
-      <div className="mx-auto max-w-7xl">
-        <p className="text-xs uppercase tracking-[.3em] text-primary">Administration privée</p>
-        <h1 className="mt-2 font-display text-4xl">Membres inscrits</h1>
-        <div className="my-8 grid gap-4 sm:grid-cols-3">
-          {[
-            ["Total", rows.length],
-            ["Actifs", rows.filter((row) => row.is_active).length],
-            ["Vérifiés", rows.filter((row) => row.is_verified).length],
-          ].map(([label, value]) => (
-            <div className="rounded-2xl border p-5" key={label}>
-              <p className="text-sm text-muted-foreground">{label}</p>
-              <strong className="text-3xl">{value}</strong>
-            </div>
-          ))}
-        </div>
-        <input
-          aria-label="Rechercher un membre"
-          className="mb-5 w-full max-w-md rounded-xl border bg-card px-4 py-2"
-          type="search"
-          placeholder="Rechercher un prénom…"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-        />
-        {notice && (
-          <p className="mb-4 rounded-xl border border-primary/30 p-3" role="status">
-            {notice}
-          </p>
-        )}
-        <div className="overflow-x-auto rounded-2xl border">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-card">
-              <tr>
-                {[
-                  "Prénom",
-                  "Âge",
-                  "Genre",
-                  "Recherche",
-                  "Moto",
-                  "Photos",
-                  "Inscription",
-                  "Statut",
-                  "Action",
-                ].map((heading) => (
-                  <th className="p-3" key={heading}>
-                    {heading}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {shown.map((member) => (
-                <Fragment key={member.id}>
-                  <tr className="border-t">
-                    <td className="p-3">{member.first_name}</td>
-                    <td className="p-3">{age(member.birth_date)}</td>
-                    <td className="p-3">{member.gender ?? "—"}</td>
-                    <td className="p-3">{member.looking_for ?? "—"}</td>
-                    <td className="p-3 space-x-2 whitespace-nowrap">
-                      {[member.moto_brand, member.moto_model].filter(Boolean).join(" ") || "—"}
-                    </td>
-                    <td className="p-3">
-                      <button
-                        className="text-primary underline disabled:opacity-50"
-                        disabled={member.photoCount === 0}
-                        onClick={() => void togglePhotos(member.id)}
-                      >
-                        {member.photoCount}
-                        {expandedId === member.id ? " ▲" : member.photoCount ? " ▾" : ""}
-                      </button>
-                    </td>
-                    <td className="p-3">
-                      {new Date(member.created_at).toLocaleDateString("fr-FR")}
-                    </td>
-                    <td className="p-3">{member.is_active ? "Actif" : "Désactivé"}</td>
-                    <td className="p-3">
-                      <button
-                        disabled={pendingId === member.id}
-                        className="text-primary disabled:opacity-50"
-                        onClick={() => void toggle(member)}
-                      >
-                        {member.is_active ? "Désactiver" : "Réactiver"}
-                      </button>
-                      <button
-                        disabled={pendingId === member.id}
-                        className="text-destructive font-semibold underline disabled:opacity-50"
-                        onClick={() => void ban(member)}
-                      >
-                        Bannir
-                      </button>
+    <AdminShell title="Membres inscrits" current="/admin/members">
+      <div className="my-8 grid gap-4 sm:grid-cols-3">
+        {[
+          ["Total", rows.length],
+          ["Actifs", rows.filter((row) => row.is_active).length],
+          ["Vérifiés", rows.filter((row) => row.is_verified).length],
+        ].map(([label, value]) => (
+          <div className="rounded-2xl border p-5" key={label}>
+            <p className="text-sm text-muted-foreground">{label}</p>
+            <strong className="text-3xl">{value}</strong>
+          </div>
+        ))}
+      </div>
+      <input
+        aria-label="Rechercher un membre"
+        className="mb-5 w-full max-w-md rounded-xl border bg-card px-4 py-2"
+        type="search"
+        placeholder="Rechercher un prénom…"
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+      />
+      <AdminNotice message={notice} />
+      <div className="overflow-x-auto rounded-2xl border">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-card">
+            <tr>
+              {[
+                "Prénom",
+                "Âge",
+                "Genre",
+                "Recherche",
+                "Moto",
+                "Photos",
+                "Inscription",
+                "Statut",
+                "Action",
+              ].map((heading) => (
+                <th className="p-3" key={heading}>
+                  {heading}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {shown.map((member) => (
+              <Fragment key={member.id}>
+                <tr className="border-t">
+                  <td className="p-3">{member.first_name}</td>
+                  <td className="p-3">{ageFromBirthDate(member.birth_date)}</td>
+                  <td className="p-3">{member.gender ?? "—"}</td>
+                  <td className="p-3">{member.looking_for ?? "—"}</td>
+                  <td className="p-3 space-x-2 whitespace-nowrap">
+                    {[member.moto_brand, member.moto_model].filter(Boolean).join(" ") || "—"}
+                  </td>
+                  <td className="p-3">
+                    <button
+                      className="text-primary underline disabled:opacity-50"
+                      disabled={member.photoCount === 0}
+                      onClick={() => void togglePhotos(member.id)}
+                    >
+                      {member.photoCount}
+                      {expandedId === member.id ? " ▲" : member.photoCount ? " ▾" : ""}
+                    </button>
+                  </td>
+                  <td className="p-3">{formatDateFr(member.created_at)}</td>
+                  <td className="p-3">{member.is_active ? "Actif" : "Désactivé"}</td>
+                  <td className="p-3">
+                    <button
+                      disabled={pendingId === member.id}
+                      className="text-primary disabled:opacity-50"
+                      onClick={() => void toggle(member)}
+                    >
+                      {member.is_active ? "Désactiver" : "Réactiver"}
+                    </button>
+                    <button
+                      disabled={pendingId === member.id}
+                      className="text-destructive font-semibold underline disabled:opacity-50"
+                      onClick={() => void ban(member)}
+                    >
+                      Bannir
+                    </button>
+                  </td>
+                </tr>
+                {expandedId === member.id && (
+                  <tr className="border-t bg-card/50">
+                    <td className="p-4" colSpan={9}>
+                      {photosLoading ? (
+                        <p className="text-sm text-muted-foreground">Chargement des photos…</p>
+                      ) : photos.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">Aucune photo.</p>
+                      ) : (
+                        <div className="flex flex-wrap gap-4">
+                          {photos.map((photo) => (
+                            <div className="w-32 text-center" key={photo.id}>
+                              <img
+                                src={photo.url}
+                                alt="Photo de profil"
+                                className="h-32 w-32 rounded-xl object-cover"
+                              />
+                              <button
+                                disabled={pendingPhotoId === photo.id}
+                                className="mt-2 text-xs text-destructive underline disabled:opacity-50"
+                                onClick={() => void deletePhoto(photo, member.id)}
+                              >
+                                Supprimer
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </td>
                   </tr>
-                  {expandedId === member.id && (
-                    <tr className="border-t bg-card/50">
-                      <td className="p-4" colSpan={9}>
-                        {photosLoading ? (
-                          <p className="text-sm text-muted-foreground">Chargement des photos…</p>
-                        ) : photos.length === 0 ? (
-                          <p className="text-sm text-muted-foreground">Aucune photo.</p>
-                        ) : (
-                          <div className="flex flex-wrap gap-4">
-                            {photos.map((photo) => (
-                              <div className="w-32 text-center" key={photo.id}>
-                                <img
-                                  src={photo.url}
-                                  alt="Photo de profil"
-                                  className="h-32 w-32 rounded-xl object-cover"
-                                />
-                                <button
-                                  disabled={pendingPhotoId === photo.id}
-                                  className="mt-2 text-xs text-destructive underline disabled:opacity-50"
-                                  onClick={() => void deletePhoto(photo, member.id)}
-                                >
-                                  Supprimer
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-6 text-sm">
-          <Link to="/admin/preinscriptions" className="text-primary hover:underline">
-            Voir les pré-inscriptions
-          </Link>
-          {" · "}
-          <Link to="/admin/reports" className="text-primary hover:underline">
-            Voir les signalements
-          </Link>
-          {" · "}
-          <Link to="/admin/announcements" className="text-primary hover:underline">
-            Gérer les annonces
-          </Link>
-        </p>
+                )}
+              </Fragment>
+            ))}
+          </tbody>
+        </table>
       </div>
-    </main>
+    </AdminShell>
   );
 }

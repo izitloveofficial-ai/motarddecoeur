@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { formatDateFr } from "@/lib/format";
 import { requireAdminPage } from "@/lib/require-admin";
 import { loadAdminPreinscriptions } from "@/lib/admin-preinscriptions";
 
@@ -391,14 +392,10 @@ function AdminPreinscriptions() {
                       <td className="p-3">{row.first_name}</td>
                       <td className="p-3">{row.email}</td>
                       <td className="p-3">{row.location ?? row.city ?? "—"}</td>
-                      <td className="p-3">
-                        {new Date(row.created_at).toLocaleDateString("fr-FR")}
-                      </td>
+                      <td className="p-3">{formatDateFr(row.created_at)}</td>
                       <td className="p-3">{row.status}</td>
                       <td className="p-3">
-                        {row.invitation_sent_at
-                          ? new Date(row.invitation_sent_at).toLocaleDateString("fr-FR")
-                          : "Non"}
+                        {row.invitation_sent_at ? formatDateFr(row.invitation_sent_at) : "Non"}
                       </td>
                       <td className="p-3">{row.user_id ? "Oui" : "Non"}</td>
                       <td className="p-3">

@@ -6,6 +6,7 @@ import { Layout } from "@/components/Layout";
 import { requireAppAccess } from "@/lib/require-admin";
 import { requireDatingIntent } from "@/lib/require-dating-intent";
 import { supabase } from "@/lib/supabase";
+import { formatDateFr } from "@/lib/format";
 
 type SentSuperLike = {
   id: string;
@@ -159,7 +160,7 @@ function SentSuperLikes() {
                         className="h-4 w-4 shrink-0 text-[#e8be6c]"
                         aria-hidden="true"
                       />
-                      Envoyé le {new Date(superLike.sentAt).toLocaleDateString("fr-FR")}
+                      Envoyé le {formatDateFr(superLike.sentAt)}
                     </p>
                   </div>
                 </article>

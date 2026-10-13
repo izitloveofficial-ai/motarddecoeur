@@ -19,7 +19,9 @@ function fakeClient(result: QueryResult | ((from: number, to: number) => QueryRe
                   return {
                     range(from, to) {
                       calls.push(`range:${from}:${to}`);
-                      return Promise.resolve(typeof result === "function" ? result(from, to) : result);
+                      return Promise.resolve(
+                        typeof result === "function" ? result(from, to) : result,
+                      );
                     },
                   };
                 },
@@ -38,13 +40,20 @@ describe("lecture admin des préinscriptions", () => {
     const { client, calls } = fakeClient({ data: [{ id: "b" }, { id: "a" }], error: null });
     const result = await loadAdminPreinscriptions<{ id: string }>(client);
     expect(calls).toEqual([
-      "from:preinscriptions", "select:*", "order:created_at:false", "order:id:false", "range:0:499",
+      "from:preinscriptions",
+      "select:*",
+      "order:created_at:false",
+      "order:id:false",
+      "range:0:499",
     ]);
     expect(result).toEqual({ status: "ok", rows: [{ id: "b" }, { id: "a" }] });
   });
 
   test("RLS : un refus d'accès devient « forbidden », sans données", async () => {
-    const { client } = fakeClient({ data: null, error: { code: "42501", message: "permission denied" } });
+    const { client } = fakeClient({
+      data: null,
+      error: { code: "42501", message: "permission denied" },
+    });
     expect(await loadAdminPreinscriptions(client)).toEqual({ status: "forbidden" });
   });
 
@@ -70,9 +79,11 @@ describe("lecture admin des préinscriptions", () => {
   });
 
   test("n'affiche pas une liste partielle si une page échoue", async () => {
-    const { client } = fakeClient((from) => from === 0
-      ? { data: Array.from({ length: 500 }, (_, id) => ({ id })), error: null }
-      : { data: null, error: { message: "network" } });
+    const { client } = fakeClient((from) =>
+      from === 0
+        ? { data: Array.from({ length: 500 }, (_, id) => ({ id })), error: null }
+        : { data: null, error: { message: "network" } },
+    );
     expect(await loadAdminPreinscriptions(client)).toEqual({ status: "error" });
   });
 });

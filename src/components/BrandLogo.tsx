@@ -6,9 +6,16 @@ type BrandLogoProps = {
   textClassName?: string;
 };
 
-export function BrandLogo({ className = "", markClassName = "", textClassName = "" }: BrandLogoProps) {
+export function BrandLogo({
+  className = "",
+  markClassName = "",
+  textClassName = "",
+}: BrandLogoProps) {
   return (
-    <span className={`inline-flex shrink-0 items-center gap-3 ${className}`} aria-label="Motards de Cœur">
+    <span
+      className={`inline-flex shrink-0 items-center gap-3 ${className}`}
+      aria-label="Motards de Cœur"
+    >
       <span
         className={`grid shrink-0 place-items-center overflow-hidden rounded-md bg-white shadow-sm ring-1 ring-neutral-200 ${markClassName}`}
       >
@@ -20,7 +27,9 @@ export function BrandLogo({ className = "", markClassName = "", textClassName = 
           decoding="async"
         />
       </span>
-      <span className={`font-display font-bold uppercase leading-none tracking-wide ${textClassName}`}>
+      <span
+        className={`font-display font-bold uppercase leading-none tracking-wide ${textClassName}`}
+      >
         <span className="block">MOTARDS</span>
         <span className="block">DE CŒUR</span>
       </span>

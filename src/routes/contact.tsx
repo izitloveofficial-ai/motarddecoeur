@@ -10,9 +10,16 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Motards de Cœur" },
-      { name: "description", content: "Contact officiel de Motards de Cœur pour les demandes générales et RGPD." },
+      {
+        name: "description",
+        content: "Contact officiel de Motards de Cœur pour les demandes générales et RGPD.",
+      },
       { property: "og:title", content: "Contact — Motards de Cœur" },
-      { property: "og:description", content: "Contactez Motards de Cœur pour les demandes générales, RGPD et liées au lancement." },
+      {
+        property: "og:description",
+        content:
+          "Contactez Motards de Cœur pour les demandes générales, RGPD et liées au lancement.",
+      },
       { property: "og:url", content: `${SITE_URL}/contact` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/contact` }],
@@ -24,7 +31,8 @@ export const Route = createFileRoute("/contact")({
           "@type": "ContactPage",
           name: "Contact — Motards de Cœur",
           url: `${SITE_URL}/contact`,
-          description: "Page de contact officielle de Motards de Cœur pour les demandes générales et RGPD.",
+          description:
+            "Page de contact officielle de Motards de Cœur pour les demandes générales et RGPD.",
           publisher: {
             "@type": "Organization",
             name: "Motards de Cœur",
@@ -43,43 +51,88 @@ function Contact() {
       <section className="py-20 px-6 border-b border-border/40">
         <div className="mx-auto max-w-7xl">
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Contact</span>
-          <h1 className="font-display text-5xl md:text-7xl mt-4">Restons <span className="text-gradient-red italic">en lien.</span></h1>
+          <h1 className="font-display text-5xl md:text-7xl mt-4">
+            Restons <span className="text-gradient-red italic">en lien.</span>
+          </h1>
           <p className="text-muted-foreground max-w-2xl mt-4 text-lg">
-            Motards de Cœur est en préparation. Pour toute demande générale ou RGPD, vous pouvez écrire à contact@motardsdecoeur.com.
+            Motards de Cœur est en préparation. Pour toute demande générale ou RGPD, vous pouvez
+            écrire à contact@motardsdecoeur.com.
           </p>
         </div>
       </section>
 
       <section className="py-20 px-6">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-16">
-          <form
-            className="glass rounded-2xl p-10 space-y-5"
-            onSubmit={(e) => e.preventDefault()}
-          >
+          <form className="glass rounded-2xl p-10 space-y-5" onSubmit={(e) => e.preventDefault()}>
             <h2 className="font-display text-3xl mb-2">Écrivez-nous</h2>
             <p className="text-muted-foreground text-sm mb-6">
-              Le formulaire de contact n'est pas encore connecté. En attendant, utilisez l'adresse officielle ci-dessous.
+              Le formulaire de contact n'est pas encore connecté. En attendant, utilisez l'adresse
+              officielle ci-dessous.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label htmlFor="contact-firstname" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Prénom</label>
-                <input id="contact-firstname" name="firstname" autoComplete="given-name" disabled className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none" />
+                <label
+                  htmlFor="contact-firstname"
+                  className="block text-xs uppercase tracking-widest text-muted-foreground mb-2"
+                >
+                  Prénom
+                </label>
+                <input
+                  id="contact-firstname"
+                  name="firstname"
+                  autoComplete="given-name"
+                  disabled
+                  className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none"
+                />
               </div>
               <div>
-                <label htmlFor="contact-lastname" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Nom</label>
-                <input id="contact-lastname" name="lastname" autoComplete="family-name" disabled className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none" />
+                <label
+                  htmlFor="contact-lastname"
+                  className="block text-xs uppercase tracking-widest text-muted-foreground mb-2"
+                >
+                  Nom
+                </label>
+                <input
+                  id="contact-lastname"
+                  name="lastname"
+                  autoComplete="family-name"
+                  disabled
+                  className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none"
+                />
               </div>
             </div>
 
             <div>
-              <label htmlFor="contact-email" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Email</label>
-              <input id="contact-email" name="email" autoComplete="email" disabled type="email" className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none" />
+              <label
+                htmlFor="contact-email"
+                className="block text-xs uppercase tracking-widest text-muted-foreground mb-2"
+              >
+                Email
+              </label>
+              <input
+                id="contact-email"
+                name="email"
+                autoComplete="email"
+                disabled
+                type="email"
+                className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none"
+              />
             </div>
 
             <div>
-              <label htmlFor="contact-subject" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Sujet</label>
-              <select id="contact-subject" name="subject" disabled className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none">
+              <label
+                htmlFor="contact-subject"
+                className="block text-xs uppercase tracking-widest text-muted-foreground mb-2"
+              >
+                Sujet
+              </label>
+              <select
+                id="contact-subject"
+                name="subject"
+                disabled
+                className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none"
+              >
                 <option>Demande RGPD</option>
                 <option>Partenariat</option>
                 <option>Événement</option>
@@ -89,8 +142,19 @@ function Contact() {
             </div>
 
             <div>
-              <label htmlFor="contact-message" className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Message</label>
-              <textarea id="contact-message" name="message" disabled rows={5} className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none resize-none" />
+              <label
+                htmlFor="contact-message"
+                className="block text-xs uppercase tracking-widest text-muted-foreground mb-2"
+              >
+                Message
+              </label>
+              <textarea
+                id="contact-message"
+                name="message"
+                disabled
+                rows={5}
+                className="w-full cursor-not-allowed px-4 py-3 bg-input/40 border border-border rounded-lg text-muted-foreground focus:outline-none resize-none"
+              />
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -102,11 +166,18 @@ function Contact() {
                 Formulaire bientôt connecté
               </button>
               {hasContactEmail ? (
-                <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex items-center gap-2 px-6 py-3 glass rounded-full text-sm text-foreground hover:bg-foreground/10 transition">
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="inline-flex items-center gap-2 px-6 py-3 glass rounded-full text-sm text-foreground hover:bg-foreground/10 transition"
+                >
                   <Send className="h-4 w-4" /> Envoyer un email
                 </a>
               ) : (
-                <button type="button" disabled className="inline-flex cursor-not-allowed items-center gap-2 px-6 py-3 glass rounded-full text-sm text-muted-foreground opacity-75 transition">
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex cursor-not-allowed items-center gap-2 px-6 py-3 glass rounded-full text-sm text-muted-foreground opacity-75 transition"
+                >
                   <Send className="h-4 w-4" /> Email officiel à confirmer
                 </button>
               )}
@@ -122,11 +193,17 @@ function Contact() {
                     <Mail className="h-4 w-4 text-primary-foreground" />
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Email</div>
+                    <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                      Email
+                    </div>
                     {hasContactEmail ? (
-                      <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary transition">{CONTACT_EMAIL}</a>
+                      <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary transition">
+                        {CONTACT_EMAIL}
+                      </a>
                     ) : (
-                      <div className="text-muted-foreground">Adresse officielle à confirmer avant ouverture publique</div>
+                      <div className="text-muted-foreground">
+                        Adresse officielle à confirmer avant ouverture publique
+                      </div>
                     )}
                   </div>
                 </li>
@@ -135,9 +212,12 @@ function Contact() {
                     <ShieldCheck className="h-4 w-4 text-primary-foreground" />
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Demandes RGPD</div>
+                    <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                      Demandes RGPD
+                    </div>
                     <div className="text-muted-foreground">
-                      Pour accéder, rectifier ou demander la suppression de vos données, écrivez à contact@motardsdecoeur.com.
+                      Pour accéder, rectifier ou demander la suppression de vos données, écrivez à
+                      contact@motardsdecoeur.com.
                     </div>
                   </div>
                 </li>
@@ -173,7 +253,8 @@ function Contact() {
             <div className="glass-red rounded-2xl p-8">
               <h3 className="font-display text-2xl mb-3">Formulaire de contact</h3>
               <p className="text-sm text-foreground/80">
-                Le formulaire de contact sera activé prochainement. Pour toute demande, vous pouvez écrire directement à contact@motardsdecoeur.com.
+                Le formulaire de contact sera activé prochainement. Pour toute demande, vous pouvez
+                écrire directement à contact@motardsdecoeur.com.
               </p>
             </div>
           </div>

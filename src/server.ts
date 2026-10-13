@@ -47,7 +47,10 @@ export default {
       const pathname = new URL(request.url).pathname;
       // Ancienne route D1 (historique) : le formulaire /join écrit directement dans la base.
       if (pathname === "/api/preinscriptions")
-        return Response.json({ error: "gone", message: "Utilisez le formulaire /join." }, { status: 410 });
+        return Response.json(
+          { error: "gone", message: "Utilisez le formulaire /join." },
+          { status: 410 },
+        );
       if (pathname === "/api/admin/preinscriptions")
         return handleAdminPreinscriptionsRequest(request, env);
       const handler = await getServerEntry();

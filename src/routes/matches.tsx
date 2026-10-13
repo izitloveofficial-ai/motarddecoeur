@@ -6,6 +6,7 @@ import { requireAppAccess } from "@/lib/require-admin";
 import { requireDatingIntent } from "@/lib/require-dating-intent";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
+import { formatDateFr } from "@/lib/format";
 
 type MatchRow = {
   id: string;
@@ -376,7 +377,7 @@ function Matches() {
                     )}
                   </p>
                   <p className="inline-flex min-h-11 items-center text-xs text-[#a99b95]">
-                    Coup de cœur le {new Date(match.matched_at).toLocaleDateString("fr-FR")}
+                    Coup de cœur le {formatDateFr(match.matched_at)}
                   </p>
                 </div>
                 <Link

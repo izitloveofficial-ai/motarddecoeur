@@ -18,6 +18,7 @@ import { requireAppAccess } from "@/lib/require-admin";
 import { requireDatingIntent } from "@/lib/require-dating-intent";
 import { sendPushNotification } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
+import { ageFromBirthDate } from "@/lib/format";
 
 const reportReasons = [
   ["profil_faux", "Faux profil / usurpation"],
@@ -126,14 +127,6 @@ export const Route = createFileRoute("/discover")({
     if (!profile) throw redirect({ to: "/profile/setup" });
   },
 });
-
-function age(value: string) {
-  const birth = new Date(value);
-  const today = new Date();
-  let years = today.getFullYear() - birth.getFullYear();
-  if (today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate())) years--;
-  return years;
-}
 
 function Discover() {
   const navigate = useNavigate();
@@ -794,7 +787,7 @@ function Discover() {
             </div>
             <div className="p-6">
               <h2 className="flex items-center gap-2 font-display text-2xl">
-                {current.first_name}, {age(current.birth_date)} ans
+                {current.first_name}, {ageFromBirthDate(current.birth_date)} ans
                 {current.is_premium && (
                   <BadgeCheck
                     aria-label="Profil Premium vérifié"

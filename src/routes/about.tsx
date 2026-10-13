@@ -10,7 +10,11 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "À propos — Motards de Cœur" },
-      { name: "description", content: "L'histoire de Motards de Cœur : créer des liens authentiques entre passionnés de moto." },
+      {
+        name: "description",
+        content:
+          "L'histoire de Motards de Cœur : créer des liens authentiques entre passionnés de moto.",
+      },
       { property: "og:title", content: "À propos — Motards de Cœur" },
       { property: "og:description", content: "Notre mission : connecter les cœurs sur la route." },
       { property: "og:url", content: `${SITE_URL}/about` },
@@ -24,12 +28,19 @@ function About() {
   return (
     <Layout>
       <section className="relative -mt-20 h-[70vh] flex items-end overflow-hidden">
-        <img src={bikeImg} alt="" className="absolute inset-0 w-full h-full object-cover" width={1600} height={1000} />
+        <img
+          src={bikeImg}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          width={1600}
+          height={1000}
+        />
         <div className="absolute inset-0 bg-gradient-overlay" />
         <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 animate-fade-up">
           <span className="text-primary uppercase tracking-[0.4em] text-xs">Notre histoire</span>
           <h1 className="font-display text-4xl sm:text-6xl md:text-8xl mt-4 leading-none">
-            Né d'une <span className="text-gradient-red italic">passion</span><br /> partagée.
+            Né d'une <span className="text-gradient-red italic">passion</span>
+            <br /> partagée.
           </h1>
         </div>
       </section>
@@ -40,35 +51,32 @@ function About() {
             "Parfois, il suffit d'une rencontre pour changer de route."
           </p>
           <p>
-            Motards de Cœur n'est pas né dans un garage, ni autour d'un plan
-            marketing. Tout a commencé par une rencontre inattendue, sur un
-            site de rencontre tout ce qu'il y a de plus classique. Elle était
-            passionnée de moto. Moi, pas du tout.
+            Motards de Cœur n'est pas né dans un garage, ni autour d'un plan marketing. Tout a
+            commencé par une rencontre inattendue, sur un site de rencontre tout ce qu'il y a de
+            plus classique. Elle était passionnée de moto. Moi, pas du tout.
           </p>
           <p>
-            Au fil des conversations, des sourires et des récits de routes
-            qu'elle avait avalées, quelque chose a changé. Sa passion est
-            devenue contagieuse. Ce que je voyais comme une simple machine
-            bruyante est devenu une promesse : celle d'une liberté que je
-            n'avais jamais osé m'offrir.
+            Au fil des conversations, des sourires et des récits de routes qu'elle avait avalées,
+            quelque chose a changé. Sa passion est devenue contagieuse. Ce que je voyais comme une
+            simple machine bruyante est devenu une promesse : celle d'une liberté que je n'avais
+            jamais osé m'offrir.
           </p>
           <p>
-            Un matin, j'ai franchi le pas. Inscription au permis moto. Et puis
-            ce geste que je n'oublierai jamais : <strong className="text-primary">elle m'a offert mon premier casque</strong>.
-            Pas un cadeau ordinaire — une déclaration silencieuse, une façon de
-            me dire <em>"viens, la route nous attend"</em>. Premiers tours de
-            roues maladroits, premier frisson, premier vrai sentiment de
-            liberté. Puis, très vite, la première vraie balade à deux — elle
-            devant, moi derrière, avant de rouler côte à côte, sur la même
+            Un matin, j'ai franchi le pas. Inscription au permis moto. Et puis ce geste que je
+            n'oublierai jamais :{" "}
+            <strong className="text-primary">elle m'a offert mon premier casque</strong>. Pas un
+            cadeau ordinaire — une déclaration silencieuse, une façon de me dire{" "}
+            <em>"viens, la route nous attend"</em>. Premiers tours de roues maladroits, premier
+            frisson, premier vrai sentiment de liberté. Puis, très vite, la première vraie balade à
+            deux — elle devant, moi derrière, avant de rouler côte à côte, sur la même route.
+          </p>
+          <p>
+            De cette belle histoire est née une évidence : les plus belles rencontres ne se font pas
+            sur des applis génériques. Elles se font entre passionnés, ou grâce à des passionnés
+            capables de transmettre leur feu.{" "}
+            <strong className="text-primary">Motards de Cœur</strong> est né pour ça — préparer un
+            espace où d'autres pourront, demain, trouver la personne avec qui partager la prochaine
             route.
-          </p>
-          <p>
-            De cette belle histoire est née une évidence : les plus belles
-            rencontres ne se font pas sur des applis génériques. Elles se font
-            entre passionnés, ou grâce à des passionnés capables de transmettre
-            leur feu. <strong className="text-primary">Motards de Cœur</strong>{" "}
-            est né pour ça — préparer un espace où d'autres pourront, demain,
-            trouver la personne avec qui partager la prochaine route.
           </p>
           <p className="text-xl text-foreground font-display italic">
             Parce qu'au fond, <em>la route rapproche les cœurs</em>.
@@ -100,11 +108,17 @@ function About() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-16">
             <span className="text-primary uppercase tracking-[0.4em] text-xs">Nos valeurs</span>
-            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl mt-4">Ce qui nous anime</h2>
+            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl mt-4">
+              Ce qui nous anime
+            </h2>
           </div>
           <div className="grid md:grid-cols-4 gap-8">
             {[
-              { icon: Heart, title: "Authenticité", desc: "De vraies personnes, de vraies histoires." },
+              {
+                icon: Heart,
+                title: "Authenticité",
+                desc: "De vraies personnes, de vraies histoires.",
+              },
               { icon: Compass, title: "Liberté", desc: "La route comme philosophie de vie." },
               { icon: Shield, title: "Respect", desc: "Une communauté bienveillante et sûre." },
               { icon: Flame, title: "Passion", desc: "L'essence qui coule dans nos veines." },
@@ -123,14 +137,23 @@ function About() {
 
       <section className="px-4 py-14 sm:px-6 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-16 items-center">
-          <img src={community} alt="" className="rounded-2xl shadow-elegant" loading="lazy" width={1600} height={1000} />
+          <img
+            src={community}
+            alt=""
+            className="rounded-2xl shadow-elegant"
+            loading="lazy"
+            width={1600}
+            height={1000}
+          />
           <div>
             <span className="text-primary uppercase tracking-[0.4em] text-xs">Mission</span>
-            <h2 className="font-display text-3xl sm:text-5xl mt-4 mb-6">Connecter les âmes libres.</h2>
+            <h2 className="font-display text-3xl sm:text-5xl mt-4 mb-6">
+              Connecter les âmes libres.
+            </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              Le projet veut aider les motards à sortir de l'isolement, à rencontrer
-              des personnes qui partagent leur passion et à transformer de futures
-              conversations en balades, lorsque les fonctionnalités seront ouvertes progressivement.
+              Le projet veut aider les motards à sortir de l'isolement, à rencontrer des personnes
+              qui partagent leur passion et à transformer de futures conversations en balades,
+              lorsque les fonctionnalités seront ouvertes progressivement.
             </p>
           </div>
         </div>

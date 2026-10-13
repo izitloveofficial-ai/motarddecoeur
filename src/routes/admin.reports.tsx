@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { formatDateFr } from "@/lib/format";
 import { requireAdminPage } from "@/lib/require-admin";
 
 type Report = {
@@ -163,7 +164,7 @@ function AdminReports() {
             <tbody>
               {shown.map((report) => (
                 <tr className="border-t align-top" key={report.id}>
-                  <td className="p-3">{new Date(report.created_at).toLocaleDateString("fr-FR")}</td>
+                  <td className="p-3">{formatDateFr(report.created_at)}</td>
                   <td className="p-3">{report.reporterName}</td>
                   <td className="p-3">{report.reportedName}</td>
                   <td className="p-3">{report.reason}</td>

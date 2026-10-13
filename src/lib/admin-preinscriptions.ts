@@ -11,8 +11,14 @@ export type PreinscriptionsReader = {
         column: "created_at",
         options: { ascending: false },
       ): {
-        order(column: "id", options: { ascending: false }): {
-          range(from: number, to: number): PromiseLike<{ data: unknown[] | null; error: QueryError }>;
+        order(
+          column: "id",
+          options: { ascending: false },
+        ): {
+          range(
+            from: number,
+            to: number,
+          ): PromiseLike<{ data: unknown[] | null; error: QueryError }>;
         };
       };
     };
