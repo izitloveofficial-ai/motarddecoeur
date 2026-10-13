@@ -23,4 +23,4 @@ export function useIsNativeApp(): boolean {
 
 /** Durée d'affichage de l'écran d'ouverture, en millisecondes. */
 export const SPLASH_WEB_MS = 1300;
-export const SPLASH_NATIVE_MS = 4000;
+export const SPLASH_NATIVE_MS = 2600;
