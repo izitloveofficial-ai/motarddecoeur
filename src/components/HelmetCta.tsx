@@ -38,10 +38,6 @@ export function HelmetCta({
             <stop offset="0%" style={{ stopColor: "var(--background)", stopOpacity: 0 }} />
             <stop offset="100%" style={{ stopColor: "var(--background)", stopOpacity: 1 }} />
           </linearGradient>
-          <linearGradient id="helmet-chin" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" style={{ stopColor: "var(--primary)" }} />
-            <stop offset="100%" style={{ stopColor: "var(--blood)" }} />
-          </linearGradient>
           <linearGradient id="helmet-visor" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#2a1d1f" />
             <stop offset="100%" stopColor="#0f0b0c" />
@@ -102,10 +98,10 @@ export function HelmetCta({
         <path d="M148 292 L252 292 L262 316 L138 316 Z" fill="#150f10" />
         {/* Fondu en bas du buste */}
         <rect x="0" y="440" width="400" height="60" fill="url(#helmet-fade)" />
-        <g transform="translate(56 6) scale(0.72)">
+        <g transform="translate(40 14) scale(0.8)">
           {/* Coque : calotte large qui se resserre vers la mentonnière */}
           <path
-            d="M200 22 C302 22 364 100 364 202 C364 262 354 304 336 340 C322 368 302 392 278 406 L122 406 C98 392 78 368 64 340 C46 304 36 262 36 202 C36 100 98 22 200 22 Z"
+            d="M200 22 C302 22 364 100 364 196 C364 240 356 270 340 296 C326 322 304 342 280 352 L120 352 C96 342 74 322 60 296 C44 270 36 240 36 196 C36 100 98 22 200 22 Z"
             fill="url(#helmet-shell)"
           />
           {/* Bande de course dorée */}
@@ -118,11 +114,6 @@ export function HelmetCta({
             strokeOpacity="0.25"
             strokeWidth="9"
             strokeLinecap="round"
-          />
-          {/* Joues : mousse sombre sous la visière */}
-          <path
-            d="M64 236 C64 262 76 300 98 330 L302 330 C324 300 336 262 336 236 Z"
-            fill="#150f10"
           />
           {/* Visière */}
           <path
@@ -176,20 +167,28 @@ export function HelmetCta({
             strokeOpacity="0.7"
             strokeWidth="2"
           />
-          {/* Mentonnière avancée */}
+          {/* Ligne de la mentonnière et aération discrète */}
           <path
-            d="M92 306 C92 294 120 288 200 288 C280 288 308 294 308 306 L296 380 C294 394 270 402 200 402 C130 402 106 394 104 380 Z"
-            fill="url(#helmet-chin)"
+            d="M84 318 C120 346 280 346 316 318"
+            fill="none"
+            stroke="#000"
+            strokeOpacity="0.25"
+            strokeWidth="3"
+          />
+          <rect
+            x="172"
+            y="292"
+            width="56"
+            height="26"
+            rx="12"
+            fill="#150f10"
             stroke="#e2b45f"
-            strokeOpacity="0.45"
+            strokeOpacity="0.5"
             strokeWidth="2"
           />
-          {/* Aérations de la mentonnière */}
-          <g stroke="#0f0b0c" strokeOpacity="0.6" strokeWidth="5" strokeLinecap="round">
-            <path d="M118 322 L146 322" />
-            <path d="M254 322 L282 322" />
-            <path d="M122 384 L150 384" />
-            <path d="M250 384 L278 384" />
+          <g stroke="#e2b45f" strokeOpacity="0.55" strokeWidth="3" strokeLinecap="round">
+            <path d="M186 300 L214 300" />
+            <path d="M186 310 L214 310" />
           </g>
         </g>
       </svg>
