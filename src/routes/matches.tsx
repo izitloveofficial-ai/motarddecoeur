@@ -2,6 +2,7 @@ import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { BadgeCheck, Ban, Bike, Heart, HeartCrack, Trash2, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { NativeMenuButton } from "@/components/NativeMenuButton";
 import { requireAppAccess } from "@/lib/require-admin";
 import { requireDatingIntent } from "@/lib/require-dating-intent";
 import { sendPushNotification } from "@/lib/push";
@@ -299,7 +300,10 @@ function Matches() {
       <section className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-16">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
         <div className="mt-3 mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <h1 className="font-display text-3xl sm:text-4xl">Coup de cœur</h1>
+          <div className="flex w-full items-center justify-between gap-3 sm:w-auto">
+            <h1 className="font-display text-3xl sm:text-4xl">Coup de cœur</h1>
+            <NativeMenuButton />
+          </div>
           <Link
             to="/profile/blocked"
             className="inline-flex min-h-11 items-center text-xs text-[#a99b95] hover:text-[#e8be6c] hover:underline"

@@ -5,6 +5,7 @@ import { BrandLogo } from "./BrandLogo";
 import { DoubleHeartIcon } from "@/components/icons/DoubleHeartIcon";
 import { supabase } from "@/lib/supabase";
 import { useIsNativeApp } from "@/lib/native";
+import { nativeMenu, useNativeMenu } from "@/lib/native-menu";
 
 const links = [
   { to: "/about", label: "À propos" },
@@ -22,7 +23,11 @@ const appLinks = [
 
 export function Navbar() {
   const native = useIsNativeApp();
-  const [open, setOpen] = useState(false);
+  const [localOpen, setLocalOpen] = useState(false);
+  const sharedMenu = useNativeMenu();
+  // Application mobile : l'état du menu est partagé avec les boutons intégrés aux pages.
+  const open = native ? sharedMenu.open : localOpen;
+  const setOpen = native ? nativeMenu.setOpen : setLocalOpen;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [matchCount, setMatchCount] = useState(0);
   const [likesCount, setLikesCount] = useState(0);
@@ -142,6 +147,15 @@ export function Navbar() {
                 </span>
               </Link>
             ))}
+            {native && remainingSuperLikes > 0 && (
+              <Link
+                to="/super-likes/sent"
+                onClick={() => setOpen(false)}
+                className="flex min-h-11 items-center py-2 text-sm uppercase tracking-wider text-neutral-700 no-underline hover:text-neutral-900"
+              >
+                Mes Super coups de cœur ({remainingSuperLikes})
+              </Link>
+            )}
           </div>
         )}
         <Link
@@ -160,7 +174,11 @@ export function Navbar() {
     // (le menu garde tous ses liens : balades, événements, communauté, etc.).
     return (
       <>
-        <div className="pointer-events-none fixed right-3 top-[calc(env(safe-area-inset-top)+0.5rem)] z-[60] flex items-center gap-2">
+        <div
+          className={`pointer-events-none fixed right-3 top-[calc(env(safe-area-inset-top)+0.5rem)] z-[60] flex items-center gap-2 ${
+            sharedMenu.slots > 0 && !open ? "hidden" : ""
+          }`}
+        >
           {remainingSuperLikes > 0 && (
             <Link
               to="/super-likes/sent"

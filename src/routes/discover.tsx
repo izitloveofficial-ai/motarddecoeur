@@ -14,6 +14,7 @@ import {
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { DoubleHeartIcon } from "@/components/icons/DoubleHeartIcon";
 import { Layout } from "@/components/Layout";
+import { NativeMenuButton } from "@/components/NativeMenuButton";
 import { Slider } from "@/components/ui/slider";
 import { requireAppAccess } from "@/lib/require-admin";
 import { requireDatingIntent } from "@/lib/require-dating-intent";
@@ -627,12 +628,15 @@ function Discover() {
         </span>
         <div className="mb-3 flex items-center justify-between sm:mb-6 sm:mt-3">
           <h1 className="font-display text-3xl sm:text-4xl">Rencontres</h1>
-          <button
-            onClick={() => setFiltersOpen((v) => !v)}
-            className="rounded-full border border-white/15 px-4 py-2 text-xs uppercase tracking-wider text-[#d4c6bf] hover:border-[#e2b45f]/60"
-          >
-            Filtres
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setFiltersOpen((v) => !v)}
+              className="rounded-full border border-white/15 px-4 py-2 text-xs uppercase tracking-wider text-[#d4c6bf] hover:border-[#e2b45f]/60"
+            >
+              Filtres
+            </button>
+            <NativeMenuButton />
+          </div>
         </div>
         {filtersOpen && (
           <div className="mb-6 grid gap-4 rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 p-5">

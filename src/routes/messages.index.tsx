@@ -2,6 +2,7 @@ import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { BadgeCheck, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { NativeMenuButton } from "@/components/NativeMenuButton";
 import { requireAppAccess } from "@/lib/require-admin";
 import { supabase } from "@/lib/supabase";
 
@@ -178,9 +179,12 @@ function Conversations() {
     <Layout>
       <section className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
         <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
-        <h1 className="mt-3 mb-6 font-display text-3xl sm:text-4xl">
-          Mes discussions{conversations !== null && ` (${conversations.length})`}
-        </h1>
+        <div className="mt-3 mb-6 flex items-center justify-between gap-3">
+          <h1 className="font-display text-3xl sm:text-4xl">
+            Mes discussions{conversations !== null && ` (${conversations.length})`}
+          </h1>
+          <NativeMenuButton />
+        </div>
 
         {error && (
           <p role="alert" className="mb-4 rounded-xl border border-primary/40 p-4 text-sm">
