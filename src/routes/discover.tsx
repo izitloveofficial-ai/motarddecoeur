@@ -618,9 +618,11 @@ function Discover() {
           </div>
         </div>
       )}
-      <section className="mx-auto max-w-md px-4 py-8 sm:px-6 sm:py-16">
-        <span className="text-xs uppercase tracking-[0.35em] text-[#e8be6c]">Motards de Cœur</span>
-        <div className="mt-3 mb-6 flex items-center justify-between">
+      <section className="mx-auto max-w-md px-4 py-4 sm:px-6 sm:py-16">
+        <span className="hidden text-xs uppercase tracking-[0.35em] text-[#e8be6c] sm:block">
+          Motards de Cœur
+        </span>
+        <div className="mb-3 flex items-center justify-between sm:mb-6 sm:mt-3">
           <h1 className="font-display text-3xl sm:text-4xl">Rencontres</h1>
           <button
             onClick={() => setFiltersOpen((v) => !v)}
@@ -781,7 +783,7 @@ function Discover() {
             onPointerMove={moveDrag}
             onPointerUp={finishDrag}
             onPointerCancel={cancelDrag}
-            className={`relative h-[calc(100dvh-15rem)] max-h-[44rem] min-h-[30rem] touch-pan-y select-none overflow-hidden rounded-2xl border border-[#d6a85c]/25 bg-[#211819] shadow-[0_28px_80px_rgba(8,3,3,0.48)] ${isDragging ? "cursor-grabbing" : "cursor-grab transition-transform duration-300 ease-out"}`}
+            className={`relative h-[calc(100dvh-17rem)] max-h-[44rem] min-h-[26rem] touch-pan-y select-none overflow-hidden rounded-2xl border border-[#d6a85c]/25 bg-[#211819] shadow-[0_28px_80px_rgba(8,3,3,0.48)] ${isDragging ? "cursor-grabbing" : "cursor-grab transition-transform duration-300 ease-out"}`}
             style={{ transform: `translateX(${dragOffset}px) rotate(${dragOffset / 20}deg)` }}
           >
             <div
@@ -816,7 +818,7 @@ function Discover() {
               className="pointer-events-none absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-[#140a0b]/95 via-[#140a0b]/55 to-transparent"
             />
 
-            {lastPassed && isPremium && (
+            {lastPassed && isPremium && !detailsOpen && (
               <button
                 onClick={() => void undoLastPass()}
                 className="absolute left-3 top-3 z-20 flex items-center gap-1.5 rounded-full bg-[#140a0b]/65 px-3 py-1.5 text-xs text-[#f4cf7a] backdrop-blur hover:bg-[#140a0b]/80"
@@ -825,7 +827,9 @@ function Discover() {
               </button>
             )}
 
-            <div className="pointer-events-none absolute inset-x-5 bottom-28 pr-14">
+            <div
+              className={`pointer-events-none absolute inset-x-5 bottom-24 pr-14 ${detailsOpen ? "invisible" : ""}`}
+            >
               <h2 className="flex items-center gap-2 font-display text-3xl leading-tight text-[#fff9f0]">
                 {current.first_name}, {ageFromBirthDate(current.birth_date)} ans
                 {current.is_premium && (
@@ -845,15 +849,16 @@ function Discover() {
               )}
             </div>
 
-            <button
-              type="button"
-              onClick={() => setDetailsOpen(true)}
-              aria-label={`Voir le profil de ${current.first_name}`}
-              aria-expanded={detailsOpen}
-              className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/35 bg-[#140a0b]/55 text-white backdrop-blur transition hover:bg-[#140a0b]/75"
-            >
-              <ChevronLeft aria-hidden="true" />
-            </button>
+            {!detailsOpen && (
+              <button
+                type="button"
+                onClick={() => setDetailsOpen(true)}
+                aria-label={`Voir le profil de ${current.first_name}`}
+                className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/35 bg-[#140a0b]/55 text-white backdrop-blur transition hover:bg-[#140a0b]/75"
+              >
+                <ChevronLeft aria-hidden="true" />
+              </button>
+            )}
 
             {detailsOpen && (
               <div className="absolute inset-y-0 left-9 right-0 z-10 overflow-y-auto border-l border-[#d6a85c]/30 bg-[#2b2021] px-5 pb-32 pt-5 shadow-[-20px_0_40px_rgba(0,0,0,0.4)] animate-in slide-in-from-right duration-300">
@@ -942,18 +947,25 @@ function Discover() {
               </div>
             )}
 
-            <div className="absolute inset-x-0 bottom-4 z-20 flex flex-wrap justify-center gap-3 px-3 sm:gap-5">
+            {detailsOpen && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 z-[15] h-28 bg-gradient-to-t from-[#2b2021] via-[#2b2021]/90 to-transparent"
+              />
+            )}
+
+            <div className="absolute inset-x-0 bottom-4 z-20 flex justify-center gap-3 px-3 sm:gap-4">
               <button
                 onClick={() => void swipe(false)}
                 aria-label="Passer"
-                className="flex h-16 w-16 items-center justify-center rounded-full border border-white/20 bg-[#281e1f]/85 text-[#d4c6bf] backdrop-blur transition hover:scale-105"
+                className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-[#281e1f]/85 text-[#d4c6bf] backdrop-blur transition hover:scale-105"
               >
                 <Ban />
               </button>
               <button
                 onClick={likeFromButton}
                 aria-label="J'aime"
-                className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-red text-primary-foreground shadow-glow transition hover:scale-105"
+                className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-red text-primary-foreground shadow-glow transition hover:scale-105"
               >
                 <Heart
                   fill="currentColor"
@@ -967,10 +979,10 @@ function Discover() {
                   disabled={sendingSuperLike}
                   aria-label={`Envoyer un Super coup de cœur à ${current.first_name}`}
                   title="3 Super coups de cœur gratuits par jour"
-                  className="flex h-16 min-w-16 items-center justify-center gap-2 rounded-full border border-[#e2b45f]/60 bg-[#2b2021]/90 px-4 text-sm font-semibold text-[#f4cf7a] backdrop-blur transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
+                  className="flex h-14 w-14 items-center justify-center rounded-full border border-[#e2b45f]/60 bg-[#2b2021]/90 text-[#f4cf7a] backdrop-blur transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
                 >
                   <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
-                  <span className="sr-only sm:not-sr-only">
+                  <span className="sr-only">
                     {sendingSuperLike ? "Envoi…" : "Super coup de cœur"}
                   </span>
                 </button>
@@ -981,10 +993,10 @@ function Discover() {
                   onClick={() => void writeBeforeMatch()}
                   disabled={openingConversation}
                   aria-label={`Écrire à ${current.first_name} avant le match`}
-                  className="flex h-16 min-w-16 items-center justify-center gap-2 rounded-full border border-[#e2b45f]/60 bg-[#2b2021]/90 px-5 text-sm font-semibold text-[#e8be6c] backdrop-blur transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
+                  className="flex h-14 w-14 items-center justify-center rounded-full border border-[#e2b45f]/60 bg-[#2b2021]/90 text-[#e8be6c] backdrop-blur transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
                 >
                   <MessageCircle className="h-5 w-5" aria-hidden="true" />
-                  <span>{openingConversation ? "Ouverture…" : "Écrire"}</span>
+                  <span className="sr-only">{openingConversation ? "Ouverture…" : "Écrire"}</span>
                 </button>
               )}
             </div>
