@@ -1,5 +1,5 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { BadgeCheck, Ban, Bike, Heart, HeartCrack, KeyRound, Trash2, Zap } from "lucide-react";
+import { BadgeCheck, Ban, Bike, Heart, HeartCrack, Trash2, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { requireAppAccess } from "@/lib/require-admin";
@@ -315,7 +315,7 @@ function Matches() {
                             aria-label={`J'aime ${profile.first_name}`}
                             className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-red text-primary-foreground shadow-glow transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
                           >
-                            <KeyRound aria-hidden="true" />
+                            <Heart fill="currentColor" aria-hidden="true" />
                           </button>
                         </div>
                       </div>

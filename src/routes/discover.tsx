@@ -3,9 +3,10 @@ import {
   BadgeCheck,
   Ban,
   Bike,
+  ChevronLeft,
+  ChevronRight,
   Flag,
   Heart,
-  KeyRound,
   MessageCircle,
   RotateCcw,
   ShieldOff,
@@ -144,6 +145,7 @@ function Discover() {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [justLiked, setJustLiked] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [sendingSuperLike, setSendingSuperLike] = useState(false);
   const [openingConversation, setOpeningConversation] = useState(false);
   const cardRef = useRef<HTMLElement>(null);
@@ -463,6 +465,7 @@ function Discover() {
   }
 
   useEffect(() => {
+    setDetailsOpen(false);
     setReportOpen(false);
     setReportReason("");
     setDragOffset(0);
@@ -478,7 +481,7 @@ function Discover() {
   );
 
   function startDrag(event: ReactPointerEvent<HTMLElement>) {
-    if (event.button !== 0 || !event.isPrimary) return;
+    if (event.button !== 0 || !event.isPrimary || detailsOpen) return;
     if ((event.target as HTMLElement).closest("button, select, input, a")) return;
     activePointerId.current = event.pointerId;
     dragStartX.current = event.clientX;
@@ -778,7 +781,7 @@ function Discover() {
             onPointerMove={moveDrag}
             onPointerUp={finishDrag}
             onPointerCancel={cancelDrag}
-            className={`relative touch-pan-y select-none overflow-hidden rounded-2xl border border-[#d6a85c]/25 bg-[#302425]/95 shadow-[0_28px_80px_rgba(8,3,3,0.48)] ${isDragging ? "cursor-grabbing" : "cursor-grab transition-transform duration-300 ease-out"}`}
+            className={`relative h-[calc(100dvh-15rem)] max-h-[44rem] min-h-[30rem] touch-pan-y select-none overflow-hidden rounded-2xl border border-[#d6a85c]/25 bg-[#211819] shadow-[0_28px_80px_rgba(8,3,3,0.48)] ${isDragging ? "cursor-grabbing" : "cursor-grab transition-transform duration-300 ease-out"}`}
             style={{ transform: `translateX(${dragOffset}px) rotate(${dragOffset / 20}deg)` }}
           >
             <div
@@ -795,22 +798,35 @@ function Discover() {
             >
               PASSER
             </div>
-            <div className="aspect-square bg-[#211819]">
-              {current.photoUrl ? (
-                <img
-                  src={current.photoUrl}
-                  alt={current.first_name}
-                  draggable={false}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-sm text-[#8c7a75]">
-                  Pas de photo
-                </div>
-              )}
-            </div>
-            <div className="p-6">
-              <h2 className="flex items-center gap-2 font-display text-2xl">
+
+            {current.photoUrl ? (
+              <img
+                src={current.photoUrl}
+                alt={current.first_name}
+                draggable={false}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-[#8c7a75]">
+                Pas de photo
+              </div>
+            )}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-[#140a0b]/95 via-[#140a0b]/55 to-transparent"
+            />
+
+            {lastPassed && isPremium && (
+              <button
+                onClick={() => void undoLastPass()}
+                className="absolute left-3 top-3 z-20 flex items-center gap-1.5 rounded-full bg-[#140a0b]/65 px-3 py-1.5 text-xs text-[#f4cf7a] backdrop-blur hover:bg-[#140a0b]/80"
+              >
+                <RotateCcw className="h-3.5 w-3.5" /> Annuler
+              </button>
+            )}
+
+            <div className="pointer-events-none absolute inset-x-5 bottom-28 pr-14">
+              <h2 className="flex items-center gap-2 font-display text-3xl leading-tight text-[#fff9f0]">
                 {current.first_name}, {ageFromBirthDate(current.birth_date)} ans
                 {current.is_premium && (
                   <BadgeCheck
@@ -819,127 +835,157 @@ function Discover() {
                   />
                 )}
               </h2>
-              {current.compatibility_score > 0 && (
-                <span
-                  className={`mt-2 inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
-                    current.compatibility_score >= 70
-                      ? "border-[#e2b45f]/50 bg-[#e2b45f]/10 text-[#e8be6c]"
-                      : "border-white/15 bg-white/5 text-[#d4c6bf]"
-                  }`}
-                >
-                  {current.compatibility_score}% compatible
-                </span>
-              )}
               {current.distance_km !== null && current.distance_km !== undefined && (
-                <p className="mt-1 text-xs text-[#a99b95]">à environ {current.distance_km} km</p>
+                <p className="mt-1 text-sm text-[#e8d9c9]">à environ {current.distance_km} km</p>
               )}
               {(current.moto_brand || current.moto_model) && (
-                <p className="mt-1 text-sm text-[#e8be6c]">
+                <p className="mt-0.5 text-sm text-[#e8be6c]">
                   {[current.moto_brand, current.moto_model].filter(Boolean).join(" ")}
                 </p>
               )}
-              {current.bio && (
-                <p className="mt-3 text-sm leading-relaxed text-[#d4c6bf]">{current.bio}</p>
-              )}
-              {current.prompts.length > 0 && (
-                <div className="mt-3 space-y-3 text-sm leading-relaxed text-[#d4c6bf]">
-                  {current.prompts.map((prompt) => (
-                    <div key={prompt.question}>
-                      <p className="font-semibold text-[#fff9f0]">{prompt.question}</p>
-                      <p>{prompt.answer}</p>
-                    </div>
-                  ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setDetailsOpen(true)}
+              aria-label={`Voir le profil de ${current.first_name}`}
+              aria-expanded={detailsOpen}
+              className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/35 bg-[#140a0b]/55 text-white backdrop-blur transition hover:bg-[#140a0b]/75"
+            >
+              <ChevronLeft aria-hidden="true" />
+            </button>
+
+            {detailsOpen && (
+              <div className="absolute inset-y-0 left-9 right-0 z-10 overflow-y-auto border-l border-[#d6a85c]/30 bg-[#2b2021] px-5 pb-32 pt-5 shadow-[-20px_0_40px_rgba(0,0,0,0.4)] animate-in slide-in-from-right duration-300">
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setDetailsOpen(false)}
+                    aria-label="Revenir à la photo"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/25 text-[#fff9f0] hover:bg-white/10"
+                  >
+                    <ChevronRight aria-hidden="true" />
+                  </button>
+                  <h2 className="font-display text-2xl text-[#fff9f0]">
+                    {current.first_name}, {ageFromBirthDate(current.birth_date)} ans
+                  </h2>
                 </div>
-              )}
-              <div className="mt-6 flex flex-wrap justify-center gap-3 sm:gap-6">
-                <button
-                  onClick={() => void swipe(false)}
-                  aria-label="Passer"
-                  className="flex h-16 w-16 items-center justify-center rounded-full border border-white/15 bg-[#281e1f] text-[#d4c6bf] transition hover:scale-105"
-                >
-                  <Ban />
-                </button>
-                <button
-                  onClick={likeFromButton}
-                  aria-label="J'aime"
-                  className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-red text-primary-foreground shadow-glow transition hover:scale-105"
-                >
-                  <KeyRound
-                    className={`transition-transform duration-300 ${justLiked ? "rotate-[20deg]" : "rotate-0"}`}
-                  />
-                </button>
-                {isPremium && (
-                  <button
-                    type="button"
-                    onClick={() => void sendSuperLike()}
-                    disabled={sendingSuperLike}
-                    aria-label={`Envoyer un Super coup de cœur à ${current.first_name}`}
-                    title="3 Super coups de cœur gratuits par jour"
-                    className="flex h-16 min-w-16 items-center justify-center gap-2 rounded-full border border-[#e2b45f]/60 bg-[#e2b45f]/15 px-4 text-sm font-semibold text-[#f4cf7a] transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
+                {current.compatibility_score > 0 && (
+                  <span
+                    className={`mt-4 inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
+                      current.compatibility_score >= 70
+                        ? "border-[#e2b45f]/50 bg-[#e2b45f]/10 text-[#e8be6c]"
+                        : "border-white/15 bg-white/5 text-[#d4c6bf]"
+                    }`}
                   >
-                    <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
-                    <span className="sr-only sm:not-sr-only">
-                      {sendingSuperLike ? "Envoi…" : "Super coup de cœur"}
-                    </span>
-                  </button>
+                    {current.compatibility_score}% compatible
+                  </span>
                 )}
-                {isPremium && (
-                  <button
-                    type="button"
-                    onClick={() => void writeBeforeMatch()}
-                    disabled={openingConversation}
-                    aria-label={`Écrire à ${current.first_name} avant le match`}
-                    className="flex h-16 min-w-16 items-center justify-center gap-2 rounded-full border border-[#e2b45f]/60 bg-[#302425] px-5 text-sm font-semibold text-[#e8be6c] transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
-                  >
-                    <MessageCircle className="h-5 w-5" aria-hidden="true" />
-                    <span>{openingConversation ? "Ouverture…" : "Écrire"}</span>
-                  </button>
+                {current.distance_km !== null && current.distance_km !== undefined && (
+                  <p className="mt-2 text-xs text-[#a99b95]">à environ {current.distance_km} km</p>
                 )}
-              </div>
-              <div className="mt-5 flex items-center justify-center gap-5 text-xs text-[#a99b95]">
-                {lastPassed && isPremium && (
-                  <button
-                    onClick={() => void undoLastPass()}
-                    className="flex items-center gap-1.5 text-primary hover:underline"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" /> Annuler
-                  </button>
+                {(current.moto_brand || current.moto_model) && (
+                  <p className="mt-1 text-sm text-[#e8be6c]">
+                    {[current.moto_brand, current.moto_model].filter(Boolean).join(" ")}
+                  </p>
                 )}
-                <button
-                  onClick={() => setReportOpen((v) => !v)}
-                  className="flex items-center gap-1.5 hover:text-[#e8be6c]"
-                >
-                  <Flag className="h-3.5 w-3.5" /> Signaler
-                </button>
-                <button
-                  onClick={() => void blockCurrent()}
-                  className="flex items-center gap-1.5 hover:text-[#e8be6c]"
-                >
-                  <ShieldOff className="h-3.5 w-3.5" /> Bloquer
-                </button>
-              </div>
-              {reportOpen && (
-                <div className="mt-4 space-y-3 rounded-xl border border-white/10 bg-[#241b1c] p-4">
-                  <select
-                    className="w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
-                    value={reportReason}
-                    onChange={(e) => setReportReason(e.target.value)}
-                  >
-                    <option value="">Motif du signalement…</option>
-                    {reportReasons.map(([value, label]) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
+                {current.bio && (
+                  <p className="mt-3 text-sm leading-relaxed text-[#d4c6bf]">{current.bio}</p>
+                )}
+                {current.prompts.length > 0 && (
+                  <div className="mt-3 space-y-3 text-sm leading-relaxed text-[#d4c6bf]">
+                    {current.prompts.map((prompt) => (
+                      <div key={prompt.question}>
+                        <p className="font-semibold text-[#fff9f0]">{prompt.question}</p>
+                        <p>{prompt.answer}</p>
+                      </div>
                     ))}
-                  </select>
+                  </div>
+                )}
+                <div className="mt-6 flex items-center justify-center gap-5 text-xs text-[#a99b95]">
                   <button
-                    onClick={() => void submitReport()}
-                    disabled={!reportReason}
-                    className="w-full rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-40"
+                    onClick={() => setReportOpen((v) => !v)}
+                    className="flex items-center gap-1.5 hover:text-[#e8be6c]"
                   >
-                    Envoyer le signalement
+                    <Flag className="h-3.5 w-3.5" /> Signaler
+                  </button>
+                  <button
+                    onClick={() => void blockCurrent()}
+                    className="flex items-center gap-1.5 hover:text-[#e8be6c]"
+                  >
+                    <ShieldOff className="h-3.5 w-3.5" /> Bloquer
                   </button>
                 </div>
+                {reportOpen && (
+                  <div className="mt-4 space-y-3 rounded-xl border border-white/10 bg-[#241b1c] p-4">
+                    <select
+                      className="w-full rounded-lg border border-white/15 bg-[#302526] px-3 py-2 text-sm"
+                      value={reportReason}
+                      onChange={(e) => setReportReason(e.target.value)}
+                    >
+                      <option value="">Motif du signalement…</option>
+                      {reportReasons.map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={() => void submitReport()}
+                      disabled={!reportReason}
+                      className="w-full rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-40"
+                    >
+                      Envoyer le signalement
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="absolute inset-x-0 bottom-4 z-20 flex flex-wrap justify-center gap-3 px-3 sm:gap-5">
+              <button
+                onClick={() => void swipe(false)}
+                aria-label="Passer"
+                className="flex h-16 w-16 items-center justify-center rounded-full border border-white/20 bg-[#281e1f]/85 text-[#d4c6bf] backdrop-blur transition hover:scale-105"
+              >
+                <Ban />
+              </button>
+              <button
+                onClick={likeFromButton}
+                aria-label="J'aime"
+                className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-red text-primary-foreground shadow-glow transition hover:scale-105"
+              >
+                <Heart
+                  fill="currentColor"
+                  className={`transition-transform duration-300 ${justLiked ? "scale-125" : "scale-100"}`}
+                />
+              </button>
+              {isPremium && (
+                <button
+                  type="button"
+                  onClick={() => void sendSuperLike()}
+                  disabled={sendingSuperLike}
+                  aria-label={`Envoyer un Super coup de cœur à ${current.first_name}`}
+                  title="3 Super coups de cœur gratuits par jour"
+                  className="flex h-16 min-w-16 items-center justify-center gap-2 rounded-full border border-[#e2b45f]/60 bg-[#2b2021]/90 px-4 text-sm font-semibold text-[#f4cf7a] backdrop-blur transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
+                >
+                  <DoubleHeartIcon className="h-5 w-5" aria-hidden="true" />
+                  <span className="sr-only sm:not-sr-only">
+                    {sendingSuperLike ? "Envoi…" : "Super coup de cœur"}
+                  </span>
+                </button>
+              )}
+              {isPremium && (
+                <button
+                  type="button"
+                  onClick={() => void writeBeforeMatch()}
+                  disabled={openingConversation}
+                  aria-label={`Écrire à ${current.first_name} avant le match`}
+                  className="flex h-16 min-w-16 items-center justify-center gap-2 rounded-full border border-[#e2b45f]/60 bg-[#2b2021]/90 px-5 text-sm font-semibold text-[#e8be6c] backdrop-blur transition hover:scale-105 disabled:cursor-wait disabled:opacity-50"
+                >
+                  <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                  <span>{openingConversation ? "Ouverture…" : "Écrire"}</span>
+                </button>
               )}
             </div>
           </article>
