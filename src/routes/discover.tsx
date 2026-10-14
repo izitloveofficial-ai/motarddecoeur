@@ -141,6 +141,7 @@ function Discover() {
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [isClub, setIsClub] = useState(false);
   const [lastPassed, setLastPassed] = useState<Candidate | null>(null);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -171,7 +172,7 @@ function Discover() {
       if (!userId) return;
       const { data: profile, error: premiumError } = await client
         .from("profiles")
-        .select("is_premium")
+        .select("is_premium, plan")
         .eq("id", userId)
         .maybeSingle();
       if (cancelled) return;
@@ -181,6 +182,7 @@ function Discover() {
         return;
       }
       setIsPremium(profile.is_premium === true);
+      setIsClub(String(profile.plan) === "club");
     }
 
     void client.auth.getSession().then(({ data }) => loadPremiumStatus(data.session?.user.id));
@@ -818,7 +820,7 @@ function Discover() {
               className="pointer-events-none absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-[#140a0b]/95 via-[#140a0b]/55 to-transparent"
             />
 
-            {lastPassed && isPremium && !detailsOpen && (
+            {lastPassed && (isPremium || isClub) && !detailsOpen && (
               <button
                 onClick={() => void undoLastPass()}
                 className="absolute left-3 top-3 z-20 flex items-center gap-1.5 rounded-full bg-[#140a0b]/65 px-3 py-1.5 text-xs text-[#f4cf7a] backdrop-blur hover:bg-[#140a0b]/80"
