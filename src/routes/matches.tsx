@@ -28,6 +28,14 @@ type LikedProfile = {
   photoUrl: string | null;
 };
 
+type SentLike = {
+  id: string;
+  first_name: string;
+  is_super: boolean;
+  liked_at: string;
+  photoUrl: string | null;
+};
+
 export const Route = createFileRoute("/matches")({
   // Supabase persists auth in browser storage, so authorization must run in the browser.
   ssr: false,
@@ -55,6 +63,7 @@ function Matches() {
   const [matches, setMatches] = useState<MatchRow[] | null>(null);
   const [waitingProfiles, setWaitingProfiles] = useState<LikedProfile[] | null>(null);
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
+  const [sentLikes, setSentLikes] = useState<SentLike[] | null>(null);
   const [swipingProfileId, setSwipingProfileId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
@@ -76,7 +85,7 @@ function Matches() {
 
     const [{ data: account, error: accountError }, { data: rows, error: rowsError }] =
       await Promise.all([
-        supabase.from("profiles").select("is_premium").eq("id", user.id).maybeSingle(),
+        supabase.from("profiles").select("is_premium, plan").eq("id", user.id).maybeSingle(),
         supabase
           .from("matches")
           .select("id, matched_at, profile_a_id, profile_b_id, status")
@@ -94,6 +103,13 @@ function Matches() {
 
     const premium = account?.is_premium === true;
     setIsPremium(premium);
+    // Forfaits Argent (club) et Or (premium) : liste des coups de cœur envoyés.
+    // Lecture seule, limitée par la règle « swipes personnels » (swiper_id = moi).
+    if (premium || String(account?.plan) === "club") {
+      void loadSentLikes(user.id);
+    } else {
+      setSentLikes([]);
+    }
     const otherIds = (rows ?? []).map((row) =>
       row.profile_a_id === user.id ? row.profile_b_id : row.profile_a_id,
     );
@@ -188,6 +204,57 @@ function Matches() {
         ...profile,
         photoUrl: likedPhotos.get(profile.id) ?? null,
       })),
+    );
+  }
+
+  async function loadSentLikes(userId: string) {
+    if (!supabase) return;
+    const { data: swipeRows, error: swipesError } = await supabase
+      .from("swipes")
+      .select("swiped_id, is_super, created_at")
+      .eq("swiper_id", userId)
+      .eq("liked", true)
+      .order("created_at", { ascending: false })
+      .limit(60);
+    if (swipesError) {
+      setSentLikes([]);
+      return;
+    }
+    const rows = swipeRows ?? [];
+    const ids = rows.map((row) => row.swiped_id);
+    if (!ids.length) {
+      setSentLikes([]);
+      return;
+    }
+    const [{ data: people }, { data: photoRows }] = await Promise.all([
+      supabase.from("profiles").select("id, first_name").in("id", ids),
+      supabase
+        .from("profile_photos")
+        .select("profile_id, storage_path, position")
+        .in("profile_id", ids)
+        .order("position", { ascending: true }),
+    ]);
+    const names = new Map((people ?? []).map((person) => [person.id, person.first_name]));
+    const photos = new Map<string, string>();
+    for (const photo of photoRows ?? []) {
+      if (!photos.has(photo.profile_id)) {
+        photos.set(
+          photo.profile_id,
+          supabase.storage.from("profile-photos").getPublicUrl(photo.storage_path).data.publicUrl,
+        );
+      }
+    }
+    // Les profils masqués, bloqués ou inactifs ne sont pas lisibles : on ne les affiche pas.
+    setSentLikes(
+      rows
+        .filter((row) => names.has(row.swiped_id))
+        .map((row) => ({
+          id: row.swiped_id,
+          first_name: names.get(row.swiped_id) ?? "Motard(e)",
+          is_super: row.is_super === true,
+          liked_at: row.created_at,
+          photoUrl: photos.get(row.swiped_id) ?? null,
+        })),
     );
   }
 
@@ -324,6 +391,41 @@ function Matches() {
                 ))}
               </ul>
             )}
+          </section>
+        )}
+
+        {sentLikes && sentLikes.length > 0 && (
+          <section aria-labelledby="sent-title" className="mb-12">
+            <h2 id="sent-title" className="font-display text-2xl text-[#fff9f0]">
+              Coups de cœur envoyés ({sentLikes.length})
+            </h2>
+            <ul className="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+              {sentLikes.map((like) => (
+                <li key={like.id}>
+                  <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-[#d6a85c]/20 bg-[#211819]">
+                    {like.photoUrl ? (
+                      <img
+                        src={like.photoUrl}
+                        alt={`Photo de ${like.first_name}`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="grid h-full place-items-center">
+                        <Heart className="h-8 w-8 text-[#e8be6c]/50" aria-hidden="true" />
+                      </div>
+                    )}
+                    {like.is_super && (
+                      <span className="absolute right-1.5 top-1.5 rounded-full bg-[#211819]/90 p-1 text-[#f4cf7a]">
+                        <Zap className="h-3.5 w-3.5 fill-current" aria-label="Super coup de cœur" />
+                      </span>
+                    )}
+                    <p className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-2 pb-1.5 pt-6 text-xs font-medium text-[#fff9f0]">
+                      {like.first_name}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 

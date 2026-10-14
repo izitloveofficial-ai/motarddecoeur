@@ -142,6 +142,7 @@ function Discover() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const [isClub, setIsClub] = useState(false);
+  const canFilter = isPremium || isClub;
   const [lastPassed, setLastPassed] = useState<Candidate | null>(null);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -565,13 +566,13 @@ function Discover() {
   ) => (
     <label className="text-sm font-medium">
       <span className="flex items-center gap-2">
-        {label} {!isPremium && <PremiumLabel />}
+        {label} {!canFilter && <PremiumLabel />}
       </span>
       <select
         className="mt-2 w-full rounded-xl border border-white/15 bg-[#302526] px-4 py-3 text-sm text-[#fff9f0] outline-none transition focus:border-[#e2b45f]/70 disabled:cursor-not-allowed disabled:opacity-50"
         value={filters[name]}
         onChange={(event) => setFilters((current) => ({ ...current, [name]: event.target.value }))}
-        disabled={!isPremium}
+        disabled={!canFilter}
       >
         <option value="">Peu importe</option>
         {options.map(([value, optionLabel]) => (
@@ -638,7 +639,7 @@ function Discover() {
             <div className="text-sm font-medium">
               <div className="flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2">
-                  Âge {!isPremium && <PremiumLabel />}
+                  Âge {!canFilter && <PremiumLabel />}
                 </span>
                 <span className="text-[#e8be6c]">
                   {filters.minAge || MIN_AGE} — {filters.maxAge || MAX_AGE} ans
@@ -660,7 +661,7 @@ function Discover() {
                     maxAge: maxAge === MAX_AGE ? "" : String(maxAge),
                   }))
                 }
-                disabled={!isPremium}
+                disabled={!canFilter}
                 thumbLabels={["Âge minimum", "Âge maximum"]}
                 trackClassName="bg-[#e2b45f]/20"
                 rangeClassName="bg-[#e2b45f]"
@@ -670,7 +671,7 @@ function Discover() {
             <div className="text-sm font-medium">
               <div className="flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2">
-                  Distance max. {!isPremium && <PremiumLabel />}
+                  Distance max. {!canFilter && <PremiumLabel />}
                 </span>
                 <span className="text-[#e8be6c]">
                   {filters.maxKm ? `${filters.maxKm} km` : "Sans limite"}
@@ -688,7 +689,7 @@ function Discover() {
                     maxKm: maxKm === MAX_DISTANCE_KM ? "" : String(maxKm),
                   }))
                 }
-                disabled={!isPremium}
+                disabled={!canFilter}
                 thumbLabels={["Distance maximale"]}
                 trackClassName="bg-[#e2b45f]/20"
                 rangeClassName="bg-[#e2b45f]"
@@ -698,7 +699,7 @@ function Discover() {
             <div className="text-sm font-medium">
               <div className="flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2">
-                  Taille {!isPremium && <PremiumLabel />}
+                  Taille {!canFilter && <PremiumLabel />}
                 </span>
                 <span className="text-[#e8be6c]">
                   {filters.minHeight || MIN_HEIGHT_CM} — {filters.maxHeight || MAX_HEIGHT_CM} cm
@@ -720,7 +721,7 @@ function Discover() {
                     maxHeight: maxHeight === MAX_HEIGHT_CM ? "" : String(maxHeight),
                   }))
                 }
-                disabled={!isPremium}
+                disabled={!canFilter}
                 thumbLabels={["Taille minimum", "Taille maximum"]}
                 trackClassName="bg-[#e2b45f]/20"
                 rangeClassName="bg-[#e2b45f]"
@@ -742,9 +743,9 @@ function Discover() {
                 Réinitialiser les filtres
               </button>
             )}
-            {!isPremium && (
+            {!canFilter && (
               <p className="text-xs text-[#a99b95]">
-                Filtres avancés réservés aux comptes Premium.
+                Filtres avancés réservés aux forfaits Argent et Or.
               </p>
             )}
           </div>
@@ -1012,7 +1013,7 @@ function Discover() {
 function PremiumLabel() {
   return (
     <span className="rounded-full border border-[#e2b45f]/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#e8be6c]">
-      Premium
+      Argent et Or
     </span>
   );
 }
