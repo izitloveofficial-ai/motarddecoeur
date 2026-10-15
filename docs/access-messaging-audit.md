@@ -109,3 +109,94 @@ ne jamais remplacer ces mesures par une estimation locale.
 - La branche de travail n'est pas `main` : aucune publication Lovable ne doit être déclenchée à ce
   stade. Après fusion sur `main`, publier, contrôler le statut, puis exécuter la recette ci-dessus
   avant toute autre bascule.
+
+## Relevé distant en lecture seule — 15 octobre 2026
+
+Projet lu : `pfaxuvdcmcfnzjqskbrl` (`motards-de-coeur`, eu-west-1), le seul projet Supabase du compte
+et celui référencé par le client du site. Lecture faite uniquement par requêtes `SELECT` sur le
+catalogue, l'outil d'avis de sécurité Supabase et la lecture du code des Edge Functions déployées.
+Aucune migration, aucune écriture, aucun appel de fonction métier ou d'Edge Function.
+
+Volumes au moment du relevé (comptages agrégés) : 28 profils dont 18 Premium, 2 admins,
+16 bêta-testeurs, 15 matchs, 36 messages, 0 blocage, 10 fichiers photo, 23 préinscriptions.
+
+Statut des constats ci-dessous : **défaut constaté** dans les règles déployées. Aucun n'a été
+exploité ni démontré par une requête réelle ; la preuve par refus/acceptation relève de l'étape 2.
+
+### Critique
+
+1. **Un membre peut s'attribuer Premium lui-même.** La politique `modification de son propre
+   profil` (UPDATE, `auth.uid() = id`, sans `WITH CHECK`) et les privilèges de colonne laissent
+   `authenticated` modifier `is_premium`, `plan`, `is_verified` et `is_active` sur sa ligne.
+   Le déclencheur `sync_plan_and_premium` aligne les deux colonnes mais ne bloque rien. Toutes les
+   vérifications Premium côté base (`start_pending_conversation`, super like, `who_liked_me`,
+   tri de `nearby_profiles`) se contournent ainsi.
+2. **Le destinataire d'un message peut le réécrire ou le déplacer.** La politique `marquer les
+   messages recus comme lus` autorise un UPDATE de toute la ligne, pas seulement `read_at`.
+   `WITH CHECK (sender_id <> auth.uid())` ne vérifie pas l'appartenance au nouveau `match_id` :
+   le destinataire peut modifier `content` d'un message reçu, voire le rattacher à une autre
+   conversation dont il connaît l'identifiant.
+
+### Élevé
+
+3. **`send-push` déployée diffère du dépôt.** La version déployée (v8) accepte n'importe quel
+   `profile_id` de n'importe quel membre connecté, sans contrôle de relation ni limite de longueur ;
+   la version du dépôt exige un match et limite titre/corps. Impact réel conditionné à la présence
+   du secret `FIREBASE_SERVICE_ACCOUNT_JSON`, non vérifiée.
+4. **Temps réel.** Seule `public.messages` est dans la publication `supabase_realtime` : l'abonnement
+   du client aux UPDATE de `matches` (passage « en attente » → « mutuel ») ne reçoit donc jamais
+   d'événement. Le canal `messages:<matchId>` est ouvert sans `private: true` et `realtime.messages`
+   n'a aucune politique : le Broadcast « en train d'écrire » n'est pas autorisé côté serveur ;
+   quiconque connaît l'UUID du match peut l'écouter ou l'usurper (impact limité à l'indicateur).
+5. **Lecture anonyme.** `profile_photos`, `profile_prompts` et `profile_interests` sont lisibles par
+   le rôle `anon` (politiques sur `public`) pour tout profil actif, sans filtre de blocage ; le bucket
+   `profile-photos` est public. `event_attendees` est lisible par `anon` : qui participe à quel
+   événement est public.
+
+### Moyen ou à arbitrer
+
+6. `pending_charges` : un membre peut insérer des frais pour lui-même, alors que la politique
+   s'intitule « seul le système peut créer des frais en attente ».
+7. Un participant peut supprimer un match ; la clé étrangère `messages → matches` est en
+   `ON DELETE CASCADE` : l'historique disparaît aussi pour l'autre personne.
+8. Stockage : aucune politique UPDATE sur `profile-photos`, le remplacement d'un fichier par
+   upsert échouera ; ajout et suppression limités au dossier `<uid>/`.
+9. `weekly-backup` envoie chaque lundi l'export JSON complet (profils, messages, signalements…)
+   en pièce jointe par e-mail via Resend : point à valider au regard du RGPD.
+10. Avis Supabase : RLS désactivé sur `spatial_ref_sys` (PostGIS), protection contre les mots de
+    passe divulgués désactivée, `search_path` non fixé sur `check_forbidden_words` et
+    `sync_plan_and_premium`, extensions `postgis` et `pg_net` dans `public`, 23 fonctions
+    `SECURITY DEFINER` exécutables par `anon` (sans effet utile sans session pour la plupart).
+
+### Conforme à l'attendu
+
+- RLS activé sur toutes les tables applicatives ; `magic_links` sans politique (fermée aux clients).
+- `is_blocked` est bidirectionnel ; l'envoi de message exige d'être participant et non bloqué ;
+  `nearby_profiles`, `who_liked_me` et la lecture des profils excluent les comptes bloqués.
+- Un tiers ne lit ni `matches` ni `messages` d'une conversation à laquelle il ne participe pas.
+- `admin_users` lisible par les seuls admins ; un bêta-testeur ne lit que sa propre ligne et
+  aucune table d'administration.
+- `mark_match_seen` limitée aux participants ; `event_notification_targets` et `mark_match_seen`
+  non exécutables par `anon`.
+- `delete-account` ne supprime que l'utilisateur du JWT ; `admin-ban-user` exige une ligne
+  `admin_users` ; les fonctions sans JWT (`send-test-email`, `check-email-status`,
+  `weekly-backup`, `upload-test-photo`) exigent un admin ou le secret cron ; les tâches
+  `pg_cron` ne contiennent pas le secret en clair.
+
+### Écart entre le dépôt et la production
+
+- 65 migrations appliquées en production contre 7 fichiers dans `supabase/migrations/` : le
+  dépôt ne permet pas de reconstruire la base.
+- 13 Edge Functions déployées contre 3 dans le dépôt (`send-preinscription-invitations`,
+  `send-progress-update`, `member-lifecycle-emails`, `health-check`, `send-test-email`,
+  `check-email-status`, `delete-storage-object`, `weekly-backup`, `upload-test-photo`,
+  `redeem-magic-link` absentes du dépôt). `delete-account` et `admin-ban-user` correspondent au
+  dépôt sur les contrôles d'accès ; `send-push` non (point 3).
+- La migration `schedule_member_lifecycle_emails` est appliquée mais aucune tâche `pg_cron`
+  correspondante n'existe : envoi désactivé ou supprimé, à confirmer.
+
+### Non vérifié à ce stade
+
+Refus et acceptations par requêtes réelles avec deux comptes (étape 2), présence du secret
+Firebase, réglages Auth autres que ceux de l'avis, version publiée sur Lovable, et données
+éventuelles hors Supabase (Cloudflare).
