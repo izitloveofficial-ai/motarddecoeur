@@ -88,6 +88,8 @@ const defaultFilters: Filters = {
   sportHabit: "",
 };
 
+/** Forfait Cuivre (gratuit) : nombre de nouveaux profils proposés par jour. */
+const FREE_DAILY_PROFILES = 10;
 const MIN_AGE = 18;
 const MAX_AGE = 99;
 const MAX_DISTANCE_KM = 500;
@@ -143,6 +145,8 @@ function Discover() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const [isClub, setIsClub] = useState(false);
+  // Nombre de profils encore proposés aujourd'hui au forfait Cuivre (null = pas de limite).
+  const [freeCap, setFreeCap] = useState<number | null>(null);
   const canFilter = isPremium || isClub;
   const [lastPassed, setLastPassed] = useState<Candidate | null>(null);
   const [dragOffset, setDragOffset] = useState(0);
@@ -215,6 +219,34 @@ function Discover() {
       setCandidates([]);
       return;
     }
+    // Forfait Cuivre : 10 nouveaux profils par jour (règle appliquée dans l'application).
+    // Si le forfait est illisible, on ne bloque personne : la limite ne s'applique que
+    // lorsqu'on a bien lu un forfait Cuivre.
+    let batchSize = 20;
+    let cap: number | null = null;
+    const { data: account } = await supabase
+      .from("profiles")
+      .select("is_premium, plan")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (isStale()) return;
+    if (account && account.is_premium !== true && String(account.plan) !== "club") {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+      const { count } = await supabase
+        .from("swipes")
+        .select("swiped_id", { count: "exact", head: true })
+        .eq("swiper_id", user.id)
+        .gte("created_at", startOfDay.toISOString());
+      if (isStale()) return;
+      cap = Math.max(0, FREE_DAILY_PROFILES - (count ?? 0));
+      batchSize = Math.min(batchSize, cap);
+    }
+    setFreeCap(cap);
+    if (cap === 0) {
+      setCandidates([]);
+      return;
+    }
     setCandidates(null);
     setIndex(0);
     setLastPassed(null);
@@ -230,7 +262,7 @@ function Discover() {
       p_children_status: filters.childrenStatus || null,
       p_drinking_habit: filters.drinkingHabit || null,
       p_sport_habit: filters.sportHabit || null,
-      p_limit: 20,
+      p_limit: batchSize,
     });
     if (isStale()) return;
     if (profilesError) {
@@ -777,10 +809,23 @@ function Discover() {
               strokeWidth={1.5}
               aria-hidden="true"
             />
-            <h2 className="mt-5 font-display text-2xl text-[#fff9f0]">La route est calme</h2>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-[#d4c6bf]">
-              Plus de nouveaux profils pour le moment. Reviens un peu plus tard !
-            </p>
+            {freeCap !== null && candidates.length >= freeCap ? (
+              <>
+                <h2 className="mt-5 font-display text-2xl text-[#fff9f0]">
+                  Tes {FREE_DAILY_PROFILES} profils du jour sont vus
+                </h2>
+                <p className="mx-auto mt-2 max-w-sm text-sm text-[#d4c6bf]">
+                  Reviens demain pour en découvrir de nouveaux.
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="mt-5 font-display text-2xl text-[#fff9f0]">La route est calme</h2>
+                <p className="mx-auto mt-2 max-w-sm text-sm text-[#d4c6bf]">
+                  Plus de nouveaux profils pour le moment. Reviens un peu plus tard !
+                </p>
+              </>
+            )}
           </div>
         )}
         {current && (
