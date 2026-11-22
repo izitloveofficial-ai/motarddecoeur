@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RidesRouteImport } from './routes/rides'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as ProfilesRouteImport } from './routes/profiles'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
@@ -39,6 +40,7 @@ import { Route as MatchesNewRouteImport } from './routes/matches.new'
 import { Route as DiscoverLikesRouteImport } from './routes/discover_.likes'
 import { Route as AdminStatusRouteImport } from './routes/admin.status'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
+import { Route as AdminQuizRouteImport } from './routes/admin.quiz'
 import { Route as AdminPreinscriptionsRouteImport } from './routes/admin.preinscriptions'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
@@ -61,6 +63,11 @@ const RidesRoute = RidesRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfilesRoute = ProfilesRouteImport.update({
@@ -193,6 +200,11 @@ const AdminReportsRoute = AdminReportsRouteImport.update({
   path: '/admin/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminQuizRoute = AdminQuizRouteImport.update({
+  id: '/admin/quiz',
+  path: '/admin/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPreinscriptionsRoute = AdminPreinscriptionsRouteImport.update({
   id: '/admin/preinscriptions',
   path: '/admin/preinscriptions',
@@ -226,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/quiz': typeof QuizRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
@@ -233,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/admin/quiz': typeof AdminQuizRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/status': typeof AdminStatusRoute
   '/discover/likes': typeof DiscoverLikesRoute
@@ -261,6 +275,7 @@ export interface FileRoutesByTo {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/quiz': typeof QuizRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
@@ -268,6 +283,7 @@ export interface FileRoutesByTo {
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/admin/quiz': typeof AdminQuizRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/status': typeof AdminStatusRoute
   '/discover/likes': typeof DiscoverLikesRoute
@@ -297,6 +313,7 @@ export interface FileRoutesById {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/profiles': typeof ProfilesRoute
+  '/quiz': typeof QuizRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rides': typeof RidesRoute
   '/signup': typeof SignupRoute
@@ -304,6 +321,7 @@ export interface FileRoutesById {
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/preinscriptions': typeof AdminPreinscriptionsRoute
+  '/admin/quiz': typeof AdminQuizRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/status': typeof AdminStatusRoute
   '/discover_/likes': typeof DiscoverLikesRoute
@@ -334,6 +352,7 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/quiz'
     | '/reset-password'
     | '/rides'
     | '/signup'
@@ -341,6 +360,7 @@ export interface FileRouteTypes {
     | '/admin/announcements'
     | '/admin/members'
     | '/admin/preinscriptions'
+    | '/admin/quiz'
     | '/admin/reports'
     | '/admin/status'
     | '/discover/likes'
@@ -369,6 +389,7 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/quiz'
     | '/reset-password'
     | '/rides'
     | '/signup'
@@ -376,6 +397,7 @@ export interface FileRouteTypes {
     | '/admin/announcements'
     | '/admin/members'
     | '/admin/preinscriptions'
+    | '/admin/quiz'
     | '/admin/reports'
     | '/admin/status'
     | '/discover/likes'
@@ -404,6 +426,7 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/premium'
     | '/profiles'
+    | '/quiz'
     | '/reset-password'
     | '/rides'
     | '/signup'
@@ -411,6 +434,7 @@ export interface FileRouteTypes {
     | '/admin/announcements'
     | '/admin/members'
     | '/admin/preinscriptions'
+    | '/admin/quiz'
     | '/admin/reports'
     | '/admin/status'
     | '/discover_/likes'
@@ -440,6 +464,7 @@ export interface RootRouteChildren {
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   PremiumRoute: typeof PremiumRoute
   ProfilesRoute: typeof ProfilesRoute
+  QuizRoute: typeof QuizRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RidesRoute: typeof RidesRoute
   SignupRoute: typeof SignupRoute
@@ -447,6 +472,7 @@ export interface RootRouteChildren {
   AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
   AdminMembersRoute: typeof AdminMembersRoute
   AdminPreinscriptionsRoute: typeof AdminPreinscriptionsRoute
+  AdminQuizRoute: typeof AdminQuizRoute
   AdminReportsRoute: typeof AdminReportsRoute
   AdminStatusRoute: typeof AdminStatusRoute
   DiscoverLikesRoute: typeof DiscoverLikesRoute
@@ -486,6 +512,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profiles': {
@@ -670,6 +703,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/quiz': {
+      id: '/admin/quiz'
+      path: '/admin/quiz'
+      fullPath: '/admin/quiz'
+      preLoaderRoute: typeof AdminQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/preinscriptions': {
       id: '/admin/preinscriptions'
       path: '/admin/preinscriptions'
@@ -722,6 +762,7 @@ const rootRouteChildren: RootRouteChildren = {
   MentionsLegalesRoute: MentionsLegalesRoute,
   PremiumRoute: PremiumRoute,
   ProfilesRoute: ProfilesRoute,
+  QuizRoute: QuizRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RidesRoute: RidesRoute,
   SignupRoute: SignupRoute,
@@ -729,6 +770,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAnnouncementsRoute: AdminAnnouncementsRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminPreinscriptionsRoute: AdminPreinscriptionsRoute,
+  AdminQuizRoute: AdminQuizRoute,
   AdminReportsRoute: AdminReportsRoute,
   AdminStatusRoute: AdminStatusRoute,
   DiscoverLikesRoute: DiscoverLikesRoute,

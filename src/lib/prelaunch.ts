@@ -10,11 +10,13 @@ export const PRELAUNCH_MODE = true;
 export const PRELAUNCH_ALLOWED_PATHS = [
   "/sitemap.xml",
   "/join",
+  "/quiz",
   "/about",
   "/mentions-legales",
   "/confidentialite",
   "/conditions-utilisation",
   "/admin/preinscriptions",
+  "/admin/quiz",
   "/admin/members",
   "/admin/reports",
   "/admin/announcements",

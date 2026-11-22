@@ -177,6 +177,16 @@ function Join() {
             <h1 className="font-display text-3xl sm:text-5xl md:text-7xl leading-none mb-6">
               Motards de Cœur arrive bientôt.
             </h1>
+            <p className="my-5 text-base text-[#e2d1c9]">
+              Envie d’un petit jeu ?{" "}
+              <Link
+                to="/quiz"
+                className="font-semibold text-[#efbf87] underline underline-offset-4"
+              >
+                Découvrez votre profil amoureux à moto
+              </Link>
+              , sans inscription.
+            </p>
             <p className="mb-5 max-w-2xl text-lg leading-relaxed text-[#d8cbc4]">
               Rejoins gratuitement les premiers membres de Motards de Cœur.
             </p>
@@ -245,7 +255,7 @@ function Join() {
               </p>
             </div>
 
-            <form className="space-y-5" onSubmit={handleSubmit}>
+            <form id="preinscription" className="scroll-mt-8 space-y-5" onSubmit={handleSubmit}>
               <div className="absolute -left-[10000px]" aria-hidden="true">
                 <label>
                   Site web
@@ -391,6 +401,27 @@ function Join() {
             Cette étape prépare le lancement avec une collecte simple et consentie. Les comptes
             utilisateurs, profils, likes, messagerie et offres premium viendront plus tard.
           </p>
+        </div>
+      </section>
+
+      <section className="border-t border-[#d6a85c]/20 bg-[#241a1e] px-4 py-12 sm:px-6">
+        <div className="mx-auto max-w-4xl rounded-3xl border border-[#b77868]/30 p-6 sm:p-10">
+          <p className="text-sm uppercase tracking-widest text-[#efbf87]">
+            Le petit jeu de la communauté
+          </p>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl">
+            Quel est votre profil amoureux à moto ?
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-[#e2d1c9]">
+            Cinq questions, un portrait qui vous ressemble et une idée de rendez-vous à deux. Votre
+            résultat s’affiche gratuitement, sans inscription.
+          </p>
+          <Link
+            to="/quiz"
+            className="mt-6 inline-flex min-h-12 items-center justify-center rounded-xl bg-gradient-red px-6 py-3 text-base font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-300"
+          >
+            Faire le quiz
+          </Link>
         </div>
       </section>
 

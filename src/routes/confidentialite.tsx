@@ -138,6 +138,20 @@ function Confidentialite() {
             </li>
           </ul>
         </LegalSection>
+        <LegalSection title="Quiz amoureux à moto">
+          <p>Le quiz peut être fait sans inscription : les réponses restent alors dans la page.
+          Si tu demandes ton résultat par e-mail, nous enregistrons ton prénom, ton e-mail, tes cinq réponses,
+          le portrait obtenu, la date, ton accord et ton choix Oui ou Non à la préinscription.
+          Ces informations servent à fournir ton résultat et à analyser les participations. Elles ne sont pas publiques.
+          L’envoi passe par notre prestataire Resend. Seuls les administrateurs autorisés accèdent aux participations.</p>
+          <p>Le choix Oui demande séparément la préinscription et les nouvelles de l’ouverture.
+          Le choix Non ne t’abonne à aucune actualité. Le résultat est ludique et ne garantit aucune compatibilité.
+          Aucun nombre de personnes compatibles n’est inventé. Tu peux retirer ton accord et demander la suppression
+          de ta participation en écrivant à contact@motardsdecoeur.com.</p>
+          <p>Une revue de conservation des participations est prévue après douze mois pour supprimer les données devenues inutiles.
+          Une empreinte technique sert uniquement à limiter les envois abusifs.
+          Une préinscription demandée séparément reste soumise aux règles de conservation de la liste de préinscription.</p>
+        </LegalSection>
         <LegalSection title="Conservation des données">
           <p>
             Tes données sont conservées tant que ton compte est actif. En cas de suppression de

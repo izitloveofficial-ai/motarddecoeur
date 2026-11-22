@@ -6,6 +6,11 @@ import {
 } from "./prelaunch";
 
 describe("prelaunch admin routes", () => {
+  test("allows the anonymous quiz without opening other paths", () => {
+    expect(isPathAllowedDuringPrelaunch("/quiz")).toBe(true);
+    expect(isPathAllowedDuringPrelaunch("/quiz/")).toBe(true);
+    expect(isPathAllowedDuringPrelaunch("/quiz/private")).toBe(false);
+  });
   test("allows the sitemap to be fetched", () => {
     expect(isPathAllowedDuringPrelaunch("/sitemap.xml")).toBe(true);
   });

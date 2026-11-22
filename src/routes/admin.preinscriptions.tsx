@@ -178,6 +178,8 @@ function AdminPreinscriptions() {
         <p className="text-xs uppercase tracking-[.3em] text-primary">Administration privée</p>
         <h1 className="mt-2 font-display text-4xl">Préinscriptions</h1>
         <p className="mt-2 text-sm">
+          <Link to="/admin/quiz" className="text-primary hover:underline">Participations au quiz</Link>
+          {" · "}
           <Link to="/admin/members" className="text-primary hover:underline">
             Voir les membres inscrits
           </Link>
