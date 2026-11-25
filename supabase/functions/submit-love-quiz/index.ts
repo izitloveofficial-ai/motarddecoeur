@@ -1,6 +1,8 @@
 import { quizSubmissionSchema } from "../../../src/lib/quiz-submission.ts";
 import { getQuizResult, QUIZ_PROFILES, QUIZ_QUESTIONS } from "../../../src/lib/love-quiz.ts";
 
+import { DATING_QUIZ_VERSION, buildDatingEmail } from "../../../src/lib/dating-quiz.ts";
+
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -35,17 +37,18 @@ Deno.serve(async (req: Request) => {
   const parsed = quizSubmissionSchema.safeParse(body);
   if (!parsed.success) return json({ error: "invalid_request" }, 400);
   const input = parsed.data;
-  const profileKey = getQuizResult(input.answers)!;
-  const profile = QUIZ_PROFILES[profileKey];
+  const isDating = input.quiz_version === DATING_QUIZ_VERSION;
+  const profileKey = isDating ? "bilan" : getQuizResult(input.answers)!;
+  const profile = profileKey === "bilan" ? null : QUIZ_PROFILES[profileKey];
   const headers = { authorization: `Bearer ${serviceKey}`, apikey: serviceKey, "content-type": "application/json" };
   const rest = (path: string, init: RequestInit = {}) => fetch(`${projectUrl}/rest/v1/${path}`, { ...init, headers: { ...headers, ...init.headers } });
   try {
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
     const hmac = await crypto.subtle.importKey("raw", new TextEncoder().encode(serviceKey), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
     const hash = [...new Uint8Array(await crypto.subtle.sign("HMAC", hmac, new TextEncoder().encode(ip)))].map(b => b.toString(16).padStart(2,"0")).join("");
-    const saved = await rest("rpc/record_love_quiz", { method: "POST", body: JSON.stringify({
+    const saved = await rest(isDating ? "rpc/record_dating_quiz" : "rpc/record_love_quiz", { method: "POST", body: JSON.stringify({
       p_id: input.request_id, p_first_name: input.first_name, p_email: input.email, p_answers: input.answers,
-      p_result: profileKey, p_preinscribe: input.preinscribe, p_ip_hash: hash, p_consent_version: input.consent_version,
+      ...(isDating ? {p_quiz_version: DATING_QUIZ_VERSION} : {p_result: profileKey}), p_preinscribe: input.preinscribe, p_ip_hash: hash, p_consent_version: input.consent_version,
     }) });
     if (!saved.ok) {
       const details = await saved.text();
@@ -61,14 +64,17 @@ Deno.serve(async (req: Request) => {
     if (!claimed.length) return json({ ok: true, email_sent: false, preinscribed: row.preinscribed });
     let sent = false;
     if (key && from) {
-      const recap = input.answers.map((answer,i) => `${QUIZ_QUESTIONS[i].title}\n${QUIZ_QUESTIONS[i].options[answer].label}`).join("\n\n");
+      const recap = isDating ? "" : input.answers.map((answer,i) => `${QUIZ_QUESTIONS[i].title}\n${QUIZ_QUESTIONS[i].options[answer].label}`).join("\n\n");
       const ending = input.preinscribe ? "Votre demande de préinscription est enregistrée. Si votre adresse est déjà connue, son statut est conservé. Vous n’avez pas créé de compte membre." : "Vous n’avez pas demandé de préinscription. Cet e-mail ne vous abonne à aucune actualité.";
-      const text = `Bonjour ${input.first_name},\n\nVotre profil amoureux à moto : ${profile.title}\n\n${profile.description}\n\n${profile.date}\n\nVos réponses :\n${recap}\n\n${ending}\n\nCe quiz est ludique et ne garantit aucune compatibilité amoureuse.\nRetrouvez Motards de Cœur : https://motardsdecoeur.com\nPour supprimer votre participation : contact@motardsdecoeur.com`;
+      const legacyText = profile ? `Bonjour ${input.first_name},\n\nVotre profil amoureux à moto : ${profile.title}\n\n${profile.description}\n\n${profile.date}\n\nVos réponses :\n${recap}\n\n${ending}\n\nCe quiz est ludique et ne garantit aucune compatibilité amoureuse.\nRetrouvez Motards de Cœur : https://motardsdecoeur.com\nPour supprimer votre participation : contact@motardsdecoeur.com` : "";
+      const message = isDating ? buildDatingEmail(input.first_name, input.answers, input.preinscribe)! : {
+        subject: "Votre profil amoureux à moto | Motards de Cœur", text: legacyText,
+        html: `<html lang="fr"><body style="background:#21191a;color:#fff9f0;font-family:Arial,sans-serif;padding:24px"><div style="max-width:560px;margin:auto"><img src="https://motardsdecoeur.com/logo-motards-de-coeur-hd.png" width="100" alt="Motards de Cœur"><h1 style="color:#efbf87">${escape(profile!.title)}</h1>${legacyText.split("\n\n").map(p => `<p style="font-size:16px;line-height:1.6">${escape(p).replaceAll("\n","<br>")}</p>`).join("")}</div></body></html>`,
+      };
       try {
         const email = await fetch("https://api.resend.com/emails", {
           method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json", "idempotency-key": `love-quiz/${input.request_id}` },
-          body: JSON.stringify({ from, to: input.email, subject: "Votre profil amoureux à moto — Motards de Cœur", text,
-            html: `<html lang="fr"><body style="background:#21191a;color:#fff9f0;font-family:Arial,sans-serif;padding:24px"><div style="max-width:560px;margin:auto"><img src="https://motardsdecoeur.com/logo-motards-de-coeur-hd.png" width="100" alt="Motards de Cœur"><h1 style="color:#efbf87">${escape(profile.title)}</h1>${text.split("\n\n").map(p => `<p style="font-size:16px;line-height:1.6">${escape(p).replaceAll("\n","<br>")}</p>`).join("")}</div></body></html>` }),
+          body: JSON.stringify({ from, to: input.email, reply_to: "contact@motardsdecoeur.com", ...message }),
         });
         sent = email.ok;
       } catch { /* Preserve the participation even when the email provider is unavailable. */ }

@@ -6,17 +6,17 @@ import { SITE_URL } from "@/lib/site";
 export const Route = createFileRoute("/quiz")({
   head: () => ({
     meta: [
-      { title: "Quel est votre profil amoureux à moto ? — Motards de Cœur" },
+      { title: "Qu’as-tu envie de vivre à deux ? | Motards de Cœur" },
       {
         name: "description",
         content:
-          "Cinq questions pour découvrir votre profil amoureux à moto. Un quiz gratuit, sans inscription, à partager avec vos amis.",
+          "Six questions sur tes attentes, l’attirance et les rencontres. Ton bilan personnalisé est gratuit, avec envoi par e-mail facultatif.",
       },
-      { property: "og:title", content: "Quel est votre profil amoureux à moto ?" },
+      { property: "og:title", content: "Qu’as-tu envie de vivre à deux ?" },
       {
         property: "og:description",
         content:
-          "Aventure, complicité ou escapades gourmandes ? Découvrez votre résultat en cinq questions, sans inscription.",
+          "Découvre ce que tu recherches dans une rencontre avec un bilan construit à partir de tes six réponses.",
       },
       { property: "og:url", content: `${SITE_URL}/quiz` },
     ],
